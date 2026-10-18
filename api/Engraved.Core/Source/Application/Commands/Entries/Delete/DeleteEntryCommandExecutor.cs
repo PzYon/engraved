@@ -10,8 +10,7 @@ public class DeleteEntryCommandExecutor(
   IJournalRepository journalRepository,
   IFileStore fileStore,
   IDateService dateService
-)
-  : ICommandExecutor<DeleteEntryCommand>
+) : ICommandExecutor<DeleteEntryCommand>
 {
   public async Task<CommandResult> Execute(DeleteEntryCommand command)
   {

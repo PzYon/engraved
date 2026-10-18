@@ -38,26 +38,26 @@ public class StartupSmokeShould
   public void SetUp()
   {
     _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-      {
-        // "Development" skips Azure Monitor / OpenTelemetry; the app then uses the JWT auth path,
-        // so we supply a secret. Point mongo at the shared ephemeral instance.
-        builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
-          {
-            config.AddInMemoryCollection(
-              new Dictionary<string, string?>
-              {
-                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = JwtSecret
-              }
-            );
-          }
-        );
+    {
+      // "Development" skips Azure Monitor / OpenTelemetry; the app then uses the JWT auth path,
+      // so we supply a secret. Point mongo at the shared ephemeral instance.
+      builder.UseEnvironment("Development");
+      builder.ConfigureAppConfiguration(
+        (_, config) =>
+        {
+          config.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+              ["Authentication:JwtSecret"] = JwtSecret,
+            }
+          );
+        }
+      );
 
-        // the background notification job is irrelevant to startup wiring (and would tick mongo).
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-      }
-    );
+      // the background notification job is irrelevant to startup wiring (and would tick mongo).
+      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+    });
   }
 
   [TearDown]
@@ -101,8 +101,10 @@ public class StartupSmokeShould
   public async Task Return_Unauthorized_For_ValidlySignedToken_Missing_NameIdClaim()
   {
     HttpClient client = _factory.CreateClient();
-    client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", CreateTokenWithoutNameIdClaim());
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+      "Bearer",
+      CreateTokenWithoutNameIdClaim()
+    );
 
     // any [Authorize] endpoint works - the request must never reach the controller.
     HttpResponseMessage response = await client.GetAsync("/api/system_info");
@@ -130,7 +132,7 @@ public class StartupSmokeShould
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
         SecurityAlgorithms.HmacSha256Signature
-      )
+      ),
     };
 
     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

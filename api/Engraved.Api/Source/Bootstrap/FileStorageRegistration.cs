@@ -25,9 +25,7 @@ public static class FileStorageRegistration
     // one to an entry can be checked without storing anything. Reuses the JWT secret on purpose: it
     // is already configured on both app services, and a second secret would be a second thing to
     // keep in sync for no gain.
-    services.AddSingleton<IFileIdFactory>(
-      _ => new FileIdFactory(GetSigningKey(configuration, useDevelopmentDefaults))
-    );
+    services.AddSingleton<IFileIdFactory>(_ => new FileIdFactory(GetSigningKey(configuration, useDevelopmentDefaults)));
 
     // Built here rather than inside a factory lambda so that unusable configuration fails the
     // startup. Resolved lazily, the first construction happens on an entry upsert - every upsert
@@ -60,8 +58,7 @@ public static class FileStorageRegistration
 
   private static string GetSigningKey(IConfiguration configuration, bool useDevelopmentDefaults)
   {
-    var jwtSecret = configuration.GetSection("Authentication")
-      .GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
+    var jwtSecret = configuration.GetSection("Authentication").GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
 
     if (!string.IsNullOrEmpty(jwtSecret))
     {
@@ -118,8 +115,8 @@ public static class FileStorageRegistration
     {
       throw new InvalidOperationException(
         $"App Service Config: only one of {Setting(nameof(settings.ConnectionString))} and "
-        + $"{Setting(nameof(settings.BlobEndpoint))} can be set. The connection string takes precedence "
-        + "and the endpoint is then never read, which is never what is meant."
+          + $"{Setting(nameof(settings.BlobEndpoint))} can be set. The connection string takes precedence "
+          + "and the endpoint is then never read, which is never what is meant."
       );
     }
 
@@ -127,8 +124,8 @@ public static class FileStorageRegistration
     {
       throw new InvalidOperationException(
         $"App Service Config: {Setting(nameof(settings.ConnectionString))} is not a connection string, "
-        + "which is a list of \"name=value\" pairs. To authenticate with the managed identity, leave it "
-        + $"unset and put the account URL into {Setting(nameof(settings.BlobEndpoint))} instead."
+          + "which is a list of \"name=value\" pairs. To authenticate with the managed identity, leave it "
+          + $"unset and put the account URL into {Setting(nameof(settings.BlobEndpoint))} instead."
       );
     }
 
@@ -136,7 +133,7 @@ public static class FileStorageRegistration
     {
       throw new InvalidOperationException(
         $"App Service Config: {Setting(nameof(settings.BlobEndpoint))} is not an absolute URL, e.g. "
-        + "\"https://<account>.blob.core.windows.net\"."
+          + "\"https://<account>.blob.core.windows.net\"."
       );
     }
 

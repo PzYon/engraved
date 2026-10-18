@@ -3,7 +3,7 @@ using Engraved.Core.Domain.Journals;
 namespace Engraved.Core.Domain.Permissions;
 
 // The persistence layer mirrors this exact rule as a MongoDB query filter
-// (Engraved.Persistence.Mongo.JournalAccessFilter) for read-shaping. 
+// (Engraved.Persistence.Mongo.JournalAccessFilter) for read-shaping.
 public static class JournalAccessPolicy
 {
   public static bool HasAccess(IJournal? journal, string? userId, PermissionKind required)
@@ -24,7 +24,6 @@ public static class JournalAccessPolicy
       return true;
     }
 
-    return journal.Permissions.TryGetValue(userId, out PermissionDefinition? definition)
-           && definition.Kind >= required;
+    return journal.Permissions.TryGetValue(userId, out PermissionDefinition? definition) && definition.Kind >= required;
   }
 }

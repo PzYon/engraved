@@ -24,33 +24,33 @@ public static class AuthenticationRegistration
   {
     if (isE2ETests)
     {
-      services.AddAuthentication("BasicAuthentication")
+      services
+        .AddAuthentication("BasicAuthentication")
         .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
       return;
     }
 
-    services.AddAuthentication(options =>
-        {
-          options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-          options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }
-      )
+    services
+      .AddAuthentication(options =>
+      {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+      })
       .AddJwtBearer(options =>
+      {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-          options.RequireHttpsMetadata = false;
-          options.SaveToken = true;
-          options.TokenValidationParameters = new TokenValidationParameters
-          {
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-          };
-          options.Events = new JwtBearerEvents { OnTokenValidated = OnTokenValidated };
-        }
-      );
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
+          ValidateAudience = false,
+          ValidateIssuer = false,
+          ValidateIssuerSigningKey = true,
+          ValidateLifetime = true,
+          ClockSkew = TimeSpan.Zero,
+        };
+        options.Events = new JwtBearerEvents { OnTokenValidated = OnTokenValidated };
+      });
   }
 
   private static Task OnTokenValidated(TokenValidatedContext context)
@@ -66,9 +66,7 @@ public static class AuthenticationRegistration
       return Task.CompletedTask;
     }
 
-    context.HttpContext.RequestServices
-      .GetRequiredService<ICurrentUserService>()
-      .SetUserName(nameClaim.Value);
+    context.HttpContext.RequestServices.GetRequiredService<ICurrentUserService>().SetUserName(nameClaim.Value);
 
     return Task.CompletedTask;
   }

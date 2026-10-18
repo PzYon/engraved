@@ -82,9 +82,8 @@ public class UserRestrictedMongoRepositoryShould
   [Test]
   public void UpsertUser_ShouldThrow_WhenUpdating_OtherUser()
   {
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userRestrictedRepository.UpsertUser(
-        new User { Id = _otherUserId, Name = OtherUserName }
-      )
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+      await _userRestrictedRepository.UpsertUser(new User { Id = _otherUserId, Name = OtherUserName })
     );
   }
 
@@ -106,17 +105,16 @@ public class UserRestrictedMongoRepositoryShould
     UpsertResult result = await _repository.UpsertJournal(new TimerJournal { UserId = _otherUserId });
 
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      {
-        await _userRestrictedRepository.UpsertJournal(
-          new TimerJournal
-          {
-            Id = result.EntityId,
-            UserId = _otherUserId,
-            Notes = "Random"
-          }
-        );
-      }
-    );
+    {
+      await _userRestrictedRepository.UpsertJournal(
+        new TimerJournal
+        {
+          Id = result.EntityId,
+          UserId = _otherUserId,
+          Notes = "Random",
+        }
+      );
+    });
   }
 
   [Test]
@@ -136,34 +134,22 @@ public class UserRestrictedMongoRepositoryShould
   [Test]
   public void UpsertEntry_ThrowsWhen_EntityFromOtherUser()
   {
-    IEntry entry = new TimerEntry
-    {
-      ParentId = MongoUtil.GenerateNewIdAsString(),
-      UserId = _otherUserId
-    };
+    IEntry entry = new TimerEntry { ParentId = MongoUtil.GenerateNewIdAsString(), UserId = _otherUserId };
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await _userRestrictedRepository.UpsertEntry(entry); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await _userRestrictedRepository.UpsertEntry(entry);
+    });
   }
 
   [Test]
   public async Task GetJournal_ShouldLoadFrom_CurrentUser()
   {
     UpsertResult currentUserResult = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "From Current User",
-        UserId = _currentUserId
-      }
+      new CounterJournal { Name = "From Current User", UserId = _currentUserId }
     );
 
-    await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "From Other User",
-        UserId = _otherUserId
-      }
-    );
+    await _repository.UpsertJournal(new CounterJournal { Name = "From Other User", UserId = _otherUserId });
 
     IJournal? journal = await _userRestrictedRepository.GetJournal(currentUserResult.EntityId);
     journal.Should().NotBeNull();
@@ -173,20 +159,10 @@ public class UserRestrictedMongoRepositoryShould
   [Test]
   public async Task GetJournal_ShouldReturnNull_WhenLoadingFrom_OtherUser()
   {
-    await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "From Current User",
-        UserId = _currentUserId
-      }
-    );
+    await _repository.UpsertJournal(new CounterJournal { Name = "From Current User", UserId = _currentUserId });
 
     UpsertResult otherUserResult = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "From Other User",
-        UserId = _otherUserId
-      }
+      new CounterJournal { Name = "From Other User", UserId = _otherUserId }
     );
 
     IJournal? journal = await _userRestrictedRepository.GetJournal(otherUserResult.EntityId);
@@ -196,13 +172,13 @@ public class UserRestrictedMongoRepositoryShould
   [Test]
   public async Task GetAllEntries()
   {
-    UpsertResult currentUserJournalResult =
-      await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
+    UpsertResult currentUserJournalResult = await _repository.UpsertJournal(
+      new CounterJournal { UserId = _currentUserId }
+    );
 
     var currentUserJournalId = currentUserJournalResult.EntityId;
 
-    UpsertResult otherUserJournalResult
-      = await _repository.UpsertJournal(new CounterJournal { UserId = _otherUserId });
+    UpsertResult otherUserJournalResult = await _repository.UpsertJournal(new CounterJournal { UserId = _otherUserId });
 
     var otherUserJournalId = otherUserJournalResult.EntityId;
 
@@ -213,7 +189,7 @@ public class UserRestrictedMongoRepositoryShould
         {
           ParentId = currentUserJournalId,
           UserId = _currentUserId,
-          Notes = i.ToString()
+          Notes = i.ToString(),
         }
       );
 
@@ -222,7 +198,7 @@ public class UserRestrictedMongoRepositoryShould
         {
           ParentId = otherUserJournalId,
           UserId = _otherUserId,
-          Notes = i.ToString()
+          Notes = i.ToString(),
         }
       );
     }
@@ -247,7 +223,7 @@ public class UserRestrictedMongoRepositoryShould
       {
         UserId = _currentUserId,
         Notes = "WillBeDeleted",
-        ParentId = journalId
+        ParentId = journalId,
       }
     );
 
@@ -272,7 +248,7 @@ public class UserRestrictedMongoRepositoryShould
       {
         UserId = _otherUserId,
         Notes = "WillBeDeleted",
-        ParentId = journalId
+        ParentId = journalId,
       }
     );
 
@@ -289,20 +265,9 @@ public class UserRestrictedMongoRepositoryShould
     // deleting a journal's entries is a use-case rule owned by DeleteJournalCommandExecutor (via
     // DeleteEntriesForJournal), NOT by the repository. Pinned so the cascade cannot silently creep
     // back into the persistence layer.
-    UpsertResult journal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        UserId = _currentUserId
-      }
-    );
+    UpsertResult journal = await _repository.UpsertJournal(new CounterJournal { UserId = _currentUserId });
 
-    await _repository.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = journal.EntityId,
-        UserId = _currentUserId
-      }
-    );
+    await _repository.UpsertEntry(new CounterEntry { ParentId = journal.EntityId, UserId = _currentUserId });
 
     (await _repository.Journals.CountDocumentsAsync(FilterDefinition<JournalDocument>.Empty)).Should().Be(1);
     (await _repository.Entries.CountDocumentsAsync(FilterDefinition<EntryDocument>.Empty)).Should().Be(1);

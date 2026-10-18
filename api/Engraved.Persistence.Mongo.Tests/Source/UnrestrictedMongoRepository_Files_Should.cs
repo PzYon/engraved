@@ -51,14 +51,18 @@ public class UnrestrictedMongoRepository_Files_Should
   {
     var entryId = ObjectId.GenerateNewId();
 
-    await _repo.Entries.Database.GetCollection<BsonDocument>("entries")
+    await _repo
+      .Entries.Database.GetCollection<BsonDocument>("entries")
       .InsertOneAsync(
         new BsonDocument
         {
           { "_id", entryId },
-          { "_t", new BsonArray { "EntryDocument", "ScrapsEntryDocument" } },
+          {
+            "_t",
+            new BsonArray { "EntryDocument", "ScrapsEntryDocument" }
+          },
           { "ParentId", "60703c3b0000000000000001" },
-          { "Title", "written before files existed" }
+          { "Title", "written before files existed" },
         }
       );
 
@@ -107,9 +111,9 @@ public class UnrestrictedMongoRepository_Files_Should
             ContentLength = 1234,
             UploadedOn = UploadedOn,
             Width = 800,
-            Height = 600
-          }
-        ]
+            Height = 600,
+          },
+        ],
       }
     );
 

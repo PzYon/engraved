@@ -13,7 +13,7 @@ public class FakeGoogleTokenValidator(string imageUrl, string userName, string d
       {
         ImageUrl = imageUrl,
         UserName = userName,
-        UserDisplayName = displayName
+        UserDisplayName = displayName,
       }
     );
   }

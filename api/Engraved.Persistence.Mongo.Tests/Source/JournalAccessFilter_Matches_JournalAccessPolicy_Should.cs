@@ -39,7 +39,8 @@ public class JournalAccessFilter_Matches_JournalAccessPolicy_Should
         var policyResult = JournalAccessPolicy.HasAccess(stored, MyId, required);
         var filterResult = await MatchesFilter(journalId, required);
 
-        filterResult.Should()
+        filterResult
+          .Should()
           .Be(
             policyResult,
             "in-memory policy and Mongo filter must agree for [{0}] requiring {1}",

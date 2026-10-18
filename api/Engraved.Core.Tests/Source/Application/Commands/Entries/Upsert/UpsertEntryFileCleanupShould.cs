@@ -55,7 +55,7 @@ public class UpsertEntryFileCleanupShould
 
     _fileStore.DeletedFileIds.Should().BeEquivalentTo(file.Id);
 
-    ScrapsEntry? entry = (ScrapsEntry?) await _repo.GetEntry(EntryId);
+    ScrapsEntry? entry = (ScrapsEntry?)await _repo.GetEntry(EntryId);
     entry!.Files.Should().BeEmpty();
   }
 
@@ -93,7 +93,7 @@ public class UpsertEntryFileCleanupShould
         Id = EntryId,
         ParentId = JournalId,
         Title = "with a file",
-        Files = [file]
+        Files = [file],
       }
     );
 
@@ -111,7 +111,7 @@ public class UpsertEntryFileCleanupShould
       Id = fileId,
       FileName = "holiday.png",
       ContentType = "image/png",
-      ContentLength = 1234
+      ContentLength = 1234,
     };
   }
 
@@ -123,7 +123,7 @@ public class UpsertEntryFileCleanupShould
         Id = EntryId,
         JournalId = JournalId,
         Title = "with a file",
-        Files = files
+        Files = files,
       }
     );
   }

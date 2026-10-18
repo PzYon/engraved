@@ -8,10 +8,11 @@ public static class KeyNormalizer
   public static Dictionary<string, T> Normalize<T>(Dictionary<string, T> dict)
   {
     return dict.ToDictionary(
-      kvp => InvalidCharsForKeys.Aggregate(
-        kvp.Key,
-        (current, invalidChar) => current.Replace(invalidChar, InvalidCharReplacement)
-      ),
+      kvp =>
+        InvalidCharsForKeys.Aggregate(
+          kvp.Key,
+          (current, invalidChar) => current.Replace(invalidChar, InvalidCharReplacement)
+        ),
       kvp => kvp.Value
     );
   }

@@ -41,10 +41,7 @@ public class EditJournalPermissionsCommandExecutor(
     }
 
     // users are affected that have permissions before or after
-    var userIdsWithAccess = userIdsBefore
-      .Union(journal.Permissions.GetUserIdsWithAccess())
-      .Distinct()
-      .ToArray();
+    var userIdsWithAccess = userIdsBefore.Union(journal.Permissions.GetUserIdsWithAccess()).Distinct().ToArray();
 
     return new CommandResult(command.JournalId, userIdsWithAccess);
   }

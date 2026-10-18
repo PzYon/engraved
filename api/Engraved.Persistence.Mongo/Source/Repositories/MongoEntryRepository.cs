@@ -37,17 +37,13 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     var filters = new List<FilterDefinition<EntryDocument>>
     {
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId),
     };
 
     if (!string.IsNullOrEmpty(searchText))
     {
       filters.AddRange(
-        FreeTextFilters.Build(
-          searchText,
-          false,
-          GetFreeTextFields(onlyConsiderTitle: false, includeFileNames: true)
-        )
+        FreeTextFilters.Build(searchText, false, GetFreeTextFields(onlyConsiderTitle: false, includeFileNames: true))
       );
     }
 
@@ -70,18 +66,14 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       );
     }
 
-    SortDefinition<EntryDocument> sort = sortOrder == SortEntriesBy.EditedOn
-      ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
-      : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
+    SortDefinition<EntryDocument> sort =
+      sortOrder == SortEntriesBy.EditedOn
+        ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
+        : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
 
-    var entries = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.And(filters))
-      .Sort(sort)
-      .ToListAsync();
+    var entries = await EntriesCollection.Find(Builders<EntryDocument>.Filter.And(filters)).Sort(sort).ToListAsync();
 
-    return entries
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
+    return entries.Select(EntryDocumentMapper.FromDocument).ToArray();
   }
 
   // Unscoped primitive: this method does NOT enforce journal read-permission. It trusts the
@@ -129,9 +121,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     if (scheduleMode == ScheduleMode.AnySchedule)
     {
-      filters.Add(
-        Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
-      );
+      filters.Add(Builders<EntryDocument>.Filter.Exists(d => d.Schedules));
     }
     else if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
@@ -177,9 +167,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
   public async Task DeleteEntriesForJournal(string journalId)
   {
-    await EntriesCollection.DeleteManyAsync(
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
-    );
+    await EntriesCollection.DeleteManyAsync(Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId));
   }
 
   // Unscoped primitive: GetEntry does NOT enforce read-permission on the parent journal. The
@@ -198,9 +186,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : EntryDocumentMapper.FromDocument(document);
+    return document == null ? null : EntryDocumentMapper.FromDocument(document);
   }
 
   // Unscoped primitive, for the same reason as GetEntry above: the caller (GetFileUrlQueryExecutor)
@@ -220,9 +206,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Id))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : EntryDocumentMapper.FromDocument(document);
+    return document == null ? null : EntryDocumentMapper.FromDocument(document);
   }
 
   public async Task<string[]> GetFileIdsForJournal(string journalId)
@@ -237,10 +221,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     // Null rather than an empty array for entries written before the field existed: a projection of
     // a missing element has nothing to deserialize, so the property initializer never runs.
-    return filesPerEntry
-      .SelectMany(files => files ?? [])
-      .Select(f => f.Id)
-      .ToArray();
+    return filesPerEntry.SelectMany(files => files ?? []).Select(f => f.Id).ToArray();
   }
 
   private async Task<IEntry[]> LoadData(
@@ -251,17 +232,9 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     SortDefinition<EntryDocument> defaultSort
   )
   {
-    List<EntryDocument> documents = await LoadDocuments(
-      limit,
-      scheduleMode,
-      currentUserId,
-      filters,
-      defaultSort
-    );
+    List<EntryDocument> documents = await LoadDocuments(limit, scheduleMode, currentUserId, filters, defaultSort);
 
-    return documents
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
+    return documents.Select(EntryDocumentMapper.FromDocument).ToArray();
   }
 
   private async Task<List<EntryDocument>> LoadDocuments(
@@ -275,11 +248,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     if (scheduleMode != ScheduleMode.CurrentUserFirst)
     {
       return await EntriesCollection
-        .Find(
-          filters.Count > 0
-            ? Builders<EntryDocument>.Filter.And(filters)
-            : Builders<EntryDocument>.Filter.Empty
-        )
+        .Find(filters.Count > 0 ? Builders<EntryDocument>.Filter.And(filters) : Builders<EntryDocument>.Filter.Empty)
         .Sort(defaultSort)
         .Limit(limit)
         .ToListAsync();
@@ -293,11 +262,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     }
 
     var entries = await EntriesCollection
-      .Find(
-        Builders<EntryDocument>.Filter.And(
-          filters.Union([GetHasScheduleForCurrentUserFilter(currentUserId)])
-        )
-      )
+      .Find(Builders<EntryDocument>.Filter.And(filters.Union([GetHasScheduleForCurrentUserFilter(currentUserId)])))
       .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
       .Limit(limit)
       .ToListAsync();
@@ -307,9 +272,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     entries.AddRange(
       await EntriesCollection
         .Find(
-          Builders<EntryDocument>.Filter.And(
-            filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
-          )
+          Builders<EntryDocument>.Filter.And(filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)]))
         )
         .Sort(defaultSort)
         .Limit(limit - entries.Count)
@@ -325,7 +288,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
   // on title and notes alone - an entry matched purely by a file name would score zero there.
   private static FieldDefinition<EntryDocument>[] GetFreeTextFields(bool onlyConsiderTitle, bool includeFileNames)
   {
-    FieldDefinition<EntryDocument> title = Field(d => ((ScrapsEntryDocument) d).Title!);
+    FieldDefinition<EntryDocument> title = Field(d => ((ScrapsEntryDocument)d).Title!);
 
     if (onlyConsiderTitle)
     {

@@ -31,16 +31,14 @@ public class UpsertGaugeEntryCommandExecutorShould
     const string journalId = "60703c3b00000000000000a1";
     await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
-    var command = new UpsertGaugeEntryCommand
-    {
-      JournalId = journalId,
-      Value = value
-    };
+    var command = new UpsertGaugeEntryCommand { JournalId = journalId, Value = value };
 
-    CommandResult commandResult =
-      await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService(), TestFileAcceptor.Create()).Execute(
-        command
-      );
+    CommandResult commandResult = await new UpsertGaugeEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      new FakeDateService(),
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     commandResult.EntityId.Should().NotBeEmpty();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -63,16 +61,18 @@ public class UpsertGaugeEntryCommandExecutorShould
     {
       JournalId = journalId,
       Notes = "n0t3s",
-      Value = null
+      Value = null,
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
-      {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService(), TestFileAcceptor.Create()).Execute(
-          command
-        );
-      }
-    );
+    {
+      await new UpsertGaugeEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        new FakeDateService(),
+        TestFileAcceptor.Create()
+      ).Execute(command);
+    });
   }
 
   [Test]
@@ -87,13 +87,9 @@ public class UpsertGaugeEntryCommandExecutorShould
         {
           {
             "stuff",
-            new JournalAttribute
-            {
-              Name = "Stuff",
-              Values = { { "x", "y" }, { "k3y", "v@lue" } }
-            }
-          }
-        }
+            new JournalAttribute { Name = "Stuff", Values = { { "x", "y" }, { "k3y", "v@lue" } } }
+          },
+        },
       }
     );
 
@@ -104,15 +100,15 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalId = journalId,
       Notes = "n0t3s",
       Value = value,
-      JournalAttributeValues = new Dictionary<string, string[]>
-      {
-        {
-          "stuff", ["k3y"]
-        }
-      }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "stuff", ["k3y"] } },
     };
 
-    await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService(), TestFileAcceptor.Create()).Execute(command);
+    await new UpsertGaugeEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      new FakeDateService(),
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
@@ -132,9 +128,8 @@ public class UpsertGaugeEntryCommandExecutorShould
     Dictionary<string, string[]> d2
   )
   {
-    var areEqual = d1 == d2
-                   || (d1.Keys.Count == d2.Keys.Count
-                       && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
+    var areEqual =
+      d1 == d2 || (d1.Keys.Count == d2.Keys.Count && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
 
     areEqual.Should().BeTrue("JournalAttributeValues are not equal.");
   }
@@ -157,15 +152,17 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalId = journalId,
       Notes = "n0t3s",
       Value = 42,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", ["x"] } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", ["x"] } },
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>
-      {
-        await new UpsertGaugeEntryCommandExecutor(_testRepository, _testRepository, new FakeDateService(), TestFileAcceptor.Create()).Execute(
-          command
-        );
-      }
-    );
+    {
+      await new UpsertGaugeEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        new FakeDateService(),
+        TestFileAcceptor.Create()
+      ).Execute(command);
+    });
   }
 }

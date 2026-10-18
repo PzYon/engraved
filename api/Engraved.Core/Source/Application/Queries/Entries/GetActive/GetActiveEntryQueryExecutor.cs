@@ -14,20 +14,14 @@ public class GetActiveEntryQueryExecutor(IJournalRepository journalRepository, I
   {
     if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException(
-        query,
-        $"{nameof(GetActiveEntryQuery.JournalId)} must be specified."
-      );
+      throw new InvalidQueryException(query, $"{nameof(GetActiveEntryQuery.JournalId)} must be specified.");
     }
 
     IJournal? journal = await journalRepository.GetJournal(query.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidQueryException(
-        query,
-        $"Journal with key \"{query.JournalId}\" does not exist."
-      );
+      throw new InvalidQueryException(query, $"Journal with key \"{query.JournalId}\" does not exist.");
     }
 
     if (journal.Type != JournalType.Timer)

@@ -25,9 +25,7 @@ public class AdminController(
   {
     EnsureIsAdmin();
 
-    return await dispatcher.Query<AdminUserItem[], GetAdminUsersOverviewQuery>(
-      new GetAdminUsersOverviewQuery()
-    );
+    return await dispatcher.Query<AdminUserItem[], GetAdminUsersOverviewQuery>(new GetAdminUsersOverviewQuery());
   }
 
   // First step of the delete flow: proves the caller is an admin and hands back a short-lived,

@@ -18,7 +18,8 @@ public class RefreshTokenService(
     IUnrestrictedRepository unrestrictedRepository,
     IOptions<AuthenticationConfig> configuration,
     IDateService dateService
-  ) : this(unrestrictedRepository, configuration.Value, dateService) { }
+  )
+    : this(unrestrictedRepository, configuration.Value, dateService) { }
 
   public async Task<string> Issue(IUser user)
   {
@@ -90,7 +91,7 @@ public class RefreshTokenService(
       {
         TokenHash = Hash(secret),
         CreatedOn = dateService.UtcNow,
-        ExpiresAt = dateService.UtcNow.AddMinutes(configuration.RefreshTokenLifetimeMinutes)
+        ExpiresAt = dateService.UtcNow.AddMinutes(configuration.RefreshTokenLifetimeMinutes),
       }
     );
 

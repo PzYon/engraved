@@ -13,10 +13,7 @@ public class GetEntryQueryExecutor(IEntryRepository entryRepository, IJournalRep
   {
     if (string.IsNullOrEmpty(query.EntryId))
     {
-      throw new InvalidQueryException(
-        query,
-        $"{nameof(GetEntryQuery.EntryId)} must be specified."
-      );
+      throw new InvalidQueryException(query, $"{nameof(GetEntryQuery.EntryId)} must be specified.");
     }
 
     IEntry? entry = await entryRepository.GetEntry(query.EntryId);

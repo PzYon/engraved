@@ -25,9 +25,7 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
       ? Builders<UserDocument>.Filter.Where(d => d.Id == id)
       : Builders<UserDocument>.Filter.Where(d => d.Name == nameOrId);
 
-    UserDocument? document = await UsersCollection
-      .Find(filterDefinition)
-      .FirstOrDefaultAsync();
+    UserDocument? document = await UsersCollection.Find(filterDefinition).FirstOrDefaultAsync();
 
     return UserDocumentMapper.FromDocument(document);
   }
@@ -68,10 +66,7 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
   {
     await UsersCollection.UpdateOneAsync(
       MongoUtil.GetDocumentByIdFilter<UserDocument>(userId),
-      Builders<UserDocument>.Update.Set(
-        d => d.Scratchpad,
-        new UserScratchpadDocument { Content = scratchpad.Content }
-      )
+      Builders<UserDocument>.Update.Set(d => d.Scratchpad, new UserScratchpadDocument { Content = scratchpad.Content })
     );
   }
 
@@ -91,9 +86,7 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
 
   public async Task<IUser[]> GetAllUsers()
   {
-    var users = await UsersCollection
-      .Find(MongoUtil.GetAllDocumentsFilter<UserDocument>())
-      .ToListAsync();
+    var users = await UsersCollection.Find(MongoUtil.GetAllDocumentsFilter<UserDocument>()).ToListAsync();
 
     return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
   }

@@ -38,7 +38,7 @@ public class AddJournalCommandExecutor(IJournalRepository repository, IDateServi
       JournalType.Timer => new TimerJournal(),
       JournalType.Scraps => new ScrapsJournal(),
       JournalType.LogBook => new LogBookJournal(),
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };
   }
 }

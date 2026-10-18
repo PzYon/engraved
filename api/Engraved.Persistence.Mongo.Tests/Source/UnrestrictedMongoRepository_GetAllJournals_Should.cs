@@ -96,8 +96,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
@@ -106,19 +109,15 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "franz", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "franz",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
-    var results = await _repository.GetAllJournals(
-      null,
-      ScheduleMode.CurrentUserOnly,
-      null,
-      null,
-      null,
-      "max"
-    );
+    var results = await _repository.GetAllJournals(null, ScheduleMode.CurrentUserOnly, null, null, null, "max");
     results.Length.Should().Be(1);
   }
 
@@ -131,8 +130,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
@@ -142,19 +144,15 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = null } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = null }
+          },
+        },
       }
     );
 
-    var results = await _repository.GetAllJournals(
-      null,
-      ScheduleMode.CurrentUserOnly,
-      null,
-      null,
-      null,
-      "max"
-    );
+    var results = await _repository.GetAllJournals(null, ScheduleMode.CurrentUserOnly, null, null, null, "max");
 
     // only the journal with a pending occurrence counts as "scheduled"
     results.Length.Should().Be(1);

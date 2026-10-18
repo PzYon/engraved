@@ -41,11 +41,7 @@ public class SearchEntitiesQueryExecutorShould
         NullLogger<Dispatcher>.Instance,
         new TestServiceProvider(_repo),
         _repo.CurrentUser,
-        new QueryCache(
-          NullLogger<QueryCache>.Instance,
-          new MemoryCache(new MemoryCacheOptions()),
-          _repo.CurrentUser
-        )
+        new QueryCache(NullLogger<QueryCache>.Instance, new MemoryCache(new MemoryCacheOptions()), _repo.CurrentUser)
       ),
       fakeCurrentUserService
     );
@@ -62,7 +58,8 @@ public class SearchEntitiesQueryExecutorShould
     result.Entities.Length.Should().Be(2);
     result.Entities.Count(e => e.EntityType == EntityType.Journal).Should().Be(1);
 
-    result.Entities.Where(e => e.EntityType == EntityType.Journal)
+    result
+      .Entities.Where(e => e.EntityType == EntityType.Journal)
       .Count(e => ((IJournal)e.Entity).Name == "Yes")
       .Should()
       .Be(1);
@@ -78,11 +75,7 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand
-      {
-        Name = "Scrap Journal",
-        Type = JournalType.Scraps
-      }
+      new AddJournalCommand { Name = "Scrap Journal", Type = JournalType.Scraps }
     );
 
     var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
@@ -91,26 +84,18 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "Random text"
+        Notes = "Random text",
       }
     );
 
     SearchEntitiesResult result1 = await _searchExecutor.Execute(
-      new SearchEntitiesQuery
-      {
-        SearchText = "Random",
-        OnlyEntriesOfTypes = [JournalType.Scraps]
-      }
+      new SearchEntitiesQuery { SearchText = "Random", OnlyEntriesOfTypes = [JournalType.Scraps] }
     );
 
     result1.Entities.Length.Should().Be(1);
 
     SearchEntitiesResult result2 = await _searchExecutor.Execute(
-      new SearchEntitiesQuery
-      {
-        SearchText = "Random",
-        OnlyEntriesOfTypes = [JournalType.Gauge]
-      }
+      new SearchEntitiesQuery { SearchText = "Random", OnlyEntriesOfTypes = [JournalType.Gauge] }
     );
 
     result2.Entities.Length.Should().Be(0);
@@ -126,11 +111,7 @@ public class SearchEntitiesQueryExecutorShould
     await AddEntitiesWithSchedule();
 
     SearchEntitiesResult result = await _searchExecutor.Execute(
-      new SearchEntitiesQuery
-      {
-        SearchText = "Schedule",
-        ScheduledOnly = true
-      }
+      new SearchEntitiesQuery { SearchText = "Schedule", ScheduledOnly = true }
     );
 
     result.Journals.Length.Should().Be(1);
@@ -141,11 +122,7 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand
-      {
-        Name = "Journal with Schedule",
-        Type = JournalType.Scraps
-      }
+      new AddJournalCommand { Name = "Journal with Schedule", Type = JournalType.Scraps }
     );
 
     var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_repo, _repo.CurrentUser);
@@ -153,7 +130,7 @@ public class SearchEntitiesQueryExecutorShould
       new AddScheduleToJournalCommand
       {
         JournalId = commandResult.EntityId,
-        NextOccurrence = _dateService.UtcNow.AddDays(10)
+        NextOccurrence = _dateService.UtcNow.AddDays(10),
       }
     );
 
@@ -163,18 +140,14 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "Entry with Schedule"
+        Notes = "Entry with Schedule",
       }
     );
 
     // the entry itself is scheduled, so it shows up in a "scheduled only" search.
     var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo, _repo, _repo.CurrentUser);
     await addEntryScheduleExecutor.Execute(
-      new AddScheduleToEntryCommand
-      {
-        EntryId = entryResult.EntityId,
-        NextOccurrence = _dateService.UtcNow.AddDays(10)
-      }
+      new AddScheduleToEntryCommand { EntryId = entryResult.EntityId, NextOccurrence = _dateService.UtcNow.AddDays(10) }
     );
   }
 
@@ -182,11 +155,7 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand
-      {
-        Name = "No",
-        Type = JournalType.Scraps
-      }
+      new AddJournalCommand { Name = "No", Type = JournalType.Scraps }
     );
 
     var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
@@ -195,7 +164,7 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "Yes"
+        Notes = "Yes",
       }
     );
   }
@@ -204,11 +173,7 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand
-      {
-        Name = "Yes",
-        Type = JournalType.Scraps
-      }
+      new AddJournalCommand { Name = "Yes", Type = JournalType.Scraps }
     );
 
     var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
@@ -217,7 +182,7 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "i am a simple text - I"
+        Notes = "i am a simple text - I",
       }
     );
 
@@ -226,7 +191,7 @@ public class SearchEntitiesQueryExecutorShould
       {
         JournalId = commandResult.EntityId,
         DateTime = _dateService.UtcNow,
-        Notes = "i am a simple text - II"
+        Notes = "i am a simple text - II",
       }
     );
   }

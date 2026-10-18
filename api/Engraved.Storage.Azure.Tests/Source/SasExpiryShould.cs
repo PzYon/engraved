@@ -21,9 +21,7 @@ public class SasExpiryShould
   [Test]
   public void Return_TheSameExpiry_For_RequestsWithinTheSameWindow()
   {
-    SasExpiry.GetReadExpiry(At(10, 01))
-      .Should()
-      .Be(SasExpiry.GetReadExpiry(At(10, 44)));
+    SasExpiry.GetReadExpiry(At(10, 01)).Should().Be(SasExpiry.GetReadExpiry(At(10, 44)));
   }
 
   [Test]

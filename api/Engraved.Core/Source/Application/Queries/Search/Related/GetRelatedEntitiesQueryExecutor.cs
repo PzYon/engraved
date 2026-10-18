@@ -27,14 +27,75 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
   private static readonly HashSet<string> StopWords =
   [
     // english
-    "the", "and", "for", "with", "this", "that", "these", "those", "from", "are",
-    "was", "were", "has", "have", "had", "not", "you", "your", "all", "any",
-    "can", "will", "one", "how", "what", "when", "where", "why", "who", "which",
+    "the",
+    "and",
+    "for",
+    "with",
+    "this",
+    "that",
+    "these",
+    "those",
+    "from",
+    "are",
+    "was",
+    "were",
+    "has",
+    "have",
+    "had",
+    "not",
+    "you",
+    "your",
+    "all",
+    "any",
+    "can",
+    "will",
+    "one",
+    "how",
+    "what",
+    "when",
+    "where",
+    "why",
+    "who",
+    "which",
     // german
-    "und", "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen",
-    "einem", "einer", "ist", "sind", "war", "mit", "von", "für", "auf", "aus",
-    "bei", "nach", "über", "unter", "nicht", "auch", "wie", "was", "wann", "wer",
-    "oder", "aber", "als", "zum", "zur", "ich", "sie", "wir"
+    "und",
+    "der",
+    "die",
+    "das",
+    "den",
+    "dem",
+    "des",
+    "ein",
+    "eine",
+    "einen",
+    "einem",
+    "einer",
+    "ist",
+    "sind",
+    "war",
+    "mit",
+    "von",
+    "für",
+    "auf",
+    "aus",
+    "bei",
+    "nach",
+    "über",
+    "unter",
+    "nicht",
+    "auch",
+    "wie",
+    "was",
+    "wann",
+    "wer",
+    "oder",
+    "aber",
+    "als",
+    "zum",
+    "zur",
+    "ich",
+    "sie",
+    "wir",
   ];
 
   public bool DisableCache => false;
@@ -43,10 +104,7 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
   {
     if (string.IsNullOrEmpty(query.EntityId))
     {
-      throw new InvalidQueryException(
-        query,
-        $"{nameof(GetRelatedEntitiesQuery.EntityId)} must be specified."
-      );
+      throw new InvalidQueryException(query, $"{nameof(GetRelatedEntitiesQuery.EntityId)} must be specified.");
     }
 
     SourceContext source = await LoadSource(query);
@@ -65,10 +123,7 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
     var allJournals = await journalRepository.GetAllJournals(null, null, null, null, 1000);
 
-    var otherJournalIds = allJournals
-      .Select(j => j.Id!)
-      .Where(id => id != source.OwnJournalId)
-      .ToArray();
+    var otherJournalIds = allJournals.Select(j => j.Id!).Where(id => id != source.OwnJournalId).ToArray();
 
     var journalCandidatesTask = journalRepository.GetAllJournals(
       searchText,
@@ -82,36 +137,35 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
     // passing otherJournalIds both scopes the (unscoped) entry search to journals the
     // user may read AND excludes the source item's own journal (see class comment).
-    var entryCandidatesTask = otherJournalIds.Length > 0
-      ? entryRepository.SearchEntries(
-        searchText,
-        null,
-        NavigableEntryTypes,
-        otherJournalIds,
-        CandidateLimit,
-        null,
-        false,
-        true
-      )
-      : Task.FromResult<IEntry[]>([]);
+    var entryCandidatesTask =
+      otherJournalIds.Length > 0
+        ? entryRepository.SearchEntries(
+          searchText,
+          null,
+          NavigableEntryTypes,
+          otherJournalIds,
+          CandidateLimit,
+          null,
+          false,
+          true
+        )
+        : Task.FromResult<IEntry[]>([]);
 
     await Task.WhenAll(journalCandidatesTask, entryCandidatesTask);
 
-    var rankedEntities = journalCandidatesTask.Result
-      .Where(j => j.Id != source.OwnJournalId)
+    var rankedEntities = journalCandidatesTask
+      .Result.Where(j => j.Id != source.OwnJournalId)
       .Select(j => new
-        {
-          Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
-          Score = GetScore(words, j.Name, j.Description)
-        }
-      )
+      {
+        Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
+        Score = GetScore(words, j.Name, j.Description),
+      })
       .Concat(
         entryCandidatesTask.Result.Select(e => new
-          {
-            Entity = new SearchResultEntity { EntityType = EntityType.Entry, Entity = e },
-            Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes)
-          }
-        )
+        {
+          Entity = new SearchResultEntity { EntityType = EntityType.Entry, Entity = e },
+          Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes),
+        })
       )
       .OrderByDescending(x => x.Score)
       .ThenByDescending(x => x.Entity.Entity.EditedOn)
@@ -127,7 +181,7 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
     return new SearchEntitiesResult
     {
       Entities = rankedEntities,
-      Journals = allJournals.Where(j => parentJournalIds.Contains(j.Id)).ToArray()
+      Journals = allJournals.Where(j => parentJournalIds.Contains(j.Id)).ToArray(),
     };
   }
 
@@ -163,7 +217,8 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
   private static string[] GetRelevantWords(string? text)
   {
-    return Regex.Split((text ?? string.Empty).ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+    return Regex
+      .Split((text ?? string.Empty).ToLowerInvariant(), @"[^\p{L}\p{N}]+")
       .Select(word => word.Trim())
       .Where(word => word.Length >= MinWordLength && !StopWords.Contains(word))
       .Distinct()
@@ -179,7 +234,12 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
     return words.Aggregate(
       0,
       (score, word) =>
-        score + (WholeWordRegex.IsMatch(title, word) ? 3 : WholeWordRegex.IsMatch(body, word) ? 1 : 0)
+        score
+        + (
+          WholeWordRegex.IsMatch(title, word) ? 3
+          : WholeWordRegex.IsMatch(body, word) ? 1
+          : 0
+        )
     );
   }
 

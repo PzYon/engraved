@@ -130,15 +130,14 @@ public class DispatcherShould
     for (var taskIndex = 0; taskIndex < parallelTaskCount; taskIndex++)
     {
       tasks[taskIndex] = Task.Run(async () =>
+      {
+        for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
         {
-          for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
-          {
-            Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
-            await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
-            await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
-          }
+          Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
+          await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
+          await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
         }
-      );
+      });
     }
 
     await Task.WhenAll(tasks);
@@ -149,12 +148,7 @@ public class DispatcherShould
     var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
     queryCache ??= new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
 
-    return new Dispatcher(
-      NullLogger<Dispatcher>.Instance,
-      new TestServiceProvider(null!),
-      currentUser,
-      queryCache
-    );
+    return new Dispatcher(NullLogger<Dispatcher>.Instance, new TestServiceProvider(null!), currentUser, queryCache);
   }
 }
 

@@ -18,7 +18,7 @@ public static class FileContentPolicy
     "image/gif",
     "image/webp",
     "image/avif",
-    "application/pdf"
+    "application/pdf",
   };
 
   // Control characters would let a crafted file name inject additional header lines into the

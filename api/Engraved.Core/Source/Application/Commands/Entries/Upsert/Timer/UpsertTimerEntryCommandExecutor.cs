@@ -11,11 +11,7 @@ public class UpsertTimerEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<
-    UpsertTimerEntryCommand,
-    TimerEntry,
-    TimerJournal
-  >(
+  : BaseUpsertEntryCommandExecutor<UpsertTimerEntryCommand, TimerEntry, TimerJournal>(
     journalRepository,
     entryRepository,
     dateService,
@@ -60,9 +56,9 @@ public class UpsertTimerEntryCommandExecutor(
   private static bool IsAutoSetOfEndDate(UpsertTimerEntryCommand command, TimerEntry entry)
   {
     return !string.IsNullOrEmpty(entry.Id)
-           && (entry.StartDate == command.StartDate || command.StartDate == null)
-           && entry.EndDate == null
-           && command.EndDate == null;
+      && (entry.StartDate == command.StartDate || command.StartDate == null)
+      && entry.EndDate == null
+      && command.EndDate == null;
   }
 
   public static async Task<TimerEntry?> GetActiveEntry(IEntryRepository repository, TimerJournal journal)
@@ -72,8 +68,6 @@ public class UpsertTimerEntryCommandExecutor(
     // in IDb. for the time being we will skip that.
     var allEntries = await repository.GetEntriesForJournal(journal.Id!);
 
-    return allEntries
-      .OfType<TimerEntry>()
-      .FirstOrDefault(m => m.EndDate == null);
+    return allEntries.OfType<TimerEntry>().FirstOrDefault(m => m.EndDate == null);
   }
 }

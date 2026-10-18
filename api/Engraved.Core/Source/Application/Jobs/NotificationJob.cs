@@ -34,11 +34,7 @@ public class NotificationJob(
       var journals = await unrestrictedRepository.GetAllJournals(null, ScheduleMode.AnySchedule);
       await ProcessEntities(journals.OfType<IEntity>().ToArray(), isDryRun, result);
 
-      logger.LogInformation(
-        "Ending {JobName} after {ElapsedMs}ms",
-        nameof(NotificationJob),
-        watch.ElapsedMilliseconds
-      );
+      logger.LogInformation("Ending {JobName} after {ElapsedMs}ms", nameof(NotificationJob), watch.ElapsedMilliseconds);
     }
     catch (Exception ex)
     {
@@ -52,9 +48,11 @@ public class NotificationJob(
   {
     foreach (IEntity entity in entities)
     {
-      foreach ((var userId, Schedule? schedule) in entity.Schedules.Where(s
-                 => s.Value.NotifiedOn == null && s.Value.NextOccurrence < dateService.UtcNow
-               ))
+      foreach (
+        (var userId, Schedule? schedule) in entity.Schedules.Where(s =>
+          s.Value.NotifiedOn == null && s.Value.NextOccurrence < dateService.UtcNow
+        )
+      )
       {
         try
         {
@@ -81,7 +79,7 @@ public class NotificationJob(
                 Title = GetNotificationTitle(entity),
                 Message = await GetNotificationMessage(entity),
                 OnClickUrl = schedule.OnClickUrl,
-                Buttons = []
+                Buttons = [],
               },
               entity.Id!,
               false
@@ -125,7 +123,7 @@ public class NotificationJob(
     {
       IJournal journal => journal.Name,
       ScrapsEntry scrapsEntry => scrapsEntry.Title,
-      _ => string.Empty
+      _ => string.Empty,
     };
   }
 

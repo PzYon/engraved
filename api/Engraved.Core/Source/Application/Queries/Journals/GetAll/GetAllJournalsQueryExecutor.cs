@@ -9,8 +9,7 @@ public class GetAllJournalsQueryExecutor(
   IJournalRepository journalRepository,
   IUserRepository userRepository,
   Lazy<IUser> currentUser
-)
-  : IQueryExecutor<IJournal[], GetAllJournalsQuery>
+) : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
   public bool DisableCache => false;
 
@@ -38,8 +37,8 @@ public class GetAllJournalsQueryExecutor(
       return queryFilterIds;
     }
 
-    return currentUser.Value.FavoriteJournalIds
-      .Where(i => !queryFilterIds.Any() || queryFilterIds.Contains(i))
+    return currentUser
+      .Value.FavoriteJournalIds.Where(i => !queryFilterIds.Any() || queryFilterIds.Contains(i))
       .ToArray();
   }
 }

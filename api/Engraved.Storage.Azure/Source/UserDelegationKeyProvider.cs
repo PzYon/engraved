@@ -41,7 +41,8 @@ public class UserDelegationKeyProvider(BlobServiceClient serviceClient)
       DateTimeOffset now = DateTimeOffset.UtcNow;
 
       _key = await serviceClient.GetUserDelegationKeyAsync(
-        new BlobGetUserDelegationKeyOptions(now.Add(KeyLifetime)) { StartsOn = now.AddMinutes(-5) });
+        new BlobGetUserDelegationKeyOptions(now.Add(KeyLifetime)) { StartsOn = now.AddMinutes(-5) }
+      );
 
       return _key;
     }

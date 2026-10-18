@@ -38,7 +38,7 @@ public class MoveEntryCommandExecutorShould
       {
         Id = entryId,
         ParentId = sourceJournalId,
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
     var sourceEntries = await _repo.GetEntriesForJournal(sourceJournalId);
@@ -50,16 +50,8 @@ public class MoveEntryCommandExecutorShould
     targetEntries.Should().BeEmpty();
 
     // when
-    await new MoveEntryCommandExecutor(
-      _repo,
-      _repo,
-      _dateService
-    ).Execute(
-      new MoveEntryCommand
-      {
-        EntryId = entryId,
-        TargetJournalId = targetJournalId
-      }
+    await new MoveEntryCommandExecutor(_repo, _repo, _dateService).Execute(
+      new MoveEntryCommand { EntryId = entryId, TargetJournalId = targetJournalId }
     );
 
     // then
@@ -84,8 +76,11 @@ public class MoveEntryCommandExecutorShould
         Id = sourceJournalId,
         Permissions = new UserPermissions
         {
-          { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } }
-        }
+          {
+            TestIds.UserId,
+            new PermissionDefinition { Kind = PermissionKind.Read }
+          },
+        },
       }
     );
 
@@ -95,8 +90,11 @@ public class MoveEntryCommandExecutorShould
         Id = targetJournalId,
         Permissions = new UserPermissions
         {
-          { TestIds.OtherUserId, new PermissionDefinition { Kind = PermissionKind.Read } }
-        }
+          {
+            TestIds.OtherUserId,
+            new PermissionDefinition { Kind = PermissionKind.Read }
+          },
+        },
       }
     );
 
@@ -105,21 +103,13 @@ public class MoveEntryCommandExecutorShould
       {
         Id = entryId,
         ParentId = sourceJournalId,
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
 
     // when
-    CommandResult result = await new MoveEntryCommandExecutor(
-      _repo,
-      _repo,
-      _dateService
-    ).Execute(
-      new MoveEntryCommand
-      {
-        EntryId = entryId,
-        TargetJournalId = targetJournalId
-      }
+    CommandResult result = await new MoveEntryCommandExecutor(_repo, _repo, _dateService).Execute(
+      new MoveEntryCommand { EntryId = entryId, TargetJournalId = targetJournalId }
     );
 
     // then: users of BOTH journals are affected (e.g. for cache invalidation),

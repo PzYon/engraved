@@ -19,14 +19,9 @@ public static class MongoUtil
 
   private static UpsertResult CreateUpsertResult(string? entityId, BsonValue upsertedId)
   {
-    var id = (string.IsNullOrEmpty(entityId)
-      ? upsertedId.ToString()
-      : entityId)!;
+    var id = (string.IsNullOrEmpty(entityId) ? upsertedId.ToString() : entityId)!;
 
-    return new UpsertResult
-    {
-      EntityId = id
-    };
+    return new UpsertResult { EntityId = id };
   }
 
   public static FilterDefinition<TDocument> GetAllDocumentsFilter<TDocument>()
@@ -47,9 +42,7 @@ public static class MongoUtil
 
   private static ObjectId EnsureObjectId(string? id)
   {
-    return string.IsNullOrEmpty(id)
-      ? GenerateNewId()
-      : ParseObjectId(id);
+    return string.IsNullOrEmpty(id) ? GenerateNewId() : ParseObjectId(id);
   }
 
   private static ObjectId GenerateNewId()

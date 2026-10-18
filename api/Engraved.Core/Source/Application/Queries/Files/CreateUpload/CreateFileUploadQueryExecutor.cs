@@ -41,7 +41,7 @@ public class CreateFileUploadQueryExecutor(
       ContentType = query.ContentType!,
       ContentLength = query.ContentLength,
       Width = query.Width,
-      Height = query.Height
+      Height = query.Height,
     };
 
     Uri uploadUrl = await fileStore.CreateUploadUrl(file.Id);
@@ -51,7 +51,7 @@ public class CreateFileUploadQueryExecutor(
     {
       File = file,
       UploadUrl = uploadUrl.ToString(),
-      ReadUrl = readUrl.ToString()
+      ReadUrl = readUrl.ToString(),
     };
   }
 
@@ -74,7 +74,10 @@ public class CreateFileUploadQueryExecutor(
 
     if (query.ContentLength <= 0)
     {
-      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.ContentLength)} must be greater than zero.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(CreateFileUploadQuery.ContentLength)} must be greater than zero."
+      );
     }
 
     // This is the size the client claims it is about to upload. A SAS cannot cap the size of the

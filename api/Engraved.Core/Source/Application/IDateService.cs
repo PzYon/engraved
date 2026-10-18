@@ -12,7 +12,8 @@ public class DateService : IDateService
 
 public class FakeDateService(DateTime initialDate) : IDateService
 {
-  public FakeDateService() : this(DateTime.UtcNow) { }
+  public FakeDateService()
+    : this(DateTime.UtcNow) { }
 
   public DateTime UtcNow { get; set; } = initialDate;
 

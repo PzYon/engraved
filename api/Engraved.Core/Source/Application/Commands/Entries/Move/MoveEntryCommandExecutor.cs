@@ -8,8 +8,7 @@ public class MoveEntryCommandExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
   IDateService dateService
-)
-  : ICommandExecutor<MoveEntryCommand>
+) : ICommandExecutor<MoveEntryCommand>
 {
   public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
@@ -44,13 +43,11 @@ public class MoveEntryCommandExecutor(
 
     // use the source journal loaded above: entry.ParentId already points to the target here,
     // so re-loading via the entry would wrongly derive both sides from the target journal.
-    var affectedUserIds = targetJournal.Permissions.GetUserIdsWithAccess()
+    var affectedUserIds = targetJournal
+      .Permissions.GetUserIdsWithAccess()
       .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
       .ToArray();
 
-    return new CommandResult(
-      command.EntryId,
-      affectedUserIds
-    );
+    return new CommandResult(command.EntryId, affectedUserIds);
   }
 }

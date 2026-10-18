@@ -23,11 +23,7 @@ public class FileAcceptor(
 
     foreach (FileRef file in fromClient)
     {
-      accepted.Add(
-        storedById.TryGetValue(file.Id, out FileRef? existing)
-          ? existing
-          : await AcceptNew(file)
-      );
+      accepted.Add(storedById.TryGetValue(file.Id, out FileRef? existing) ? existing : await AcceptNew(file));
     }
 
     // Files the client left out are dropped from the entry here, but their blobs are not: the delete
@@ -98,7 +94,7 @@ public class FileAcceptor(
 
       // Cosmetic, so client-supplied is fine: they only reserve layout space before the image loads.
       Width = file.Width,
-      Height = file.Height
+      Height = file.Height,
     };
   }
 }

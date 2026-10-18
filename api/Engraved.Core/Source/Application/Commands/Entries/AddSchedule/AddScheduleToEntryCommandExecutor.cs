@@ -10,8 +10,7 @@ public class AddScheduleToEntryCommandExecutor(
   IEntryRepository entryRepository,
   IJournalRepository journalRepository,
   Lazy<IUser> currentUser
-)
-  : ICommandExecutor<AddScheduleToEntryCommand>
+) : ICommandExecutor<AddScheduleToEntryCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToEntryCommand command)
   {
@@ -28,7 +27,7 @@ public class AddScheduleToEntryCommandExecutor(
       {
         NextOccurrence = command.NextOccurrence,
         OnClickUrl = command.OnClickUrl?.Replace("new-entry-id", entry.Id),
-        Recurrence = command.Recurrence
+        Recurrence = command.Recurrence,
       };
     }
     else

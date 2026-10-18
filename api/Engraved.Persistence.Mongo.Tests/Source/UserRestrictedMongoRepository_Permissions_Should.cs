@@ -29,8 +29,11 @@ public class UserRestrictedMongoRepository_Permissions_Should
     _repository = await Util.CreateMongoRepository();
     UpsertResult upsertResult = await _repository.UpsertUser(new User { Name = CurrentUserName });
     _otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
-    _userRestrictedRepository =
-      await Util.CreateUserRestrictedMongoRepository(CurrentUserName, upsertResult.EntityId, true);
+    _userRestrictedRepository = await Util.CreateUserRestrictedMongoRepository(
+      CurrentUserName,
+      upsertResult.EntityId,
+      true
+    );
   }
 
   [Test]
@@ -51,10 +54,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
     await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     await GivePermissions(otherJournal.EntityId, OtherUserName + "_another_one", PermissionKind.Write);
@@ -70,10 +70,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
     await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     await GiveMePermissions(otherJournal.EntityId, PermissionKind.Write);
@@ -89,10 +86,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
     await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     await GiveMePermissions(otherJournal.EntityId, PermissionKind.Read);
@@ -108,20 +102,12 @@ public class UserRestrictedMongoRepository_Permissions_Should
     await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     await GivePermissions(otherJournal.EntityId, OtherUserName + "_another_one", PermissionKind.Write);
 
-    await _repository.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = otherJournal.EntityId
-      }
-    );
+    await _repository.UpsertEntry(new CounterEntry { ParentId = otherJournal.EntityId });
 
     var allEntries = await _userRestrictedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
@@ -134,20 +120,12 @@ public class UserRestrictedMongoRepository_Permissions_Should
     await _userRestrictedRepository.UpsertJournal(new CounterJournal { Name = "my-journal" });
 
     UpsertResult otherJournal = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     await GiveMePermissions(otherJournal.EntityId, PermissionKind.Read);
 
-    await _repository.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = otherJournal.EntityId
-      }
-    );
+    await _repository.UpsertEntry(new CounterEntry { ParentId = otherJournal.EntityId });
 
     var allEntries = await _userRestrictedRepository.GetEntriesForJournal(otherJournal.EntityId);
 
@@ -159,8 +137,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
   {
     var journalId = await CreateJournalForOtherUser();
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertOtherEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertOtherEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -169,8 +149,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var journalId = await CreateJournalForOtherUser();
     await GiveMePermissions(journalId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertOtherEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertOtherEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -179,8 +161,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var journalId = await CreateJournalForOtherUser();
     await GiveMePermissions(journalId, PermissionKind.None);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertOtherEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertOtherEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -223,10 +207,9 @@ public class UserRestrictedMongoRepository_Permissions_Should
     entry.ParentId = myJournal.EntityId;
 
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      {
-        await _userRestrictedRepository.UpsertEntry(entry);
-      }
-    );
+    {
+      await _userRestrictedRepository.UpsertEntry(entry);
+    });
   }
 
   [Test]
@@ -234,8 +217,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
   {
     var journalId = await CreateJournalForOtherUser();
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertJournalAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertJournalAsMe(journalId);
+    });
   }
 
   [Test]
@@ -245,8 +230,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
 
     await GiveMePermissions(journalId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertJournalAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertJournalAsMe(journalId);
+    });
   }
 
   [Test]
@@ -256,8 +243,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
 
     await GiveMePermissions(journalId, PermissionKind.None);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await UpsertJournalAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await UpsertJournalAsMe(journalId);
+    });
   }
 
   [Test]
@@ -275,8 +264,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
   {
     var journalId = await CreateJournalForOtherUser();
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await AddEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await AddEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -285,8 +276,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var journalId = await CreateJournalForOtherUser();
     await GiveMePermissions(journalId, PermissionKind.Read);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await AddEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await AddEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -295,8 +288,10 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var journalId = await CreateJournalForOtherUser();
     await GiveMePermissions(journalId, PermissionKind.None);
 
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => { await AddEntryAsMe(journalId); }
-    );
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+    {
+      await AddEntryAsMe(journalId);
+    });
   }
 
   [Test]
@@ -315,10 +310,9 @@ public class UserRestrictedMongoRepository_Permissions_Should
     // against, so the write is rejected rather than silently allowed (which would create an orphan
     // entry). Pins the intentional behavior of EnsureUserHasPermission for a missing journal id.
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      {
-        await _userRestrictedRepository.UpsertEntry(new CounterEntry());
-      }
-    );
+    {
+      await _userRestrictedRepository.UpsertEntry(new CounterEntry());
+    });
   }
 
   [Test]
@@ -328,10 +322,9 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var entryId = await AddEntryForOtherUser(journalId);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      {
-        await _userRestrictedRepository.DeleteEntry(entryId);
-      }
-    );
+    {
+      await _userRestrictedRepository.DeleteEntry(entryId);
+    });
 
     (await _repository.GetEntry(entryId)).Should().NotBeNull();
   }
@@ -344,10 +337,9 @@ public class UserRestrictedMongoRepository_Permissions_Should
     var entryId = await AddEntryForOtherUser(journalId);
 
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      {
-        await _userRestrictedRepository.DeleteEntry(entryId);
-      }
-    );
+    {
+      await _userRestrictedRepository.DeleteEntry(entryId);
+    });
 
     (await _repository.GetEntry(entryId)).Should().NotBeNull();
   }
@@ -402,11 +394,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
   private async Task<string> AddEntryForOtherUser(string journalId)
   {
     UpsertResult result = await _repository.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = journalId,
-        UserId = _otherUserId
-      }
+      new CounterEntry { ParentId = journalId, UserId = _otherUserId }
     );
 
     return result.EntityId;
@@ -414,18 +402,13 @@ public class UserRestrictedMongoRepository_Permissions_Should
 
   private async Task UpsertJournalAsMe(string journalId)
   {
-    await _userRestrictedRepository.UpsertJournal(
-      new CounterJournal { Id = journalId }
-    );
+    await _userRestrictedRepository.UpsertJournal(new CounterJournal { Id = journalId });
   }
 
   private async Task<string> CreateJournalForOtherUser()
   {
     UpsertResult upsertResult = await _repository.UpsertJournal(
-      new CounterJournal
-      {
-        Name = "thy-journal", UserId = _otherUserId
-      }
+      new CounterJournal { Name = "thy-journal", UserId = _otherUserId }
     );
 
     return upsertResult.EntityId;
@@ -433,12 +416,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
 
   private async Task AddEntryAsMe(string journalId)
   {
-    await _userRestrictedRepository.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = journalId
-      }
-    );
+    await _userRestrictedRepository.UpsertEntry(new CounterEntry { ParentId = journalId });
   }
 
   private async Task UpsertOtherEntryAsMe(string journalId)
@@ -448,7 +426,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
       {
         ParentId = journalId,
         UserId = _otherUserId,
-        Notes = "foo"
+        Notes = "foo",
       }
     );
 
@@ -459,7 +437,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
       {
         Id = result.EntityId,
         ParentId = journalId,
-        Notes = newNotesValues
+        Notes = newNotesValues,
       }
     );
 
@@ -479,10 +457,7 @@ public class UserRestrictedMongoRepository_Permissions_Should
     IJournal journal = (await _repository.GetJournal(journalId))!;
 
     var permissionsEnsurer = new PermissionsEnsurer(_repository);
-    await permissionsEnsurer.EnsurePermissions(
-      journal,
-      new Dictionary<string, PermissionKind> { { userName, kind } }
-    );
+    await permissionsEnsurer.EnsurePermissions(journal, new Dictionary<string, PermissionKind> { { userName, kind } });
 
     await _repository.UpsertJournal(journal);
   }

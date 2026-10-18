@@ -20,27 +20,24 @@ public class ArchitectureShould
   [Test]
   public void NotDependOnMongoDb()
   {
-    TestResult result = Types.InAssembly(CoreAssembly)
-      .ShouldNot()
-      .HaveDependencyOn("MongoDB")
-      .GetResult();
+    TestResult result = Types.InAssembly(CoreAssembly).ShouldNot().HaveDependencyOn("MongoDB").GetResult();
 
-    result.IsSuccessful.Should()
-      .BeTrue(
-        "Engraved.Core must not depend on MongoDB. Offending types: {0}",
-        Describe(result.FailingTypeNames)
-      );
+    result
+      .IsSuccessful.Should()
+      .BeTrue("Engraved.Core must not depend on MongoDB. Offending types: {0}", Describe(result.FailingTypeNames));
   }
 
   [Test]
   public void NotDependOnTheMongoPersistenceImplementation()
   {
-    TestResult result = Types.InAssembly(CoreAssembly)
+    TestResult result = Types
+      .InAssembly(CoreAssembly)
       .ShouldNot()
       .HaveDependencyOn("Engraved.Persistence.Mongo")
       .GetResult();
 
-    result.IsSuccessful.Should()
+    result
+      .IsSuccessful.Should()
       .BeTrue(
         "Engraved.Core must not depend on the Mongo persistence implementation. Offending types: {0}",
         Describe(result.FailingTypeNames)
@@ -52,12 +49,10 @@ public class ArchitectureShould
   {
     // Core is the framework-agnostic domain/application layer: it must not reach into ASP.NET Core.
     // Anything that needs the web host belongs in Engraved.Api.
-    TestResult result = Types.InAssembly(CoreAssembly)
-      .ShouldNot()
-      .HaveDependencyOn("Microsoft.AspNetCore")
-      .GetResult();
+    TestResult result = Types.InAssembly(CoreAssembly).ShouldNot().HaveDependencyOn("Microsoft.AspNetCore").GetResult();
 
-    result.IsSuccessful.Should()
+    result
+      .IsSuccessful.Should()
       .BeTrue(
         "Engraved.Core must not depend on the web framework (Microsoft.AspNetCore). Offending types: {0}",
         Describe(result.FailingTypeNames)
@@ -70,14 +65,16 @@ public class ArchitectureShould
     // Domain is the innermost ring (entities, permissions, the JournalAccessPolicy rule). It must not
     // depend on the Application layer above it (executors, queries, repository abstractions); the
     // dependency only flows Application -> Domain.
-    TestResult result = Types.InAssembly(CoreAssembly)
+    TestResult result = Types
+      .InAssembly(CoreAssembly)
       .That()
       .ResideInNamespace("Engraved.Core.Domain")
       .ShouldNot()
       .HaveDependencyOn("Engraved.Core.Application")
       .GetResult();
 
-    result.IsSuccessful.Should()
+    result
+      .IsSuccessful.Should()
       .BeTrue(
         "Engraved.Core.Domain must not depend on Engraved.Core.Application. Offending types: {0}",
         Describe(result.FailingTypeNames)
@@ -96,16 +93,18 @@ public class ArchitectureShould
     [
       "NotificationJob",
       "DeleteUserCommandExecutor",
-      "GetAdminUsersOverviewQueryExecutor"
+      "GetAdminUsersOverviewQueryExecutor",
     ];
 
-    var actualConsumers = Types.InAssembly(CoreAssembly)
+    var actualConsumers = Types
+      .InAssembly(CoreAssembly)
       .That()
       .HaveDependencyOn(typeof(IUnrestrictedRepository).FullName)
       .GetTypes()
       .Select(type => type.Name);
 
-    actualConsumers.Should()
+    actualConsumers
+      .Should()
       .BeSubsetOf(
         sanctionedConsumers,
         "only sanctioned consumers in Engraved.Core may depend on the unrestricted persistence seam"

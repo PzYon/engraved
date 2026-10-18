@@ -39,13 +39,21 @@ public class EditJournalCommandExecutorShould
         {
           {
             "color",
-            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+            new JournalAttribute
+            {
+              Name = "Color",
+              Values = new Dictionary<string, string> { { "red", "Red" } },
+            }
           },
           {
             "size",
-            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
-          }
-        }
+            new JournalAttribute
+            {
+              Name = "Size",
+              Values = new Dictionary<string, string> { { "large", "Large" } },
+            }
+          },
+        },
       }
     );
     await _repo.UpsertJournal(new GaugeJournal { Id = otherJournalId, Name = "other-journal" });
@@ -59,8 +67,8 @@ public class EditJournalCommandExecutorShould
         {
           { "color", ["red"] },
           { "size", ["large"] },
-          { "other", ["keep"] }
-        }
+          { "other", ["keep"] },
+        },
       }
     );
     await _repo.UpsertEntry(
@@ -68,7 +76,7 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId2,
         ParentId = journalId,
-        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } }
+        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } },
       }
     );
     await _repo.UpsertEntry(
@@ -76,7 +84,7 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId3,
         ParentId = otherJournalId,
-        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } }
+        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } },
       }
     );
 
@@ -89,9 +97,13 @@ public class EditJournalCommandExecutorShould
         {
           {
             "size",
-            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
-          }
-        }
+            new JournalAttribute
+            {
+              Name = "Size",
+              Values = new Dictionary<string, string> { { "large", "Large" } },
+            }
+          },
+        },
       }
     );
 
@@ -121,13 +133,21 @@ public class EditJournalCommandExecutorShould
         {
           {
             "color",
-            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+            new JournalAttribute
+            {
+              Name = "Color",
+              Values = new Dictionary<string, string> { { "red", "Red" } },
+            }
           },
           {
             "size",
-            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
-          }
-        }
+            new JournalAttribute
+            {
+              Name = "Size",
+              Values = new Dictionary<string, string> { { "large", "Large" } },
+            }
+          },
+        },
       }
     );
 
@@ -136,11 +156,7 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId,
         ParentId = journalId,
-        JournalAttributeValues = new Dictionary<string, string[]>
-        {
-          { "color", ["red"] },
-          { "size", ["large"] }
-        }
+        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] }, { "size", ["large"] } },
       }
     );
 
@@ -153,13 +169,21 @@ public class EditJournalCommandExecutorShould
         {
           {
             "color",
-            new JournalAttribute { Name = "Color", Values = new Dictionary<string, string> { { "red", "Red" } } }
+            new JournalAttribute
+            {
+              Name = "Color",
+              Values = new Dictionary<string, string> { { "red", "Red" } },
+            }
           },
           {
             "size",
-            new JournalAttribute { Name = "Size", Values = new Dictionary<string, string> { { "large", "Large" } } }
-          }
-        }
+            new JournalAttribute
+            {
+              Name = "Size",
+              Values = new Dictionary<string, string> { { "large", "Large" } },
+            }
+          },
+        },
       }
     );
 

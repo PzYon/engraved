@@ -1,33 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj" />
+    <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Engraved.Core\Engraved.Core.csproj"/>
-        <ProjectReference Include="..\Engraved.TestUtils\Engraved.TestUtils.csproj"/>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NetArchTest.Rules" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="NetArchTest.Rules"/>
-        <PackageReference Include="FluentAssertions"/>
-        <PackageReference Include="NUnit"/>
-        <PackageReference Include="NUnit3TestAdapter"/>
-        <PackageReference Include="NUnit.Analyzers"/>
-        <PackageReference Include="coverlet.collector">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
-            <Link>Source\MongoRunnerTeardown.cs</Link>
-        </Compile>
-    </ItemGroup>
-
+  <ItemGroup>
+    <Compile Include="..\Engraved.TestUtils\Source\MongoRunnerTeardown.cs">
+      <Link>Source\MongoRunnerTeardown.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

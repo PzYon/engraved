@@ -27,48 +27,45 @@ if (isE2ETests)
   Console.WriteLine("Running for e2e tests.");
 }
 
-builder.Services
-  .AddControllers(options =>
-    {
-      options.Filters.Add<PerfFilter>();
-      options.Filters.Add<HttpExceptionFilter>();
-    }
-  )
+builder
+  .Services.AddControllers(options =>
+  {
+    options.Filters.Add<PerfFilter>();
+    options.Filters.Add<HttpExceptionFilter>();
+  })
   .AddJsonOptions(options =>
-    {
-      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+  {
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
-      // serialize values declared as IEntry/IJournal/IEntity with their full runtime type
-      options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
-      {
-        Modifiers = { DomainPolymorphism.ConfigurePolymorphism }
-      };
-    }
-  );
+    // serialize values declared as IEntry/IJournal/IEntity with their full runtime type
+    options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
+    {
+      Modifiers = { DomainPolymorphism.ConfigurePolymorphism },
+    };
+  });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
-  {
-    // expose the polymorphic domain types (IEntry, IJournal, IEntity) as oneOf schemas
-    // instead of the bare interface properties
-    option.UseOneOfForPolymorphism();
-    option.SelectSubTypesUsing(DomainPolymorphism.GetDerivedTypes);
+{
+  // expose the polymorphic domain types (IEntry, IJournal, IEntity) as oneOf schemas
+  // instead of the bare interface properties
+  option.UseOneOfForPolymorphism();
+  option.SelectSubTypesUsing(DomainPolymorphism.GetDerivedTypes);
 
-    option.AddSecurityDefinition(
-      "Bearer",
-      new OpenApiSecurityScheme
-      {
-        In = ParameterLocation.Header,
-        Description = "Please enter a valid token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-      }
-    );
-  }
-);
+  option.AddSecurityDefinition(
+    "Bearer",
+    new OpenApiSecurityScheme
+    {
+      In = ParameterLocation.Header,
+      Description = "Please enter a valid token",
+      Name = "Authorization",
+      Type = SecuritySchemeType.Http,
+      BearerFormat = "JWT",
+      Scheme = "Bearer",
+    }
+  );
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -115,7 +112,10 @@ builder.Services.AddTransient<INotificationService, OneSignalNotificationService
 
 AuthenticationRegistration.RegisterAuthentication(builder.Services, authConfigSection, isE2ETests);
 
-builder.Services.AddResponseCompression(options => { options.EnableForHttps = true; });
+builder.Services.AddResponseCompression(options =>
+{
+  options.EnableForHttps = true;
+});
 
 ExecutorRegistration.RegisterQueries(builder.Services);
 ExecutorRegistration.RegisterCommands(builder.Services);

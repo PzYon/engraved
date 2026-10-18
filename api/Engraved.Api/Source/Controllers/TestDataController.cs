@@ -64,10 +64,7 @@ public class TestDataController(
     if (dto.Tags.Length > 0)
     {
       await dispatcher.Command(
-        new UpdateUserTagsCommand
-        {
-          TagNames = dto.Tags.ToDictionary(tag => tag.Id, tag => tag.Label)
-        }
+        new UpdateUserTagsCommand { TagNames = dto.Tags.ToDictionary(tag => tag.Id, tag => tag.Label) }
       );
     }
 
@@ -91,7 +88,7 @@ public class TestDataController(
       {
         Name = journalDto.Name,
         Description = journalDto.Description,
-        Type = journalDto.Type
+        Type = journalDto.Type,
       }
     );
   }
@@ -102,17 +99,25 @@ public class TestDataController(
     return type switch
     {
       JournalType.Gauge => await dispatcher.Command(
-        new UpsertGaugeEntryCommand { JournalId = journalId, Value = entry.Value, Notes = entry.Notes }
+        new UpsertGaugeEntryCommand
+        {
+          JournalId = journalId,
+          Value = entry.Value,
+          Notes = entry.Notes,
+        }
       ),
       JournalType.Counter => await dispatcher.Command(
         new UpsertCounterEntryCommand { JournalId = journalId, Notes = entry.Notes }
       ),
       JournalType.Scraps => await dispatcher.Command(
-        new UpsertScrapsEntryCommand { JournalId = journalId, Title = entry.Title ?? "", Notes = entry.Notes }
+        new UpsertScrapsEntryCommand
+        {
+          JournalId = journalId,
+          Title = entry.Title ?? "",
+          Notes = entry.Notes,
+        }
       ),
-      _ => throw new InvalidOperationException(
-        $"Seeding entries for journal type '{type}' is not supported yet."
-      )
+      _ => throw new InvalidOperationException($"Seeding entries for journal type '{type}' is not supported yet."),
     };
   }
 }

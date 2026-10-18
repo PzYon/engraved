@@ -33,7 +33,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
       SearchText = searchText,
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes),
       FavoritesOnly = favoritesOnly,
-      JournalIds = ControllerUtils.ParseMultiValueStringParam(journalIds)
+      JournalIds = ControllerUtils.ParseMultiValueStringParam(journalIds),
     };
 
     return await dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
@@ -77,11 +77,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
     string journalId
   )
   {
-    var command = new EditJournalPermissionsCommand
-    {
-      JournalId = journalId,
-      Permissions = permissions
-    };
+    var command = new EditJournalPermissionsCommand { JournalId = journalId, Permissions = permissions };
 
     return await dispatcher.Command(command);
   }

@@ -6,7 +6,7 @@ public enum ThresholdScope
 {
   Day,
   Month,
-  All
+  All,
 }
 
 public class ThresholdDefinition

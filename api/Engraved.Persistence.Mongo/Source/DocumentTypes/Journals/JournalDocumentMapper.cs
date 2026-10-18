@@ -20,7 +20,7 @@ public static class JournalDocumentMapper
 
       ScrapsJournal sj => MapToDocument(sj, new ScrapsJournalDocument()),
 
-      _ => throw new ArgumentOutOfRangeException(nameof(journal), journal, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(journal), journal, null),
     };
   }
 
@@ -53,11 +53,7 @@ public static class JournalDocumentMapper
       var innerResult = new Dictionary<string, ThresholdDefinitionDocument>();
       foreach ((var innerKey, ThresholdDefinition threshold) in innerDict)
       {
-        innerResult[innerKey] = new ThresholdDefinitionDocument
-        {
-          Value = threshold.Value,
-          Scope = threshold.Scope
-        };
+        innerResult[innerKey] = new ThresholdDefinitionDocument { Value = threshold.Value, Scope = threshold.Scope };
       }
 
       result[key] = innerResult;
@@ -80,7 +76,7 @@ public static class JournalDocumentMapper
 
       LogBookJournalDocument lbj => MapFromDocument(lbj, new LogBookJournal()),
 
-      _ => null
+      _ => null,
     };
   }
 
@@ -113,11 +109,7 @@ public static class JournalDocumentMapper
       var innerResult = new Dictionary<string, ThresholdDefinition>();
       foreach ((var innerKey, ThresholdDefinitionDocument threshold) in innerDict)
       {
-        innerResult[innerKey] = new ThresholdDefinition
-        {
-          Value = threshold.Value,
-          Scope = threshold.Scope
-        };
+        innerResult[innerKey] = new ThresholdDefinition { Value = threshold.Value, Scope = threshold.Scope };
       }
 
       result[key] = innerResult;

@@ -21,7 +21,7 @@ public class EntryDocumentMapperShould
       Id = Id,
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -40,7 +40,7 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } }
+      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
     };
 
     IEntry counterEntry = EntryDocumentMapper.FromDocument(document);
@@ -58,7 +58,7 @@ public class EntryDocumentMapperShould
       ParentId = Key,
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
-      Value = 4.20
+      Value = 4.20,
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -82,7 +82,7 @@ public class EntryDocumentMapperShould
       ParentId = Key,
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
-      Value = 4321
+      Value = 4321,
     };
 
     IEntry gaugeEntry = EntryDocumentMapper.FromDocument(document);
@@ -100,7 +100,7 @@ public class EntryDocumentMapperShould
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       StartDate = DateTime.UtcNow.AddHours(-200),
-      EndDate = DateTime.UtcNow.AddHours(-100)
+      EndDate = DateTime.UtcNow.AddHours(-100),
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -126,7 +126,7 @@ public class EntryDocumentMapperShould
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       StartDate = DateTime.UtcNow.AddHours(-200),
-      EndDate = DateTime.UtcNow.AddHours(-100)
+      EndDate = DateTime.UtcNow.AddHours(-100),
     };
 
     IEntry timerEntry = EntryDocumentMapper.FromDocument(document);
@@ -145,7 +145,7 @@ public class EntryDocumentMapperShould
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       Title = "scrap title",
-      ScrapType = ScrapType.List
+      ScrapType = ScrapType.List,
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -170,7 +170,7 @@ public class EntryDocumentMapperShould
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
       Title = "scrap title",
-      ScrapType = ScrapType.List
+      ScrapType = ScrapType.List,
     };
 
     IEntry entry = EntryDocumentMapper.FromDocument(document);
@@ -192,7 +192,7 @@ public class EntryDocumentMapperShould
       ParentId = Key,
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
-      Title = "log book title"
+      Title = "log book title",
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -215,7 +215,7 @@ public class EntryDocumentMapperShould
       ParentId = Key,
       DateTime = DateTime.UtcNow,
       JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
-      Title = "log book title"
+      Title = "log book title",
     };
 
     IEntry entry = EntryDocumentMapper.FromDocument(document);

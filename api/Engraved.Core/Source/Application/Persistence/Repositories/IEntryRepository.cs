@@ -25,7 +25,8 @@ public interface IEntryRepository
     bool matchAnyWord = false
   );
 
-  Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry) where TEntry : IEntry;
+  Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
+    where TEntry : IEntry;
 
   Task DeleteEntry(string entryId);
 

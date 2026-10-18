@@ -31,8 +31,9 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
     }
 
     // deliberately do not cache misses: a user that doesn't exist yet may be created moments later
-    IUser user = await unrestrictedRepository.GetUser(name)
-                 ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
+    IUser user =
+      await unrestrictedRepository.GetUser(name)
+      ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
 
     Cache(user);
 
@@ -46,14 +47,6 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
 
   private void Cache(IUser user)
   {
-    _cache.Set(
-      user.Name,
-      user,
-      new MemoryCacheEntryOptions
-      {
-        Size = 1,
-        SlidingExpiration = SlidingExpiration
-      }
-    );
+    _cache.Set(user.Name, user, new MemoryCacheEntryOptions { Size = 1, SlidingExpiration = SlidingExpiration });
   }
 }

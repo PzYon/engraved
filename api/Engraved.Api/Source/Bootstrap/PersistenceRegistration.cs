@@ -20,10 +20,9 @@ public static class PersistenceRegistration
     // we did not have this at first and it actually had a bad influence
     // on performance.
     services.AddSingleton(_ => new MongoDatabaseClient(
-        CreateRepositorySettings(configuration, isE2ETests),
-        GetMongoDbNameOverride(isE2ETests)
-      )
-    );
+      CreateRepositorySettings(configuration, isE2ETests),
+      GetMongoDbNameOverride(isE2ETests)
+    ));
 
     RegisterUserRestrictedRepository(services);
 
@@ -37,7 +36,8 @@ public static class PersistenceRegistration
     // (executors, Dispatcher, QueryCache, controllers). Deliberately uses the plain (unguarded)
     // user repository: the current-user lookup is what bootstraps user restriction, so it cannot
     // go through the user-restricted IUserRepository (whose write guard depends on Lazy<IUser>).
-    services.AddScoped<Lazy<IUser>>(provider => CurrentUserLoader.CreateCurrentUserLazy(
+    services.AddScoped<Lazy<IUser>>(provider =>
+      CurrentUserLoader.CreateCurrentUserLazy(
         new MongoUserRepository(GetMongoDatabaseClient(provider)),
         provider.GetRequiredService<ICurrentUserService>()
       )
@@ -48,43 +48,38 @@ public static class PersistenceRegistration
     // role(s) they use transparently get permission enforcement. Consumers that need unrestricted
     // access inject IUnrestrictedRepository (above) instead.
     services.AddTransient<IUserRepository>(provider => new UserRestrictedUserRepository(
-        new MongoUserRepository(GetMongoDatabaseClient(provider)),
-        CreateWriteGuard(provider)
-      )
-    );
+      new MongoUserRepository(GetMongoDatabaseClient(provider)),
+      CreateWriteGuard(provider)
+    ));
 
     services.AddTransient<IJournalRepository>(provider => new UserRestrictedJournalRepository(
-        CreateUserScopedJournalRepository(provider),
-        CreateWriteGuard(provider)
-      )
-    );
+      CreateUserScopedJournalRepository(provider),
+      CreateWriteGuard(provider)
+    ));
 
     services.AddTransient<IEntryRepository>(provider => new UserRestrictedEntryRepository(
-        new MongoEntryRepository(GetMongoDatabaseClient(provider), CreateUserScopedJournalRepository(provider)),
-        CreateWriteGuard(provider)
-      )
-    );
+      new MongoEntryRepository(GetMongoDatabaseClient(provider), CreateUserScopedJournalRepository(provider)),
+      CreateWriteGuard(provider)
+    ));
 
     // PermissionsEnsurer deliberately works on the plain (unguarded) user repository: granting a
     // permission may create the receiving user's record, which the ownership guard on the
     // user-restricted UpsertUser would (rightly) reject. Write access to the journal itself is
     // enforced by its consumer (EditJournalPermissionsCommandExecutor).
     services.AddTransient<PermissionsEnsurer>(provider =>
-      {
-        var userRepository = new MongoUserRepository(provider.GetRequiredService<MongoDatabaseClient>());
-        return new PermissionsEnsurer(userRepository);
-      }
-    );
+    {
+      var userRepository = new MongoUserRepository(provider.GetRequiredService<MongoDatabaseClient>());
+      return new PermissionsEnsurer(userRepository);
+    });
   }
 
   private static void RegisterUnrestrictedRepository(IServiceCollection services)
   {
     services.AddTransient<IUnrestrictedRepository>(provider =>
-      {
-        var mongoDbClient = provider.GetRequiredService<MongoDatabaseClient>();
-        return new UnrestrictedMongoRepository(mongoDbClient);
-      }
-    );
+    {
+      var mongoDbClient = provider.GetRequiredService<MongoDatabaseClient>();
+      return new UnrestrictedMongoRepository(mongoDbClient);
+    });
 
     services.AddTransient<IMaintenanceRepository>(provider => provider.GetRequiredService<IUnrestrictedRepository>());
   }

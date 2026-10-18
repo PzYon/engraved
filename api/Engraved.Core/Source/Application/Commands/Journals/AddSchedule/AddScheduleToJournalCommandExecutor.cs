@@ -23,7 +23,7 @@ public class AddScheduleToJournalCommandExecutor(IJournalRepository journalRepos
       {
         NextOccurrence = command.NextOccurrence,
         OnClickUrl = command.OnClickUrl,
-        Recurrence = command.Recurrence
+        Recurrence = command.Recurrence,
       };
     }
     else

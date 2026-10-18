@@ -11,11 +11,7 @@ public class UpsertLogBookEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<
-    UpsertLogBookEntryCommand,
-    LogBookEntry,
-    LogBookJournal
-  >(
+  : BaseUpsertEntryCommandExecutor<UpsertLogBookEntryCommand, LogBookEntry, LogBookJournal>(
     journalRepository,
     entryRepository,
     dateService,
@@ -47,11 +43,7 @@ public class UpsertLogBookEntryCommandExecutor(
 
   private async Task<bool> HasEntryForDay(UpsertLogBookEntryCommand command, DateTime entryDate)
   {
-    var entriesOnSameDay = await EntryRepository.GetEntriesForJournal(
-      command.JournalId,
-      entryDate,
-      entryDate
-    );
+    var entriesOnSameDay = await EntryRepository.GetEntriesForJournal(command.JournalId, entryDate, entryDate);
 
     return entriesOnSameDay.Any(e => e.DateTime?.Date == entryDate && e.Id != command.Id);
   }

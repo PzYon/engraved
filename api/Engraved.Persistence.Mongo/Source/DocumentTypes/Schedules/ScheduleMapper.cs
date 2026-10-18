@@ -13,21 +13,20 @@ public static class ScheduleMapper
       result[key] = new ScheduleSubDocument
       {
         NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
-          : null,
+        Recurrence =
+          schedule.Recurrence != null
+            ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
+            : null,
         NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
+        OnClickUrl = schedule.OnClickUrl,
       };
     }
 
     return result;
   }
 
-  public static Dictionary<string, Schedule> MapSchedulesFromDocument(
-    Dictionary<string, ScheduleSubDocument> schedules
-  )
+  public static Dictionary<string, Schedule> MapSchedulesFromDocument(Dictionary<string, ScheduleSubDocument> schedules)
   {
     var result = new Dictionary<string, Schedule>();
 
@@ -36,12 +35,11 @@ public static class ScheduleMapper
       result[key] = new Schedule
       {
         NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new Recurrence { DateString = schedule.Recurrence.DateString }
-          : null,
+        Recurrence =
+          schedule.Recurrence != null ? new Recurrence { DateString = schedule.Recurrence.DateString } : null,
         NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
+        OnClickUrl = schedule.OnClickUrl,
       };
     }
 

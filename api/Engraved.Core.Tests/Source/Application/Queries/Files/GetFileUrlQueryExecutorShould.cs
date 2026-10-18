@@ -84,10 +84,7 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Return_Url_When_JournalIsSharedReadOnly()
   {
-    await AddScrapWithFile(
-      _ownerUserId,
-      new PermissionDefinition { Kind = PermissionKind.Read }
-    );
+    await AddScrapWithFile(_ownerUserId, new PermissionDefinition { Kind = PermissionKind.Read });
 
     GetFileUrlResult? result = await Execute();
 
@@ -96,9 +93,7 @@ public class GetFileUrlQueryExecutorShould
 
   private async Task<GetFileUrlResult?> Execute()
   {
-    return await new GetFileUrlQueryExecutor(_repo, _repo, _fileStore).Execute(
-      new GetFileUrlQuery { FileId = FileId }
-    );
+    return await new GetFileUrlQueryExecutor(_repo, _repo, _fileStore).Execute(new GetFileUrlQuery { FileId = FileId });
   }
 
   private async Task AddScrapWithFile(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
@@ -111,11 +106,7 @@ public class GetFileUrlQueryExecutorShould
     }
 
     UpsertResult journal = await _seedRepo.UpsertJournal(
-      new ScrapsJournal
-      {
-        UserId = ownerId,
-        Permissions = permissions
-      }
+      new ScrapsJournal { UserId = ownerId, Permissions = permissions }
     );
 
     await _seedRepo.UpsertEntry(
@@ -131,9 +122,9 @@ public class GetFileUrlQueryExecutorShould
             Id = FileId,
             FileName = "diagram.svg",
             ContentType = "image/svg+xml",
-            ContentLength = 42
-          }
-        ]
+            ContentLength = 42,
+          },
+        ],
       }
     );
   }

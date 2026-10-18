@@ -31,7 +31,9 @@ public class AddJournalToFavoritesCommandExecutorShould
     );
 
     // then
-    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().Contain(JournalId);
+    (await _repo.GetUser(UserId))!
+      .FavoriteJournalIds.Should()
+      .Contain(JournalId);
   }
 
   [Test]
@@ -48,15 +50,20 @@ public class AddJournalToFavoritesCommandExecutorShould
     );
 
     // then
-    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().ContainSingle().Which.Should().Be(JournalId);
+    (await _repo.GetUser(UserId))!
+      .FavoriteJournalIds.Should()
+      .ContainSingle()
+      .Which.Should()
+      .Be(JournalId);
   }
 
   [Test]
   public async Task Throw_When_JournalIdIsEmpty()
   {
-    Func<Task> act = () => new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new AddJournalToFavoritesCommand { JournalId = "" }
-    );
+    Func<Task> act = () =>
+      new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
+        new AddJournalToFavoritesCommand { JournalId = "" }
+      );
 
     await act.Should().ThrowAsync<InvalidCommandException>();
   }

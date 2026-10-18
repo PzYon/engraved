@@ -92,10 +92,7 @@ public class CreateFileUploadQueryExecutorShould
   [Test]
   public async Task Return_UploadUrl_When_JournalIsSharedForWriting()
   {
-    var journalId = await AddJournal(
-      _otherUserId,
-      new PermissionDefinition { Kind = PermissionKind.Write }
-    );
+    var journalId = await AddJournal(_otherUserId, new PermissionDefinition { Kind = PermissionKind.Write });
 
     CreateFileUploadResult result = await Execute(journalId);
 
@@ -107,10 +104,7 @@ public class CreateFileUploadQueryExecutorShould
   [Test]
   public async Task Throw_When_JournalIsOnlyReadable()
   {
-    var journalId = await AddJournal(
-      _otherUserId,
-      new PermissionDefinition { Kind = PermissionKind.Read }
-    );
+    var journalId = await AddJournal(_otherUserId, new PermissionDefinition { Kind = PermissionKind.Read });
 
     Func<Task> act = async () => await Execute(journalId);
 
@@ -165,11 +159,7 @@ public class CreateFileUploadQueryExecutorShould
     }
 
     UpsertResult journal = await _seedRepo.UpsertJournal(
-      new ScrapsJournal
-      {
-        UserId = ownerId,
-        Permissions = permissions
-      }
+      new ScrapsJournal { UserId = ownerId, Permissions = permissions }
     );
 
     return journal.EntityId;
@@ -187,7 +177,7 @@ public class CreateFileUploadQueryExecutorShould
         JournalId = journalId,
         FileName = fileName,
         ContentType = "image/png",
-        ContentLength = length
+        ContentLength = length,
       }
     );
   }

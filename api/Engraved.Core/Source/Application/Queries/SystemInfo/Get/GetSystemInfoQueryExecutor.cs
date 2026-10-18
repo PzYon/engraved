@@ -19,7 +19,7 @@ public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceReposi
     {
       JournalsCount = await maintenanceRepository.CountAllJournals(),
       EntriesCount = await maintenanceRepository.CountAllEntries(),
-      UsersCount = await maintenanceRepository.CountAllUsers()
+      UsersCount = await maintenanceRepository.CountAllUsers(),
     };
 
     if (segments.Length == 4)
@@ -40,10 +40,12 @@ public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceReposi
 
   private static string GetInformationalAssemblyVersion()
   {
-    var informationalAssemblyVersion = (Assembly
-      .GetExecutingAssembly()
-      .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute))
-      .FirstOrDefault() as AssemblyInformationalVersionAttribute)?.InformationalVersion;
+    var informationalAssemblyVersion = (
+      Assembly
+        .GetExecutingAssembly()
+        .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute))
+        .FirstOrDefault() as AssemblyInformationalVersionAttribute
+    )?.InformationalVersion;
 
     return string.IsNullOrEmpty(informationalAssemblyVersion) || informationalAssemblyVersion == "1.0.0"
       ? DevInformationalVersion

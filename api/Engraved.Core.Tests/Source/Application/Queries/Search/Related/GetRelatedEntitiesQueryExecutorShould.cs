@@ -55,14 +55,14 @@ public class GetRelatedEntitiesQueryExecutorShould
 
     result.Entities.Length.Should().Be(2);
 
-    result.Entities
-      .Where(e => e.EntityType == EntityType.Entry)
+    result
+      .Entities.Where(e => e.EntityType == EntityType.Entry)
       .Select(e => ((ScrapsEntry)e.Entity).Title)
       .Should()
       .BeEquivalentTo("Best Carbonara in Town");
 
-    result.Entities
-      .Where(e => e.EntityType == EntityType.Journal)
+    result
+      .Entities.Where(e => e.EntityType == EntityType.Journal)
       .Select(e => ((IJournal)e.Entity).Name)
       .Should()
       .BeEquivalentTo("Pasta Places");
@@ -88,14 +88,14 @@ public class GetRelatedEntitiesQueryExecutorShould
 
     result.Entities.Length.Should().Be(2);
 
-    result.Entities
-      .Where(e => e.EntityType == EntityType.Journal)
+    result
+      .Entities.Where(e => e.EntityType == EntityType.Journal)
       .Select(e => ((IJournal)e.Entity).Name)
       .Should()
       .BeEquivalentTo("Recipes Collection");
 
-    result.Entities
-      .Where(e => e.EntityType == EntityType.Entry)
+    result
+      .Entities.Where(e => e.EntityType == EntityType.Entry)
       .Select(e => ((ScrapsEntry)e.Entity).Title)
       .Should()
       .BeEquivalentTo("Pasta Shapes");
@@ -171,7 +171,7 @@ public class GetRelatedEntitiesQueryExecutorShould
         JournalId = gaugeJournalId,
         Value = 42,
         Notes = "marathon training today",
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
 
@@ -200,8 +200,8 @@ public class GetRelatedEntitiesQueryExecutorShould
   [Test]
   public void Throw_WhenEntityIdIsMissing()
   {
-    Assert.ThrowsAsync<InvalidQueryException>(async ()
-      => await _executor.Execute(new GetRelatedEntitiesQuery { EntityType = EntityType.Entry })
+    Assert.ThrowsAsync<InvalidQueryException>(async () =>
+      await _executor.Execute(new GetRelatedEntitiesQuery { EntityType = EntityType.Entry })
     );
   }
 
@@ -221,7 +221,7 @@ public class GetRelatedEntitiesQueryExecutorShould
         JournalId = journalId,
         Title = title,
         Notes = notes,
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
 

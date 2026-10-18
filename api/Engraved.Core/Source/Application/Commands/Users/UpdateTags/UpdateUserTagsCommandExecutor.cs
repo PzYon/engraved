@@ -20,13 +20,7 @@ public class UpdateUserTagsCommandExecutor(IUserRepository userRepository, Lazy<
         continue;
       }
 
-      user.Tags.Add(
-        new UserTag
-        {
-          Id = tagName.Key,
-          Label = tagName.Value
-        }
-      );
+      user.Tags.Add(new UserTag { Id = tagName.Key, Label = tagName.Value });
     }
 
     // all tags that were defined, but aren't anymore

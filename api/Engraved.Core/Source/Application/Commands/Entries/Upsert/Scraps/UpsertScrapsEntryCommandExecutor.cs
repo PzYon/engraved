@@ -11,11 +11,7 @@ public class UpsertScrapsEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<
-    UpsertScrapsEntryCommand,
-    ScrapsEntry,
-    ScrapsJournal
-  >(
+  : BaseUpsertEntryCommandExecutor<UpsertScrapsEntryCommand, ScrapsEntry, ScrapsJournal>(
     journalRepository,
     entryRepository,
     dateService,

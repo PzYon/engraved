@@ -11,41 +11,18 @@ public static class EntryDocumentMapper
     {
       CounterEntry ce => MapToDocument(ce, new CounterEntryDocument()),
 
-      GaugeEntry ge => MapToDocument(
-        ge,
-        new GaugeEntryDocument
-        {
-          Value = ge.Value
-        }
-      ),
+      GaugeEntry ge => MapToDocument(ge, new GaugeEntryDocument { Value = ge.Value }),
 
       TimerEntry te => MapToDocument(
         te,
-        new TimerEntryDocument
-        {
-          StartDate = te.StartDate ?? default,
-          EndDate = te.EndDate
-        }
+        new TimerEntryDocument { StartDate = te.StartDate ?? default, EndDate = te.EndDate }
       ),
 
-      ScrapsEntry se => MapToDocument(
-        se,
-        new ScrapsEntryDocument
-        {
-          Title = se.Title,
-          ScrapType = se.ScrapType
-        }
-      ),
+      ScrapsEntry se => MapToDocument(se, new ScrapsEntryDocument { Title = se.Title, ScrapType = se.ScrapType }),
 
-      LogBookEntry le => MapToDocument(
-        le,
-        new LogBookEntryDocument
-        {
-          Title = le.Title
-        }
-      ),
+      LogBookEntry le => MapToDocument(le, new LogBookEntryDocument { Title = le.Title }),
 
-      _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(entry), entry, null),
     };
   }
 
@@ -70,41 +47,21 @@ public static class EntryDocumentMapper
     {
       CounterEntryDocument ced => MapFromDocument(ced, new CounterEntry()),
 
-      GaugeEntryDocument ged => MapFromDocument(
-        ged,
-        new GaugeEntry
-        {
-          Value = ged.Value
-        }
-      ),
+      GaugeEntryDocument ged => MapFromDocument(ged, new GaugeEntry { Value = ged.Value }),
 
       ScrapsEntryDocument sed => MapFromDocument(
         sed,
-        new ScrapsEntry
-        {
-          Title = sed.Title ?? string.Empty,
-          ScrapType = sed.ScrapType ?? ScrapType.Markdown
-        }
+        new ScrapsEntry { Title = sed.Title ?? string.Empty, ScrapType = sed.ScrapType ?? ScrapType.Markdown }
       ),
 
-      LogBookEntryDocument lbed => MapFromDocument(
-        lbed,
-        new LogBookEntry
-        {
-          Title = lbed.Title
-        }
-      ),
+      LogBookEntryDocument lbed => MapFromDocument(lbed, new LogBookEntry { Title = lbed.Title }),
 
       TimerEntryDocument ted => MapFromDocument(
         ted,
-        new TimerEntry
-        {
-          StartDate = ted.StartDate,
-          EndDate = ted.EndDate
-        }
+        new TimerEntry { StartDate = ted.StartDate, EndDate = ted.EndDate }
       ),
 
-      _ => throw new ArgumentOutOfRangeException(nameof(document), document, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(document), document, null),
     };
   }
 

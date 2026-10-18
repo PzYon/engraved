@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-// consider using Commands and Queries here to improve data consistency and 
+// consider using Commands and Queries here to improve data consistency and
 // have a more end-to-end view, e.g. something like this:
 // await new AddCounterEntryCommand().CreateExecutor().Execute(_repository, null);
 
@@ -66,13 +66,9 @@ public class UnrestrictedMongoRepositoryShould
       {
         {
           "flags",
-          new JournalAttribute
-          {
-            Name = "Random Values",
-            Values = { { "fl@g", "fl@g_value" } }
-          }
-        }
-      }
+          new JournalAttribute { Name = "Random Values", Values = { { "fl@g", "fl@g_value" } } }
+        },
+      },
     };
 
     UpsertResult result = await _repository.UpsertJournal(counterJournal);
@@ -107,8 +103,7 @@ public class UnrestrictedMongoRepositoryShould
   {
     await _repository.UpsertUser(new User { Name = "schorsch" });
 
-    Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpsertUser(new User { Name = "schorsch" })
-    );
+    Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpsertUser(new User { Name = "schorsch" }));
   }
 
   [Test]
@@ -119,7 +114,7 @@ public class UnrestrictedMongoRepositoryShould
     var journal = new GaugeJournal
     {
       Name = "N@me",
-      CustomProps = new Dictionary<string, string> { { "uiSettings", value } }
+      CustomProps = new Dictionary<string, string> { { "uiSettings", value } },
     };
 
     UpsertResult result = await _repository.UpsertJournal(journal);

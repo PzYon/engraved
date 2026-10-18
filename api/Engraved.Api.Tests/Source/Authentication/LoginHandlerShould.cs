@@ -22,7 +22,7 @@ public class LoginHandlerShould
     TokenIssuer = "http://is.su.er",
     GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com",
     AccessTokenLifetimeMinutes = 60,
-    RefreshTokenLifetimeMinutes = 1440
+    RefreshTokenLifetimeMinutes = 1440,
   };
 
   private IDateService _dateService = null!;
@@ -63,8 +63,8 @@ public class LoginHandlerShould
   [Test]
   public void Throw_When_TokenHasInvalidFormat()
   {
-    Assert.ThrowsAsync<GoogleTokenValidationException>(async ()
-      => await _loginHandler.Login("adsf asdf R@nD0m T3xT asdf asdf")
+    Assert.ThrowsAsync<GoogleTokenValidationException>(async () =>
+      await _loginHandler.Login("adsf asdf R@nD0m T3xT asdf asdf")
     );
   }
 
@@ -139,13 +139,20 @@ public class LoginHandlerShould
       ImageUrl = imageUrl,
       LastLoginDate = DateTime.UtcNow.AddMinutes(-12345),
       GlobalUniqueId = globalUniqueId,
-      IsAdmin = true
+      IsAdmin = true,
     };
 
     // must ensure the journal exists as it will be loaded as favorite
     var journalId = "60703c3b000000000000000a";
     existingUser.FavoriteJournalIds.Add(journalId);
-    await _testRepository.UpsertJournal(new ScrapsJournal { Id = journalId, Name = "Quick Scraps", UserId = userId });
+    await _testRepository.UpsertJournal(
+      new ScrapsJournal
+      {
+        Id = journalId,
+        Name = "Quick Scraps",
+        UserId = userId,
+      }
+    );
 
     await _testRepository.UpsertUser(existingUser);
 

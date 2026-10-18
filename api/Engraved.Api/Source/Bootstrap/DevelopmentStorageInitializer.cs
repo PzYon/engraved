@@ -31,7 +31,7 @@ public class DevelopmentStorageInitializer(
           AllowedMethods = "GET,HEAD,PUT,OPTIONS",
           AllowedHeaders = "*",
           ExposedHeaders = "*",
-          MaxAgeInSeconds = 3600
+          MaxAgeInSeconds = 3600,
         }
       );
 
@@ -48,7 +48,7 @@ public class DevelopmentStorageInitializer(
       logger.LogWarning(
         e,
         "Could not prepare development storage - file uploads will fail until Azurite is running "
-        + "(npm run storage:start). Everything else works."
+          + "(npm run storage:start). Everything else works."
       );
     }
   }

@@ -26,13 +26,11 @@ public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestri
           DisplayName = user.DisplayName,
           JournalsCount = await unrestrictedRepository.CountJournalsForUser(user.Id!),
           EntriesCount = await unrestrictedRepository.CountEntriesForUser(user.Id!),
-          LastLoginDate = user.LastLoginDate
+          LastLoginDate = user.LastLoginDate,
         }
       );
     }
 
-    return items
-      .OrderByDescending(i => i.LastLoginDate ?? DateTime.MinValue)
-      .ToArray();
+    return items.OrderByDescending(i => i.LastLoginDate ?? DateTime.MinValue).ToArray();
   }
 }

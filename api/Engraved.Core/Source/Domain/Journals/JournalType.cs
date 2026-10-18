@@ -6,5 +6,5 @@ public enum JournalType
   Gauge,
   Timer,
   Scraps,
-  LogBook
+  LogBook,
 }

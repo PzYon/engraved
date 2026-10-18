@@ -8,8 +8,7 @@ public class SearchEntriesQueryExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
   Lazy<IUser> currentUser
-)
-  : IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>
+) : IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>
 {
   public bool DisableCache => false;
 
@@ -39,7 +38,7 @@ public class SearchEntriesQueryExecutor(
     return new SearchEntriesQueryResult
     {
       Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
-      Entries = allEntries.ToArray()
+      Entries = allEntries.ToArray(),
     };
   }
 }

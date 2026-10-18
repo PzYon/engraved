@@ -52,23 +52,23 @@ public class UserDataInResponsesShould
   public async Task OneTimeSetUp()
   {
     _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-      {
-        builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
-          {
-            config.AddInMemoryCollection(
-              new Dictionary<string, string?>
-              {
-                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = JwtSecret
-              }
-            );
-          }
-        );
+    {
+      builder.UseEnvironment("Development");
+      builder.ConfigureAppConfiguration(
+        (_, config) =>
+        {
+          config.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+              ["Authentication:JwtSecret"] = JwtSecret,
+            }
+          );
+        }
+      );
 
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-      }
-    );
+      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+    });
 
     await SeedJournalSharedWithReader();
 
@@ -156,7 +156,8 @@ public class UserDataInResponsesShould
 
   private static IEnumerable<string> GetPermissionUserProperties(JsonElement journal, string userId)
   {
-    return journal.GetProperty("permissions")
+    return journal
+      .GetProperty("permissions")
       .GetProperty(userId)
       .GetProperty("user")
       .EnumerateObject()
@@ -179,10 +180,7 @@ public class UserDataInResponsesShould
     owner.Id = (await repo.UpsertUser(owner)).EntityId;
     _ownerId = owner.Id;
 
-    await repo.UpdateScratchpad(
-      _ownerId,
-      new UserScratchpad { Content = ScratchpadContent }
-    );
+    await repo.UpdateScratchpad(_ownerId, new UserScratchpad { Content = ScratchpadContent });
 
     UpsertResult readerResult = await repo.UpsertUser(new User { Name = ReaderName });
 
@@ -194,8 +192,11 @@ public class UserDataInResponsesShould
         EditedOn = DateTime.UtcNow,
         Permissions = new UserPermissions
         {
-          { readerResult.EntityId, new PermissionDefinition { Kind = PermissionKind.Read } }
-        }
+          {
+            readerResult.EntityId,
+            new PermissionDefinition { Kind = PermissionKind.Read }
+          },
+        },
       }
     );
     _journalId = journalResult.EntityId;
@@ -221,7 +222,7 @@ public class UserDataInResponsesShould
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
         SecurityAlgorithms.HmacSha256Signature
-      )
+      ),
     };
 
     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

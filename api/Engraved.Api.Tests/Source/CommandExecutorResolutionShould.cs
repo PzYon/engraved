@@ -30,23 +30,23 @@ public class CommandExecutorResolutionShould
   public void SetUp()
   {
     _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-      {
-        builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
-          {
-            config.AddInMemoryCollection(
-              new Dictionary<string, string?>
-              {
-                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = "resolution-test-secret-long-enough-0123456789"
-              }
-            );
-          }
-        );
+    {
+      builder.UseEnvironment("Development");
+      builder.ConfigureAppConfiguration(
+        (_, config) =>
+        {
+          config.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+              ["Authentication:JwtSecret"] = "resolution-test-secret-long-enough-0123456789",
+            }
+          );
+        }
+      );
 
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-      }
-    );
+      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+    });
   }
 
   [TearDown]
@@ -60,7 +60,8 @@ public class CommandExecutorResolutionShould
   {
     using IServiceScope scope = _factory.Services.CreateScope();
 
-    Type[] executorTypes = typeof(ICommandExecutor<>).Assembly.GetTypes()
+    Type[] executorTypes = typeof(ICommandExecutor<>)
+      .Assembly.GetTypes()
       .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
       .SelectMany(t => t.GetInterfaces())
       .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommandExecutor<>))

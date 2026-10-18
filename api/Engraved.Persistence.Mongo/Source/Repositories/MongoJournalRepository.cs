@@ -12,8 +12,7 @@ namespace Engraved.Persistence.Mongo.Repositories;
 
 // Journal data access. Reads are shaped by the injected IReadScope; the write guards live on top of
 // this (see UserRestrictedJournalRepository).
-public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
-  : IJournalRepository
+public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope) : IJournalRepository
 {
   private IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
 
@@ -61,9 +60,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
 
     if (scheduleMode == ScheduleMode.AnySchedule)
     {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
-      );
+      filters.Add(Builders<JournalDocument>.Filter.Exists(d => d.Schedules));
     }
 
     if (scheduleMode == ScheduleMode.CurrentUserOnly)
@@ -86,12 +83,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     if (!string.IsNullOrEmpty(searchText))
     {
       filters.AddRange(
-        FreeTextFilters.Build<JournalDocument>(
-          searchText,
-          matchAnyWord,
-          d => d.Name!,
-          d => d.Description!
-        )
+        FreeTextFilters.Build<JournalDocument>(searchText, matchAnyWord, d => d.Name!, d => d.Description!)
       );
     }
 
@@ -132,9 +124,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
       return;
     }
 
-    await JournalsCollection.DeleteOneAsync(
-      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId)
-    );
+    await JournalsCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<JournalDocument>(journalId));
   }
 
   // Explicitly unscoped read: loads the journal regardless of the caller's read permissions, so the
@@ -180,7 +170,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
         nameof(journalType),
         journalType,
         $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
-      )
+      ),
     };
   }
 }

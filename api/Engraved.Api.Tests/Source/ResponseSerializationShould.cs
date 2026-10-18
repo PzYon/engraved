@@ -42,23 +42,23 @@ public class ResponseSerializationShould
   public async Task OneTimeSetUp()
   {
     _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-      {
-        builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
-          {
-            config.AddInMemoryCollection(
-              new Dictionary<string, string?>
-              {
-                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = JwtSecret
-              }
-            );
-          }
-        );
+    {
+      builder.UseEnvironment("Development");
+      builder.ConfigureAppConfiguration(
+        (_, config) =>
+        {
+          config.AddInMemoryCollection(
+            new Dictionary<string, string?>
+            {
+              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+              ["Authentication:JwtSecret"] = JwtSecret,
+            }
+          );
+        }
+      );
 
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-      }
-    );
+      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+    });
 
     _journalId = await SeedJournalWithEntry();
 
@@ -110,7 +110,7 @@ public class ResponseSerializationShould
       {
         Name = "Serialization Journal",
         UserId = userResult.EntityId,
-        EditedOn = DateTime.UtcNow
+        EditedOn = DateTime.UtcNow,
       }
     );
 
@@ -121,7 +121,7 @@ public class ResponseSerializationShould
         UserId = userResult.EntityId,
         Value = 42.5,
         DateTime = DateTime.UtcNow,
-        EditedOn = DateTime.UtcNow
+        EditedOn = DateTime.UtcNow,
       }
     );
 
@@ -138,7 +138,7 @@ public class ResponseSerializationShould
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
         SecurityAlgorithms.HmacSha256Signature
-      )
+      ),
     };
 
     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

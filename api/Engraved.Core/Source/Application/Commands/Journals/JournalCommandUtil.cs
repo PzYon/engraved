@@ -15,10 +15,7 @@ public static class JournalCommandUtil
   {
     if (string.IsNullOrEmpty(journalId))
     {
-      throw new InvalidCommandException(
-        command,
-        $"A {nameof(BaseUpsertEntryCommand.JournalId)} must be specified."
-      );
+      throw new InvalidCommandException(command, $"A {nameof(BaseUpsertEntryCommand.JournalId)} must be specified.");
     }
 
     IJournal? journal = await repository.GetJournal(journalId);

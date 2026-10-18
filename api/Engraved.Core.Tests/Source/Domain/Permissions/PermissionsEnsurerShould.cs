@@ -25,7 +25,7 @@ public class PermissionsEnsurerShould
       {
         Id = TestIds.UserId,
         Name = "mar@foo.ch",
-        DisplayName = "Mar Dog"
+        DisplayName = "Mar Dog",
       }
     );
 
@@ -37,7 +37,13 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions
+      {
+        {
+          TestIds.UserId,
+          new PermissionDefinition { Kind = PermissionKind.Read }
+        },
+      },
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -53,7 +59,13 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions
+      {
+        {
+          TestIds.UserId,
+          new PermissionDefinition { Kind = PermissionKind.Read }
+        },
+      },
     };
 
     // the None entry must not abort processing of the entries after it
@@ -62,7 +74,7 @@ public class PermissionsEnsurerShould
       new Dictionary<string, PermissionKind>
       {
         { "mar@foo.ch", PermissionKind.None },
-        { "bar@foo.ch", PermissionKind.Write }
+        { "bar@foo.ch", PermissionKind.Write },
       }
     );
 
@@ -76,7 +88,13 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions
+      {
+        {
+          TestIds.UserId,
+          new PermissionDefinition { Kind = PermissionKind.Read }
+        },
+      },
     };
 
     await _permissionsEnsurer.EnsurePermissions(
@@ -93,7 +111,13 @@ public class PermissionsEnsurerShould
   {
     var holder = new TestPermissionHolder
     {
-      Permissions = new UserPermissions { { TestIds.UserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+      Permissions = new UserPermissions
+      {
+        {
+          TestIds.UserId,
+          new PermissionDefinition { Kind = PermissionKind.Read }
+        },
+      },
     };
 
     await _permissionsEnsurer.EnsurePermissions(

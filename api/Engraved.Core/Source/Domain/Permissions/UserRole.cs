@@ -5,5 +5,5 @@ public enum UserRole
   None,
   Reader,
   Owner,
-  Writer
+  Writer,
 }

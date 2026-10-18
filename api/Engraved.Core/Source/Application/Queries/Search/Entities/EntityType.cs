@@ -3,5 +3,5 @@
 public enum EntityType
 {
   Journal,
-  Entry
+  Entry,
 }

@@ -25,7 +25,7 @@ public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFac
       JwtToken = jwtTokenFactory.CreateAccessToken(user.Name, expiresAt),
       ExpiresAt = expiresAt,
       RefreshToken = rotated.Token,
-      User = user
+      User = user,
     };
   }
 }

@@ -30,20 +30,24 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     user.FavoriteJournalIds.Add(JournalId);
     await _repo.UpsertUser(user);
 
-    TestUserRestrictedMongoRepository repositoryWithDifferentCache =
-      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository repositoryWithDifferentCache = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      true
+    );
 
     // when
     await new RemoveJournalFromFavoritesCommandExecutor(
       repositoryWithDifferentCache,
       repositoryWithDifferentCache.CurrentUser
-    ).Execute(
-      new RemoveJournalFromFavoritesCommand { JournalId = JournalId }
-    );
+    ).Execute(new RemoveJournalFromFavoritesCommand { JournalId = JournalId });
 
     // then
-    TestUserRestrictedMongoRepository secondRepoForVerification =
-      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository secondRepoForVerification = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      true
+    );
     IUser updatedUser = (await secondRepoForVerification.GetUser(UserId))!;
     updatedUser.Id.Should().Be(UserId);
     updatedUser.FavoriteJournalIds.Should().NotContain(JournalId);
@@ -64,15 +68,20 @@ public class RemoveJournalFromFavoritesCommandExecutorShould
     );
 
     // then
-    (await _repo.GetUser(UserId))!.FavoriteJournalIds.Should().ContainSingle().Which.Should().Be(otherJournalId);
+    (await _repo.GetUser(UserId))!
+      .FavoriteJournalIds.Should()
+      .ContainSingle()
+      .Which.Should()
+      .Be(otherJournalId);
   }
 
   [Test]
   public async Task Throw_When_JournalIdIsEmpty()
   {
-    Func<Task> act = () => new RemoveJournalFromFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new RemoveJournalFromFavoritesCommand { JournalId = "" }
-    );
+    Func<Task> act = () =>
+      new RemoveJournalFromFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
+        new RemoveJournalFromFavoritesCommand { JournalId = "" }
+      );
 
     await act.Should().ThrowAsync<InvalidCommandException>();
   }

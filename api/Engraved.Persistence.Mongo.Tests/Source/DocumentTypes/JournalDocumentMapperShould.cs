@@ -24,7 +24,7 @@ public class JournalDocumentMapperShould
       Name = Name,
       Description = Description,
       Notes = Notes,
-      EditedOn = DateTime.UtcNow
+      EditedOn = DateTime.UtcNow,
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(counterJournal);
@@ -43,7 +43,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Notes = Notes,
-      Name = Name
+      Name = Name,
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(counterJournalDocument);
@@ -62,7 +62,7 @@ public class JournalDocumentMapperShould
       Id = Id,
       Name = Name,
       Description = Description,
-      Notes = Notes
+      Notes = Notes,
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(gaugeJournal);
@@ -81,7 +81,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Name = Name,
-      Notes = Notes
+      Notes = Notes,
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(gaugeJournalDocument);
@@ -106,13 +106,10 @@ public class JournalDocumentMapperShould
       Attributes = new Dictionary<string, JournalAttribute>
       {
         {
-          "flags", new JournalAttribute
-          {
-            Name = "Flags",
-            Values = { { "fl@g", "fl@g_value" } }
-          }
-        }
-      }
+          "flags",
+          new JournalAttribute { Name = "Flags", Values = { { "fl@g", "fl@g_value" } } }
+        },
+      },
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
@@ -139,7 +136,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Name = Name,
-      Notes = Notes
+      Notes = Notes,
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(timerJournalDocument);
@@ -161,7 +158,7 @@ public class JournalDocumentMapperShould
       Name = Name,
       Description = Description,
       Notes = Notes,
-      EditedOn = DateTime.UtcNow
+      EditedOn = DateTime.UtcNow,
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(logBookJournal);
@@ -180,7 +177,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Notes = Notes,
-      Name = Name
+      Name = Name,
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(logBookJournalDocument);
@@ -200,7 +197,7 @@ public class JournalDocumentMapperShould
       Name = Name,
       Description = Description,
       Notes = Notes,
-      EditedOn = DateTime.UtcNow
+      EditedOn = DateTime.UtcNow,
     };
 
     JournalDocument journalDocument = JournalDocumentMapper.ToDocument(scrapsJournal);
@@ -219,7 +216,7 @@ public class JournalDocumentMapperShould
       Id = new ObjectId(Id),
       Description = Description,
       Notes = Notes,
-      Name = Name
+      Name = Name,
     };
 
     IJournal? journal = JournalDocumentMapper.FromDocument(scrapsJournalDocument);
@@ -243,17 +240,9 @@ public class JournalDocumentMapperShould
       {
         {
           "values",
-          new JournalAttribute
-          {
-            Name = "Some Values",
-            Values =
-            {
-              { "foo", "Foo" },
-              { "bar", "Bar" }
-            }
-          }
-        }
-      }
+          new JournalAttribute { Name = "Some Values", Values = { { "foo", "Foo" }, { "bar", "Bar" } } }
+        },
+      },
     };
 
     JournalDocument document = JournalDocumentMapper.ToDocument(journal);

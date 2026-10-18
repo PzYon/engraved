@@ -7,10 +7,7 @@ namespace Engraved.Core.Application.Queries.Journals;
 
 public static class JournalQueryUtil
 {
-  public static async Task<IJournal[]> EnsurePermissionUsers(
-    IUserRepository repository,
-    params IJournal[] journals
-  )
+  public static async Task<IJournal[]> EnsurePermissionUsers(IUserRepository repository, params IJournal[] journals)
   {
     var distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
@@ -32,7 +29,7 @@ public static class JournalQueryUtil
       Id = user.Id,
       Name = user.Name,
       DisplayName = user.DisplayName,
-      ImageUrl = user.ImageUrl
+      ImageUrl = user.ImageUrl,
     };
   }
 
@@ -42,11 +39,10 @@ public static class JournalQueryUtil
     foreach ((var key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
-      value.UserRole = journal.UserId == key
-        ? UserRole.Owner
-        : value.Kind == PermissionKind.Write
-          ? UserRole.Writer
-          : UserRole.Reader;
+      value.UserRole =
+        journal.UserId == key ? UserRole.Owner
+        : value.Kind == PermissionKind.Write ? UserRole.Writer
+        : UserRole.Reader;
     }
 
     var journalOwnerId = journal.UserId!;
@@ -57,7 +53,7 @@ public static class JournalQueryUtil
       {
         User = userById[journalOwnerId],
         UserRole = UserRole.Owner,
-        Kind = PermissionKind.Write
+        Kind = PermissionKind.Write,
       }
     );
 

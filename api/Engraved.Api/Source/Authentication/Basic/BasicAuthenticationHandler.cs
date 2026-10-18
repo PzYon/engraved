@@ -14,8 +14,7 @@ public class BasicAuthenticationHandler(
   ILoggerFactory logger,
   UrlEncoder encoder,
   ICurrentUserService currentUserService
-)
-  : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
   protected override Task<AuthenticateResult> HandleAuthenticateAsync()
   {
@@ -40,7 +39,7 @@ public class BasicAuthenticationHandler(
     var claims = new[]
     {
       new Claim(ClaimTypes.NameIdentifier, authHeader.Parameter),
-      new Claim(ClaimTypes.Name, authHeader.Parameter)
+      new Claim(ClaimTypes.Name, authHeader.Parameter),
     };
 
     var identity = new ClaimsIdentity(claims, Scheme.Name);

@@ -16,8 +16,7 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
-  : Controller
+public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher) : Controller
 {
   [HttpGet]
   public IUser GetCurrentUser()
@@ -43,10 +42,7 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   [Route("favorites/{journalId}")]
   public async Task<CommandResult> AddJournalToFavorites(string journalId)
   {
-    var command = new AddJournalToFavoritesCommand
-    {
-      JournalId = journalId
-    };
+    var command = new AddJournalToFavoritesCommand { JournalId = journalId };
 
     return await dispatcher.Command(command);
   }
@@ -55,10 +51,7 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   [Route("favorites/{journalId}")]
   public async Task<CommandResult> RemoveJournalFromFavorites(string journalId)
   {
-    var command = new RemoveJournalFromFavoritesCommand
-    {
-      JournalId = journalId
-    };
+    var command = new RemoveJournalFromFavoritesCommand { JournalId = journalId };
 
     return await dispatcher.Command(command);
   }

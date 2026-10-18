@@ -35,7 +35,13 @@ public class DeleteJournalCommandExecutorShould
       new CounterJournal
       {
         Id = JournalId,
-        Permissions = new UserPermissions { { UserId, new PermissionDefinition { Kind = PermissionKind.Write } } }
+        Permissions = new UserPermissions
+        {
+          {
+            UserId,
+            new PermissionDefinition { Kind = PermissionKind.Write }
+          },
+        },
       }
     );
 
@@ -45,7 +51,9 @@ public class DeleteJournalCommandExecutorShould
     );
 
     // then
-    (await _repo.GetJournal(JournalId)).Should().BeNull();
+    (await _repo.GetJournal(JournalId))
+      .Should()
+      .BeNull();
 
     result.EntityId.Should().Be(JournalId);
     result.AffectedUserIds.Should().Contain(UserId);
@@ -80,7 +88,15 @@ public class DeleteJournalCommandExecutorShould
       {
         ParentId = JournalId,
         Title = "first",
-        Files = [new FileRef { Id = "file-one", FileName = "a.png", ContentType = "image/png" }]
+        Files =
+        [
+          new FileRef
+          {
+            Id = "file-one",
+            FileName = "a.png",
+            ContentType = "image/png",
+          },
+        ],
       }
     );
     await _repo.UpsertEntry(
@@ -88,7 +104,15 @@ public class DeleteJournalCommandExecutorShould
       {
         ParentId = JournalId,
         Title = "second",
-        Files = [new FileRef { Id = "file-two", FileName = "b.pdf", ContentType = "application/pdf" }]
+        Files =
+        [
+          new FileRef
+          {
+            Id = "file-two",
+            FileName = "b.pdf",
+            ContentType = "application/pdf",
+          },
+        ],
       }
     );
 

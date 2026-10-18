@@ -4,5 +4,5 @@ public enum NotificationsJobMode
 {
   Disabled,
   DryRun,
-  Full
+  Full,
 }

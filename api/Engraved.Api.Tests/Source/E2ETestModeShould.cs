@@ -12,7 +12,8 @@ public class E2ETestModeShould
   [Test]
   public void BeRequested_When_ArgumentIsPassed_OutsideProduction()
   {
-    E2ETestMode.IsRequested(["--urls", "http://localhost:5072", "e2e-tests"], HostEnvironment("E2ETests"))
+    E2ETestMode
+      .IsRequested(["--urls", "http://localhost:5072", "e2e-tests"], HostEnvironment("E2ETests"))
       .Should()
       .BeTrue();
   }
@@ -20,7 +21,8 @@ public class E2ETestModeShould
   [Test]
   public void NotBeRequested_When_ArgumentIsMissing()
   {
-    E2ETestMode.IsRequested(["--urls", "http://localhost:5072"], HostEnvironment(Environments.Production))
+    E2ETestMode
+      .IsRequested(["--urls", "http://localhost:5072"], HostEnvironment(Environments.Production))
       .Should()
       .BeFalse();
   }

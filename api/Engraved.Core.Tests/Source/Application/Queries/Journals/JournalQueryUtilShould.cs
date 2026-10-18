@@ -30,7 +30,7 @@ public class JournalQueryUtilShould
       {
         Name = "you",
         DisplayName = "You",
-        ImageUrl = "https://you.test/image.png"
+        ImageUrl = "https://you.test/image.png",
       }
     );
     _youUserId = youUpsertResult.EntityId;
@@ -63,8 +63,8 @@ public class JournalQueryUtilShould
           {
             _meUserId,
             new PermissionDefinition { Kind = PermissionKind.Read }
-          }
-        }
+          },
+        },
       }
     );
 
@@ -85,8 +85,8 @@ public class JournalQueryUtilShould
           {
             _meUserId,
             new PermissionDefinition { Kind = PermissionKind.Write }
-          }
-        }
+          },
+        },
       }
     );
 
@@ -102,14 +102,17 @@ public class JournalQueryUtilShould
       new TimerJournal { UserId = _youUserId }
     );
 
-    ensuredJournals[0].Permissions[_youUserId].User.Should().BeEquivalentTo(
-      new PermissionUser
-      {
-        Id = _youUserId,
-        Name = "you",
-        DisplayName = "You",
-        ImageUrl = "https://you.test/image.png"
-      }
-    );
+    ensuredJournals[0]
+      .Permissions[_youUserId]
+      .User.Should()
+      .BeEquivalentTo(
+        new PermissionUser
+        {
+          Id = _youUserId,
+          Name = "you",
+          DisplayName = "You",
+          ImageUrl = "https://you.test/image.png",
+        }
+      );
   }
 }

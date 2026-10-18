@@ -1,5 +1,5 @@
-﻿using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
-using Engraved.Core.Domain.Users;
+﻿using Engraved.Core.Domain.Users;
+using Engraved.Persistence.Mongo.DocumentTypes.Authentication;
 using MongoDB.Bson;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Users;
@@ -17,22 +17,22 @@ public static class UserDocumentMapper
       LastLoginDate = user.LastLoginDate,
       IsAdmin = user.IsAdmin,
       FavoriteJournalIds = user.FavoriteJournalIds,
-      Tags = user.Tags.Select(tag => new UserTag
-          {
-            Id = tag.Id,
-            Label = tag.Label,
-            JournalIds = tag.JournalIds
-          }
-        )
+      Tags = user
+        .Tags.Select(tag => new UserTag
+        {
+          Id = tag.Id,
+          Label = tag.Label,
+          JournalIds = tag.JournalIds,
+        })
         .ToList(),
-      RefreshTokens = user.RefreshTokens.Select(token => new RefreshTokenDocument
-          {
-            TokenHash = token.TokenHash,
-            ExpiresAt = token.ExpiresAt,
-            CreatedOn = token.CreatedOn
-          }
-        )
-        .ToList()
+      RefreshTokens = user
+        .RefreshTokens.Select(token => new RefreshTokenDocument
+        {
+          TokenHash = token.TokenHash,
+          ExpiresAt = token.ExpiresAt,
+          CreatedOn = token.CreatedOn,
+        })
+        .ToList(),
     };
 
     if (!string.IsNullOrEmpty(user.Id))
@@ -60,25 +60,23 @@ public static class UserDocumentMapper
       LastLoginDate = document.LastLoginDate,
       IsAdmin = document.IsAdmin,
       FavoriteJournalIds = document.FavoriteJournalIds,
-      Tags = document.Tags.Select(tag => new UserTag
-          {
-            Id = tag.Id,
-            Label = tag.Label,
-            JournalIds = tag.JournalIds
-          }
-        )
+      Tags = document
+        .Tags.Select(tag => new UserTag
+        {
+          Id = tag.Id,
+          Label = tag.Label,
+          JournalIds = tag.JournalIds,
+        })
         .ToList(),
-      RefreshTokens = document.RefreshTokens.Select(token => new RefreshToken
-          {
-            TokenHash = token.TokenHash,
-            ExpiresAt = token.ExpiresAt,
-            CreatedOn = token.CreatedOn
-          }
-        )
+      RefreshTokens = document
+        .RefreshTokens.Select(token => new RefreshToken
+        {
+          TokenHash = token.TokenHash,
+          ExpiresAt = token.ExpiresAt,
+          CreatedOn = token.CreatedOn,
+        })
         .ToList(),
-      Scratchpad = document.Scratchpad == null
-        ? null
-        : new UserScratchpad { Content = document.Scratchpad.Content }
+      Scratchpad = document.Scratchpad == null ? null : new UserScratchpad { Content = document.Scratchpad.Content },
     };
   }
 }

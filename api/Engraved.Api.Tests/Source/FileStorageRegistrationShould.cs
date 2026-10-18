@@ -39,19 +39,13 @@ public class FileStorageRegistrationShould
   [Test]
   public void Use_TheConfiguredJwtSecret_When_ThereIsOne()
   {
-    IFileIdFactory configured = Resolve<IFileIdFactory>(
-      true,
-      ("Authentication:JwtSecret", "a-real-secret")
-    );
+    IFileIdFactory configured = Resolve<IFileIdFactory>(true, ("Authentication:JwtSecret", "a-real-secret"));
 
     // A file id signed with the configured secret must not verify under the development fallback,
     // otherwise the fallback would silently be in use everywhere.
     var fileId = configured.Create("some-user");
 
-    Resolve<IFileIdFactory>(useDevelopmentDefaults: true)
-      .BelongsToUser(fileId, "some-user")
-      .Should()
-      .BeFalse();
+    Resolve<IFileIdFactory>(useDevelopmentDefaults: true).BelongsToUser(fileId, "some-user").Should().BeFalse();
   }
 
   // Registration, not resolution: built lazily, an unusable connection string would first be
@@ -70,14 +64,10 @@ public class FileStorageRegistrationShould
   [Test]
   public void Throw_When_TheConnectionStringIsAnEndpointUrl()
   {
-    Action register = () => Register(
-      true,
-      ("FileStorage:ConnectionString", "https://engravedfiles.blob.core.windows.net")
-    );
+    Action register = () =>
+      Register(true, ("FileStorage:ConnectionString", "https://engravedfiles.blob.core.windows.net"));
 
-    register.Should()
-      .Throw<InvalidOperationException>()
-      .WithMessage("*FileStorage__BlobEndpoint*");
+    register.Should().Throw<InvalidOperationException>().WithMessage("*FileStorage__BlobEndpoint*");
   }
 
   // Setting both is always a mistake: the connection string wins and the endpoint is never read, so
@@ -85,11 +75,8 @@ public class FileStorageRegistrationShould
   [Test]
   public void Throw_When_BothCredentialSettingsAreSet()
   {
-    Action register = () => Register(
-      true,
-      DevelopmentStorage,
-      ("FileStorage:BlobEndpoint", "https://engravedfiles.blob.core.windows.net")
-    );
+    Action register = () =>
+      Register(true, DevelopmentStorage, ("FileStorage:BlobEndpoint", "https://engravedfiles.blob.core.windows.net"));
 
     register.Should().Throw<InvalidOperationException>().WithMessage("*only one of*");
   }
@@ -99,7 +86,8 @@ public class FileStorageRegistrationShould
   {
     Action register = () => Register(true, ("FileStorage:BlobEndpoint", "engravedfiles"));
 
-    register.Should()
+    register
+      .Should()
       .Throw<InvalidOperationException>()
       .WithMessage("*FileStorage__BlobEndpoint is not an absolute URL*");
   }
@@ -113,10 +101,7 @@ public class FileStorageRegistrationShould
     return Register(useDevelopmentDefaults, settings).BuildServiceProvider().GetRequiredService<T>();
   }
 
-  private static IServiceCollection Register(
-    bool useDevelopmentDefaults,
-    params (string Key, string Value)[] settings
-  )
+  private static IServiceCollection Register(bool useDevelopmentDefaults, params (string Key, string Value)[] settings)
   {
     var values = new Dictionary<string, string?> { ["FileStorage:ContainerName"] = "files" };
 

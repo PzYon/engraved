@@ -24,8 +24,11 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
 
   public async Task<CommandResult> Execute(TCommand command)
   {
-    var journal =
-      await JournalCommandUtil.LoadAndValidateJournal<TJournal>(JournalRepository, command, command.JournalId);
+    var journal = await JournalCommandUtil.LoadAndValidateJournal<TJournal>(
+      JournalRepository,
+      command,
+      command.JournalId
+    );
 
     await ValidateCommand(command, journal);
 
@@ -140,9 +143,7 @@ public abstract class BaseUpsertEntryCommandExecutor<TCommand, TEntry, TJournal>
 
   private async Task<TEntry> GetOrCreateNewEntry(TCommand command, TJournal journal)
   {
-    return await LoadEntryById(command)
-           ?? await LoadEntryToUpdate(command, journal)
-           ?? new TEntry();
+    return await LoadEntryById(command) ?? await LoadEntryToUpdate(command, journal) ?? new TEntry();
   }
 
   private async Task<TEntry?> LoadEntryById(TCommand command)

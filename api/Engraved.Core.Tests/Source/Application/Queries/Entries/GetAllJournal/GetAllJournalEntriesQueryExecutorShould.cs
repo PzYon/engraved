@@ -25,16 +25,8 @@ public class GetAllJournalEntriesQueryExecutorShould
   {
     UpsertResult scrapsJournal = await _repo.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
 
-    var olderButRecentlyEditedId = await AddScrap(
-      scrapsJournal.EntityId,
-      DateTime.Now.AddDays(-10),
-      DateTime.Now
-    );
-    var newerButEditedLongAgoId = await AddScrap(
-      scrapsJournal.EntityId,
-      DateTime.Now,
-      DateTime.Now.AddDays(-10)
-    );
+    var olderButRecentlyEditedId = await AddScrap(scrapsJournal.EntityId, DateTime.Now.AddDays(-10), DateTime.Now);
+    var newerButEditedLongAgoId = await AddScrap(scrapsJournal.EntityId, DateTime.Now, DateTime.Now.AddDays(-10));
 
     var entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
       new GetAllJournalEntriesQuery { JournalId = scrapsJournal.EntityId }
@@ -78,7 +70,7 @@ public class GetAllJournalEntriesQueryExecutorShould
       ScrapType = ScrapType.Markdown,
       Title = "Scrap",
       DateTime = dateTime,
-      EditedOn = editedOn
+      EditedOn = editedOn,
     };
 
     UpsertResult result = await _repo.UpsertEntry(entry);
@@ -92,7 +84,7 @@ public class GetAllJournalEntriesQueryExecutorShould
     {
       ParentId = journalId,
       DateTime = dateTime,
-      EditedOn = editedOn
+      EditedOn = editedOn,
     };
 
     UpsertResult result = await _repo.UpsertEntry(entry);

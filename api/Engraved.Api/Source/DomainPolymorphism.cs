@@ -45,8 +45,8 @@ public static class DomainPolymorphism
       return [];
     }
 
-    return baseType.Assembly
-      .GetTypes()
+    return baseType
+      .Assembly.GetTypes()
       .Where(t => t is { IsAbstract: false, IsInterface: false } && baseType.IsAssignableFrom(t))
       .OrderBy(t => t.FullName)
       .ToArray();

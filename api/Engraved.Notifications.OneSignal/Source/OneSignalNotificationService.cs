@@ -45,15 +45,14 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       // unreliability on Android is device-side (battery optimization suspending the
       // browser/PWA) and cannot be overridden from the payload. See issue #2822.
       priority: 10,
-      webButtons: clientNotification.Buttons
-        .Select(b => new WebButton
-          {
-            Id = b.Key,
-            Url = b.Url,
-            Text = b.Label,
-            Icon = "/icons/icon-transparent-bg.svg"
-          }
-        )
+      webButtons: clientNotification
+        .Buttons.Select(b => new WebButton
+        {
+          Id = b.Key,
+          Url = b.Url,
+          Text = b.Label,
+          Icon = "/icons/icon-transparent-bg.svg",
+        })
         .ToList()
     );
 
@@ -87,11 +86,7 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
   private DefaultApi GetApiInstance()
   {
     return new DefaultApi(
-      new Configuration
-      {
-        BasePath = "https://onesignal.com/api/v1",
-        AccessToken = config.Value.AppSecret
-      }
+      new Configuration { BasePath = "https://onesignal.com/api/v1", AccessToken = config.Value.AppSecret }
     );
   }
 }

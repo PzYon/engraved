@@ -95,8 +95,11 @@ public class MongoUserRepository_Scratchpad_Should
   public async Task NotAllow_Saving_ScratchpadOfOtherUser_Through_RestrictedRepository()
   {
     var otherUserId = (await _repository.UpsertUser(new User { Name = OtherUserName })).EntityId;
-    TestUserRestrictedMongoRepository restrictedRepository =
-      await Util.CreateUserRestrictedMongoRepository(UserName, _userId, true);
+    TestUserRestrictedMongoRepository restrictedRepository = await Util.CreateUserRestrictedMongoRepository(
+      UserName,
+      _userId,
+      true
+    );
 
     Func<Task> save = () => restrictedRepository.UpdateScratchpad(otherUserId, Scratchpad("not mine"));
 

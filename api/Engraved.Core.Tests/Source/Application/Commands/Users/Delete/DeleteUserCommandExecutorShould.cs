@@ -45,7 +45,9 @@ public class DeleteUserCommandExecutorShould
     );
 
     // then
-    (await _repo.GetUser(TargetUserId)).Should().BeNull();
+    (await _repo.GetUser(TargetUserId))
+      .Should()
+      .BeNull();
     (await _repo.GetJournal(JournalId)).Should().BeNull();
     (await _repo.GetJournal(OtherJournalId)).Should().BeNull();
     (await _repo.SearchEntries(null, journalIds: [JournalId, OtherJournalId])).Should().BeEmpty();
@@ -63,12 +65,12 @@ public class DeleteUserCommandExecutorShould
     await _repo.UpsertJournal(new CounterJournal { Id = OtherJournalId, UserId = AdminId });
 
     // when
-    await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = TargetUserId }
-    );
+    await new DeleteUserCommandExecutor(_repo, _admin).Execute(new DeleteUserCommand { UserId = TargetUserId });
 
     // then
-    (await _repo.GetJournal(JournalId)).Should().BeNull();
+    (await _repo.GetJournal(JournalId))
+      .Should()
+      .BeNull();
     (await _repo.GetJournal(OtherJournalId)).Should().NotBeNull();
   }
 
@@ -76,9 +78,7 @@ public class DeleteUserCommandExecutorShould
   public void PreventDeletingYourOwnAccount()
   {
     Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
-      await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-        new DeleteUserCommand { UserId = AdminId }
-      )
+      await new DeleteUserCommandExecutor(_repo, _admin).Execute(new DeleteUserCommand { UserId = AdminId })
     );
   }
 

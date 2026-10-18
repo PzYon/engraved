@@ -16,7 +16,7 @@ public static class BlobContainerClientFactory
     {
       throw new InvalidOperationException(
         $"File storage: either {nameof(IBlobStorageSettings.ConnectionString)} or "
-        + $"{nameof(IBlobStorageSettings.BlobEndpoint)} must be configured."
+          + $"{nameof(IBlobStorageSettings.BlobEndpoint)} must be configured."
       );
     }
 

@@ -8,10 +8,6 @@ public class ApiError
 
   public static ApiError FromException(Exception ex)
   {
-    return new ApiError
-    {
-      Message = ex.Message,
-      Stacktrace = ex.StackTrace
-    };
+    return new ApiError { Message = ex.Message, Stacktrace = ex.StackTrace };
   }
 }

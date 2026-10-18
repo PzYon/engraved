@@ -1,7 +1,7 @@
-﻿using Engraved.Core.Application.Queries.Journals.GetAll;
-using Engraved.Core.Application.Queries.Entries.GetAllJournal;
-using Engraved.Core.Domain.Journals;
+﻿using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+using Engraved.Core.Application.Queries.Journals.GetAll;
 using Engraved.Core.Domain.Entries;
+using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Export;
 
@@ -32,13 +32,7 @@ public class ExportDataQueryExecutor(Dispatcher dispatcher) : IQueryExecutor<Exp
 
       var entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(entriesQuery);
 
-      exportedData.ExportedJournals.Add(
-        new ExportedJournal
-        {
-          Journal = journal,
-          Entries = entries
-        }
-      );
+      exportedData.ExportedJournals.Add(new ExportedJournal { Journal = journal, Entries = entries });
     }
 
     return exportedData;

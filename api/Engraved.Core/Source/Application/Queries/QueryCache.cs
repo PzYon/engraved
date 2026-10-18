@@ -12,20 +12,14 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   private const string KeysByUserId = "___keysByUserId";
   private const string GenerationIdsByUserId = "___generationsByUserId";
 
-  private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
-    => memoryCache.GetOrCreate(
-      KeysByUserId,
-      _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>()
-    )!;
+  private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser =>
+    memoryCache.GetOrCreate(KeysByUserId, _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>())!;
 
   // Monotonically increasing "generation" per user, bumped on every
   // invalidation. A cached item is only valid while its generation still
   // matches the user's current generation (see TryGetValue).
-  private ConcurrentDictionary<string, long> GenerationIdsByUser
-    => memoryCache.GetOrCreate(
-      GenerationIdsByUserId,
-      _ => new ConcurrentDictionary<string, long>()
-    )!;
+  private ConcurrentDictionary<string, long> GenerationIdsByUser =>
+    memoryCache.GetOrCreate(GenerationIdsByUserId, _ => new ConcurrentDictionary<string, long>())!;
 
   // Returns the cached value for the query, or executes it and caches the
   // result. The generation is captured *before* executing, inside this method,
@@ -33,10 +27,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   // forget to pass it to Set: if a command invalidates this user's cache while
   // the query runs, the captured generation becomes stale and the freshly
   // computed result is simply ignored on the next read.
-  public async Task<TValue> GetOrCreate<TValue, TQuery>(
-    IQueryExecutor<TValue, TQuery> queryExecutor,
-    TQuery query
-  )
+  public async Task<TValue> GetOrCreate<TValue, TQuery>(IQueryExecutor<TValue, TQuery> queryExecutor, TQuery query)
     where TQuery : IQuery
   {
     if (queryExecutor.DisableCache)
@@ -58,11 +49,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     return value;
   }
 
-  public void Set<TValue, TQuery>(
-    TQuery query,
-    TValue value,
-    long generationId
-  )
+  public void Set<TValue, TQuery>(TQuery query, TValue value, long generationId)
     where TQuery : IQuery
   {
     var key = GetKey(query);
@@ -75,7 +62,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       {
         Value = value,
         ConfigToken = GetConfigToken(query),
-        GenerationId = generationId
+        GenerationId = generationId,
       },
       new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
     );
@@ -170,9 +157,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   private void RememberQueryKeyForUser(string queryKey)
   {
-    QueryKeysByUser
-      .GetOrAdd(GetUserId(), _ => new ConcurrentDictionary<string, byte>())
-      .TryAdd(queryKey, 0);
+    QueryKeysByUser.GetOrAdd(GetUserId(), _ => new ConcurrentDictionary<string, byte>()).TryAdd(queryKey, 0);
   }
 
   private string GetUserId()

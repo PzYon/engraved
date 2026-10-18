@@ -10,8 +10,7 @@ public static class JournalAccessFilter
   public static FilterDefinition<TDocument> ForUser<TDocument>(string? userId, PermissionKind kind)
     where TDocument : IDocument
   {
-    var ownerFilter =
-      Builders<TDocument>.Filter.Eq(nameof(IUserOwnedDocument.UserId), userId);
+    var ownerFilter = Builders<TDocument>.Filter.Eq(nameof(IUserOwnedDocument.UserId), userId);
 
     if (!typeof(TDocument).IsAssignableTo(typeof(IHasPermissionsDocument)))
     {

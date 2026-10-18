@@ -40,7 +40,13 @@ public class DeleteEntryCommandExecutorShould
       new CounterJournal
       {
         Id = journalId,
-        Permissions = new UserPermissions { { otherUserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+        Permissions = new UserPermissions
+        {
+          {
+            otherUserId,
+            new PermissionDefinition { Kind = PermissionKind.Read }
+          },
+        },
       }
     );
     await _repo.UpsertEntry(
@@ -48,7 +54,7 @@ public class DeleteEntryCommandExecutorShould
       {
         Id = entryId,
         ParentId = journalId,
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
 
@@ -58,7 +64,9 @@ public class DeleteEntryCommandExecutorShould
     );
 
     // then
-    (await _repo.GetEntry(entryId)).Should().BeNull();
+    (await _repo.GetEntry(entryId))
+      .Should()
+      .BeNull();
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
     journal.EditedOn.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
@@ -84,9 +92,19 @@ public class DeleteEntryCommandExecutorShould
         Title = "with files",
         Files =
         [
-          new FileRef { Id = "file-one", FileName = "a.png", ContentType = "image/png" },
-          new FileRef { Id = "file-two", FileName = "b.pdf", ContentType = "application/pdf" }
-        ]
+          new FileRef
+          {
+            Id = "file-one",
+            FileName = "a.png",
+            ContentType = "image/png",
+          },
+          new FileRef
+          {
+            Id = "file-two",
+            FileName = "b.pdf",
+            ContentType = "application/pdf",
+          },
+        ],
       }
     );
 

@@ -6,13 +6,14 @@ namespace Engraved.Api.Jobs;
 public class ScheduledNotificationJob(
   IServiceScopeFactory serviceScopeFactory,
   IOptions<NotificationsJobConfig> notificationsJobConfig
-)
-  : BackgroundService
+) : BackgroundService
 {
   protected override async Task ExecuteAsync(CancellationToken stoppingToken)
   {
-    if (notificationsJobConfig.Value.Mode == NotificationsJobMode.Disabled
-        || notificationsJobConfig.Value.IntervalInMinutes == 0)
+    if (
+      notificationsJobConfig.Value.Mode == NotificationsJobMode.Disabled
+      || notificationsJobConfig.Value.IntervalInMinutes == 0
+    )
     {
       return;
     }

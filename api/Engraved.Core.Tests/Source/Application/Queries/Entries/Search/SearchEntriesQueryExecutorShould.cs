@@ -22,13 +22,7 @@ public class SearchEntriesQueryExecutorShould
   public async Task SetUp()
   {
     _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
-    await _repo.UpsertUser(
-      new User
-      {
-        Id = UserId,
-        Name = UserId
-      }
-    );
+    await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
 
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
@@ -41,36 +35,21 @@ public class SearchEntriesQueryExecutorShould
     const string journal3Id = "60703c3b0000000000000013";
 
     await _repo.UpsertJournal(new CounterJournal { Id = journal1Id, UserId = UserId });
-    await _repo.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = journal1Id,
-        DateTime = _dateService.UtcNow
-      }
-    );
+    await _repo.UpsertEntry(new CounterEntry { ParentId = journal1Id, DateTime = _dateService.UtcNow });
     _dateService.SetNext(2);
 
     await _repo.UpsertJournal(new GaugeJournal { Id = journal2Id, UserId = UserId });
-    await _repo.UpsertEntry(
-      new GaugeEntry
-      {
-        ParentId = journal2Id,
-        DateTime = _dateService.UtcNow
-      }
-    );
+    await _repo.UpsertEntry(new GaugeEntry { ParentId = journal2Id, DateTime = _dateService.UtcNow });
     _dateService.SetNext(1);
 
     await _repo.UpsertJournal(new TimerJournal { Id = journal3Id, UserId = UserId });
-    await _repo.UpsertEntry(
-      new TimerEntry
-      {
-        ParentId = journal3Id,
-        DateTime = _dateService.UtcNow
-      }
-    );
+    await _repo.UpsertEntry(new TimerEntry { ParentId = journal3Id, DateTime = _dateService.UtcNow });
 
-    TestUserRestrictedMongoRepository queryExecutorRepo =
-      await Util.CreateUserRestrictedMongoRepository(UserId, UserId, true);
+    TestUserRestrictedMongoRepository queryExecutorRepo = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      true
+    );
 
     var queryExecutor = new SearchEntriesQueryExecutor(
       queryExecutorRepo,

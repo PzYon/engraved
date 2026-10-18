@@ -3,5 +3,5 @@
 public enum ScrapType
 {
   Markdown,
-  List
+  List,
 }

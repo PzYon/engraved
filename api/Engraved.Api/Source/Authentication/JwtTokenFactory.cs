@@ -27,7 +27,7 @@ public class JwtTokenFactory(AuthenticationConfig configuration, IDateService da
       Expires = expiresAt,
       Issuer = configuration.TokenIssuer,
       Audience = configuration.TokenAudience,
-      SigningCredentials = GetSigningCredentials()
+      SigningCredentials = GetSigningCredentials(),
     };
 
     var tokenHandler = new JwtSecurityTokenHandler();

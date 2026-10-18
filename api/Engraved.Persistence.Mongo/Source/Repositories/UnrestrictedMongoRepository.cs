@@ -216,8 +216,8 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
 
   public async Task<string[]> GetJournalIdsForUser(string userId)
   {
-    var ids = await _mongoDatabaseClient.JournalsCollection
-      .Find(Builders<JournalDocument>.Filter.Where(d => d.UserId == userId))
+    var ids = await _mongoDatabaseClient
+      .JournalsCollection.Find(Builders<JournalDocument>.Filter.Where(d => d.UserId == userId))
       .Project(d => d.Id)
       .ToListAsync();
 

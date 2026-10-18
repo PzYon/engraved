@@ -11,8 +11,8 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
-using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Domain.Entries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +40,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       FromDate = fromDate,
       ToDate = toDate,
       AttributeValues = AttributeValueParser.Parse(attributeValues),
-      SearchText = searchText
+      SearchText = searchText,
     };
 
     return await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
@@ -52,7 +52,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
     var query = new SearchEntriesQuery
     {
       SearchText = searchText,
-      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
+      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes),
     };
 
     return await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
@@ -147,11 +147,7 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
   [Route("{entryId}/move/{targetJournalId}")]
   public async Task<CommandResult> MoveEntryToJournal(string entryId, string targetJournalId)
   {
-    var command = new MoveEntryCommand
-    {
-      EntryId = entryId,
-      TargetJournalId = targetJournalId
-    };
+    var command = new MoveEntryCommand { EntryId = entryId, TargetJournalId = targetJournalId };
 
     return await dispatcher.Command(command);
   }

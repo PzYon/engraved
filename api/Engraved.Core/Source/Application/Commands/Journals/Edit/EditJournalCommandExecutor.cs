@@ -9,8 +9,7 @@ public class EditJournalCommandExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
   IDateService dateService
-)
-  : ICommandExecutor<EditJournalCommand>
+) : ICommandExecutor<EditJournalCommand>
 {
   public async Task<CommandResult> Execute(EditJournalCommand command)
   {

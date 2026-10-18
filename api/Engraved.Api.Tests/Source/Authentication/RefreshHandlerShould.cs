@@ -17,7 +17,7 @@ public class RefreshHandlerShould
     TokenAudience = "http://au.dien.ce",
     TokenIssuer = "http://is.su.er",
     AccessTokenLifetimeMinutes = 15,
-    RefreshTokenLifetimeMinutes = 1440
+    RefreshTokenLifetimeMinutes = 1440,
   };
 
   private FakeDateService _dateService = null!;
@@ -34,7 +34,12 @@ public class RefreshHandlerShould
     _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
     _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
 
-    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests", IsAdmin = true };
+    _user = new User
+    {
+      Id = TestIds.OtherUserId,
+      Name = "me@tests",
+      IsAdmin = true,
+    };
     await _repository.UpsertUser(_user);
   }
 
@@ -62,7 +67,9 @@ public class RefreshHandlerShould
     await _refreshHandler.Refresh(refreshToken);
 
     // the original token was rotated away and must no longer be accepted
-    (await _refreshHandler.Refresh(refreshToken)).Should().BeNull();
+    (await _refreshHandler.Refresh(refreshToken))
+      .Should()
+      .BeNull();
   }
 
   [Test]
@@ -108,10 +115,14 @@ public class RefreshHandlerShould
     (await _refreshTokenService.RevokeOtherTokens(current)).Should().BeTrue();
 
     // the current device's token still works ...
-    (await _refreshHandler.Refresh(current)).Should().NotBeNull();
+    (await _refreshHandler.Refresh(current))
+      .Should()
+      .NotBeNull();
 
     // ... the other devices' tokens no longer do.
-    (await _refreshHandler.Refresh(other1)).Should().BeNull();
+    (await _refreshHandler.Refresh(other1))
+      .Should()
+      .BeNull();
     (await _refreshHandler.Refresh(other2)).Should().BeNull();
   }
 

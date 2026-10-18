@@ -11,11 +11,12 @@ public class UpsertGaugeEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<
-    UpsertGaugeEntryCommand,
-    GaugeEntry,
-    GaugeJournal
-  >(journalRepository, entryRepository, dateService, fileAcceptor)
+  : BaseUpsertEntryCommandExecutor<UpsertGaugeEntryCommand, GaugeEntry, GaugeJournal>(
+    journalRepository,
+    entryRepository,
+    dateService,
+    fileAcceptor
+  )
 {
   protected override Task PerformTypeSpecificValidation(UpsertGaugeEntryCommand command)
   {
