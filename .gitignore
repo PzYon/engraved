@@ -3,9 +3,7 @@
 
 # fallow local run artifacts (CI writes these into ephemeral runner workspaces, not here)
 /.fallow
-fallow-results.*
-fallow-stderr.log
-fallow-analysis-args.sh
+/fallow-*
 
 # local blob storage emulator data (npm run storage:start)
 .azurite/
