@@ -28,7 +28,10 @@ public interface IJournal : IUserOwned, IPermissionHolder, IEntity
 
   Dictionary<string, JournalAttribute> Attributes { get; set; }
 
-  Dictionary<string, Dictionary<string, ThresholdDefinition>> Thresholds { get; set; }
+  Dictionary<
+    string,
+    Dictionary<string, ThresholdDefinition>
+  > Thresholds { get; set; }
 
   // basic idea here is to enable clients to store whatever they want while
   // the server is completely unaware of what's going on here. i.e. server

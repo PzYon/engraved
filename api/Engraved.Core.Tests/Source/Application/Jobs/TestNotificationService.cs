@@ -6,7 +6,11 @@ namespace Engraved.Core.Tests.Application.Jobs;
 
 public class TestNotificationService : INotificationService
 {
-  public Task<string?> SendNotification(ClientNotification notification, string entityId, bool doNotSend)
+  public Task<string?> SendNotification(
+    ClientNotification notification,
+    string entityId,
+    bool doNotSend
+  )
   {
     return Task.FromResult<string?>(Guid.NewGuid().ToString());
   }

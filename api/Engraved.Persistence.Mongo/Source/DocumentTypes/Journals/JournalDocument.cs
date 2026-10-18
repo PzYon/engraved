@@ -6,7 +6,10 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace Engraved.Persistence.Mongo.DocumentTypes.Journals;
 
-public abstract class JournalDocument : IUserOwnedDocument, IHasPermissionsDocument, IScheduledDocument
+public abstract class JournalDocument
+  : IUserOwnedDocument,
+    IHasPermissionsDocument,
+    IScheduledDocument
 {
   [BsonId(IdGenerator = typeof(GuidGenerator))]
   [BsonRepresentation(BsonType.ObjectId)]
@@ -25,7 +28,10 @@ public abstract class JournalDocument : IUserOwnedDocument, IHasPermissionsDocum
 
   public Dictionary<string, JournalAttribute> Attributes { get; set; } = new();
 
-  public Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>> Thresholds { get; set; } = new();
+  public Dictionary<
+    string,
+    Dictionary<string, ThresholdDefinitionDocument>
+  > Thresholds { get; set; } = new();
 
   public DateTime? EditedOn { get; set; }
 
@@ -33,5 +39,6 @@ public abstract class JournalDocument : IUserOwnedDocument, IHasPermissionsDocum
 
   public Dictionary<string, string> CustomProps { get; set; } = new();
 
-  public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();
+  public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } =
+    new();
 }

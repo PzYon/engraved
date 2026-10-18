@@ -48,7 +48,10 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.None } }
+      new Dictionary<string, PermissionKind>
+      {
+        { "mar@foo.ch", PermissionKind.None },
+      }
     );
 
     holder.Permissions.Count.Should().Be(0);
@@ -99,7 +102,10 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new Dictionary<string, PermissionKind> { { "mar@foo.ch", PermissionKind.Write } }
+      new Dictionary<string, PermissionKind>
+      {
+        { "mar@foo.ch", PermissionKind.Write },
+      }
     );
 
     holder.Permissions.Count.Should().Be(1);
@@ -122,7 +128,10 @@ public class PermissionsEnsurerShould
 
     await _permissionsEnsurer.EnsurePermissions(
       holder,
-      new Dictionary<string, PermissionKind> { { "bar@foo.ch", PermissionKind.Read } }
+      new Dictionary<string, PermissionKind>
+      {
+        { "bar@foo.ch", PermissionKind.Read },
+      }
     );
 
     holder.Permissions.Count.Should().Be(2);

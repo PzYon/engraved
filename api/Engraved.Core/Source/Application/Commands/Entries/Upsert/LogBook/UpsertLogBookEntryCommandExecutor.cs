@@ -11,23 +11,30 @@ public class UpsertLogBookEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<UpsertLogBookEntryCommand, LogBookEntry, LogBookJournal>(
-    journalRepository,
-    entryRepository,
-    dateService,
-    fileAcceptor
-  )
+  : BaseUpsertEntryCommandExecutor<
+    UpsertLogBookEntryCommand,
+    LogBookEntry,
+    LogBookJournal
+  >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override async Task PerformTypeSpecificValidation(UpsertLogBookEntryCommand command)
+  protected override async Task PerformTypeSpecificValidation(
+    UpsertLogBookEntryCommand command
+  )
   {
     if (string.IsNullOrWhiteSpace(command.Notes))
     {
-      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertLogBookEntryCommand.Notes)}\" must be specified");
+      throw CreateInvalidCommandException(
+        command,
+        $"\"{nameof(UpsertLogBookEntryCommand.Notes)}\" must be specified"
+      );
     }
 
     if (command.DateTime == null)
     {
-      throw CreateInvalidCommandException(command, $"Missing {nameof(UpsertLogBookEntryCommand.DateTime)}");
+      throw CreateInvalidCommandException(
+        command,
+        $"Missing {nameof(UpsertLogBookEntryCommand.DateTime)}"
+      );
     }
 
     DateTime entryDate = command.DateTime.Value.Date;
@@ -41,18 +48,33 @@ public class UpsertLogBookEntryCommandExecutor(
     }
   }
 
-  private async Task<bool> HasEntryForDay(UpsertLogBookEntryCommand command, DateTime entryDate)
+  private async Task<bool> HasEntryForDay(
+    UpsertLogBookEntryCommand command,
+    DateTime entryDate
+  )
   {
-    var entriesOnSameDay = await EntryRepository.GetEntriesForJournal(command.JournalId, entryDate, entryDate);
+    var entriesOnSameDay = await EntryRepository.GetEntriesForJournal(
+      command.JournalId,
+      entryDate,
+      entryDate
+    );
 
-    return entriesOnSameDay.Any(e => e.DateTime?.Date == entryDate && e.Id != command.Id);
+    return entriesOnSameDay.Any(e =>
+      e.DateTime?.Date == entryDate && e.Id != command.Id
+    );
   }
 
-  protected override void SetTypeSpecificValues(UpsertLogBookEntryCommand command, LogBookEntry entry)
+  protected override void SetTypeSpecificValues(
+    UpsertLogBookEntryCommand command,
+    LogBookEntry entry
+  )
   {
     // LogBook entries are date-only: strip the time component so that at most one entry can exist
     // per day, regardless of the time the client happens to send.
-    entry.DateTime = DateTime.SpecifyKind(command.DateTime!.Value.Date, DateTimeKind.Utc);
+    entry.DateTime = DateTime.SpecifyKind(
+      command.DateTime!.Value.Date,
+      DateTimeKind.Utc
+    );
     entry.Title = command.Title;
   }
 }

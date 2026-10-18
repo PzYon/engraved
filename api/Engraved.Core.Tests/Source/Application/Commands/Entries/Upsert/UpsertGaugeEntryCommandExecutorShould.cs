@@ -31,7 +31,11 @@ public class UpsertGaugeEntryCommandExecutorShould
     const string journalId = "60703c3b00000000000000a1";
     await _testRepository.UpsertJournal(new GaugeJournal { Id = journalId });
 
-    var command = new UpsertGaugeEntryCommand { JournalId = journalId, Value = value };
+    var command = new UpsertGaugeEntryCommand
+    {
+      JournalId = journalId,
+      Value = value,
+    };
 
     CommandResult commandResult = await new UpsertGaugeEntryCommandExecutor(
       _testRepository,
@@ -43,7 +47,9 @@ public class UpsertGaugeEntryCommandExecutorShould
     commandResult.EntityId.Should().NotBeEmpty();
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
-    IEntry createdEntry = (await _testRepository.GetEntriesForJournal(journalId)).First();
+    IEntry createdEntry = (
+      await _testRepository.GetEntriesForJournal(journalId)
+    ).First();
     createdEntry.ParentId.Should().Be(command.JournalId);
 
     var counterEntry = createdEntry as GaugeEntry;
@@ -87,7 +93,11 @@ public class UpsertGaugeEntryCommandExecutorShould
         {
           {
             "stuff",
-            new JournalAttribute { Name = "Stuff", Values = { { "x", "y" }, { "k3y", "v@lue" } } }
+            new JournalAttribute
+            {
+              Name = "Stuff",
+              Values = { { "x", "y" }, { "k3y", "v@lue" } },
+            }
           },
         },
       }
@@ -100,7 +110,10 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalId = journalId,
       Notes = "n0t3s",
       Value = value,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "stuff", ["k3y"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "stuff", ["k3y"] },
+      },
     };
 
     await new UpsertGaugeEntryCommandExecutor(
@@ -112,11 +125,16 @@ public class UpsertGaugeEntryCommandExecutorShould
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
 
-    IEntry createdEntry = (await _testRepository.GetEntriesForJournal(journalId)).First();
+    IEntry createdEntry = (
+      await _testRepository.GetEntriesForJournal(journalId)
+    ).First();
     command.JournalId.Should().Be(createdEntry.ParentId);
     command.Notes.Should().Be(createdEntry.Notes);
 
-    AssertJournalAttributeValuesEqual(command.JournalAttributeValues, createdEntry.JournalAttributeValues);
+    AssertJournalAttributeValuesEqual(
+      command.JournalAttributeValues,
+      createdEntry.JournalAttributeValues
+    );
 
     var gaugeEntry = createdEntry as GaugeEntry;
     gaugeEntry.Should().NotBeNull();
@@ -129,12 +147,19 @@ public class UpsertGaugeEntryCommandExecutorShould
   )
   {
     var areEqual =
-      d1 == d2 || (d1.Keys.Count == d2.Keys.Count && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k])));
+      d1 == d2
+      || (
+        d1.Keys.Count == d2.Keys.Count
+        && d1.Keys.All(k => d2.ContainsKey(k) && AreEqual(d1[k], d2[k]))
+      );
 
     areEqual.Should().BeTrue("JournalAttributeValues are not equal.");
   }
 
-  private static bool AreEqual(IEnumerable<string> first, IEnumerable<string> second)
+  private static bool AreEqual(
+    IEnumerable<string> first,
+    IEnumerable<string> second
+  )
   {
     first.Should().BeEquivalentTo(second);
     return true;
@@ -152,7 +177,10 @@ public class UpsertGaugeEntryCommandExecutorShould
       JournalId = journalId,
       Notes = "n0t3s",
       Value = 42,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "fooBar", ["x"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "fooBar", ["x"] },
+      },
     };
 
     Assert.ThrowsAsync<InvalidCommandException>(async () =>

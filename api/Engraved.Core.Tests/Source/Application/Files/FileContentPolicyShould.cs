@@ -12,7 +12,10 @@ public class FileContentPolicyShould
   [TestCase("application/pdf")]
   public void Render_KnownSafeTypes_Inline(string contentType)
   {
-    FileContentPolicy.GetDisposition(contentType).Should().Be(FileDisposition.Inline);
+    FileContentPolicy
+      .GetDisposition(contentType)
+      .Should()
+      .Be(FileDisposition.Inline);
   }
 
   // An SVG can carry <script>, which would run if the browser navigated to it as a document. It
@@ -21,7 +24,10 @@ public class FileContentPolicyShould
   [Test]
   public void Force_Svg_ToDownload()
   {
-    FileContentPolicy.GetDisposition("image/svg+xml").Should().Be(FileDisposition.Attachment);
+    FileContentPolicy
+      .GetDisposition("image/svg+xml")
+      .Should()
+      .Be(FileDisposition.Attachment);
   }
 
   [TestCase("text/html")]
@@ -29,7 +35,10 @@ public class FileContentPolicyShould
   [TestCase("application/octet-stream")]
   public void Force_EverythingElse_ToDownload(string contentType)
   {
-    FileContentPolicy.GetDisposition(contentType).Should().Be(FileDisposition.Attachment);
+    FileContentPolicy
+      .GetDisposition(contentType)
+      .Should()
+      .Be(FileDisposition.Attachment);
   }
 
   // The file name ends up inside a quoted Content-Disposition header, so anything that could close

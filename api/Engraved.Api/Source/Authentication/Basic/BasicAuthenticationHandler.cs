@@ -23,12 +23,17 @@ public class BasicAuthenticationHandler(
 
   private AuthenticateResult HandleAuthenticate()
   {
-    if (!Request.Headers.TryGetValue("Authorization", out StringValues value) || string.IsNullOrEmpty(value))
+    if (
+      !Request.Headers.TryGetValue("Authorization", out StringValues value)
+      || string.IsNullOrEmpty(value)
+    )
     {
       return AuthenticateResult.Fail("Missing Authorization Header");
     }
 
-    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(value!);
+    AuthenticationHeaderValue authHeader = AuthenticationHeaderValue.Parse(
+      value!
+    );
     if (string.IsNullOrEmpty(authHeader.Parameter))
     {
       return AuthenticateResult.Fail("Username must be specified.");

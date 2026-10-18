@@ -11,16 +11,20 @@ public class UpsertScrapsEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<UpsertScrapsEntryCommand, ScrapsEntry, ScrapsJournal>(
-    journalRepository,
-    entryRepository,
-    dateService,
-    fileAcceptor
-  )
+  : BaseUpsertEntryCommandExecutor<
+    UpsertScrapsEntryCommand,
+    ScrapsEntry,
+    ScrapsJournal
+  >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override Task PerformTypeSpecificValidation(UpsertScrapsEntryCommand command)
+  protected override Task PerformTypeSpecificValidation(
+    UpsertScrapsEntryCommand command
+  )
   {
-    if (string.IsNullOrWhiteSpace(command.Title) && string.IsNullOrWhiteSpace(command.Notes))
+    if (
+      string.IsNullOrWhiteSpace(command.Title)
+      && string.IsNullOrWhiteSpace(command.Notes)
+    )
     {
       throw CreateInvalidCommandException(
         command,
@@ -31,7 +35,10 @@ public class UpsertScrapsEntryCommandExecutor(
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(UpsertScrapsEntryCommand command, ScrapsEntry entry)
+  protected override void SetTypeSpecificValues(
+    UpsertScrapsEntryCommand command,
+    ScrapsEntry entry
+  )
   {
     entry.Title = command.Title;
     entry.ScrapType = command.ScrapType;

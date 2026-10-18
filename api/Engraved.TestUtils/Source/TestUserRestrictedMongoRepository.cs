@@ -22,7 +22,10 @@ namespace Engraved.TestUtils;
 // PersistenceRegistration (production has no composite type anymore - executors inject the role
 // interfaces plus Lazy<IUser> directly), and exposes the raw collections so tests can
 // arrange/assert directly in the database.
-public class TestUserRestrictedMongoRepository : IUserRepository, IJournalRepository, IEntryRepository
+public class TestUserRestrictedMongoRepository
+  : IUserRepository,
+    IJournalRepository,
+    IEntryRepository
 {
   private readonly UserRestrictedEntryRepository _entryRepository;
   private readonly UserRestrictedJournalRepository _journalRepository;
@@ -40,11 +43,20 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
       currentUserService
     );
 
-    var journalRepository = new MongoJournalRepository(mongoDatabaseClient, new UserReadScope(CurrentUser));
+    var journalRepository = new MongoJournalRepository(
+      mongoDatabaseClient,
+      new UserReadScope(CurrentUser)
+    );
     var writeGuard = new JournalWriteGuard(journalRepository, CurrentUser);
 
-    _userRepository = new UserRestrictedUserRepository(new MongoUserRepository(mongoDatabaseClient), writeGuard);
-    _journalRepository = new UserRestrictedJournalRepository(journalRepository, writeGuard);
+    _userRepository = new UserRestrictedUserRepository(
+      new MongoUserRepository(mongoDatabaseClient),
+      writeGuard
+    );
+    _journalRepository = new UserRestrictedJournalRepository(
+      journalRepository,
+      writeGuard
+    );
     _entryRepository = new UserRestrictedEntryRepository(
       new MongoEntryRepository(mongoDatabaseClient, journalRepository),
       writeGuard
@@ -60,7 +72,14 @@ public class TestUserRestrictedMongoRepository : IUserRepository, IJournalReposi
     SortEntriesBy sortOrder = SortEntriesBy.DateTime
   )
   {
-    return _entryRepository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText, sortOrder);
+    return _entryRepository.GetEntriesForJournal(
+      journalId,
+      fromDate,
+      toDate,
+      attributeValues,
+      searchText,
+      sortOrder
+    );
   }
 
   public Task<IEntry[]> SearchEntries(

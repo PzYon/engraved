@@ -13,7 +13,9 @@ public class MoveEntryCommandExecutor(
   public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
     // can user access target journal?
-    IJournal? targetJournal = await journalRepository.GetJournal(command.TargetJournalId);
+    IJournal? targetJournal = await journalRepository.GetJournal(
+      command.TargetJournalId
+    );
     if (targetJournal == null)
     {
       return new CommandResult();
@@ -27,7 +29,9 @@ public class MoveEntryCommandExecutor(
     }
 
     // update source journal EditedOn
-    IJournal sourceJournal = (await journalRepository.GetJournal(entry.ParentId))!;
+    IJournal sourceJournal = (
+      await journalRepository.GetJournal(entry.ParentId)
+    )!;
     sourceJournal.EditedOn = dateService.UtcNow;
     await journalRepository.UpsertJournal(sourceJournal);
 

@@ -15,16 +15,24 @@ namespace Engraved.Core.Tests.Application;
 public class ArchitectureShould
 {
   // any type from the Core assembly anchors the assembly under test
-  private static readonly Assembly CoreAssembly = typeof(IJournalRepository).Assembly;
+  private static readonly Assembly CoreAssembly =
+    typeof(IJournalRepository).Assembly;
 
   [Test]
   public void NotDependOnMongoDb()
   {
-    TestResult result = Types.InAssembly(CoreAssembly).ShouldNot().HaveDependencyOn("MongoDB").GetResult();
+    TestResult result = Types
+      .InAssembly(CoreAssembly)
+      .ShouldNot()
+      .HaveDependencyOn("MongoDB")
+      .GetResult();
 
     result
       .IsSuccessful.Should()
-      .BeTrue("Engraved.Core must not depend on MongoDB. Offending types: {0}", Describe(result.FailingTypeNames));
+      .BeTrue(
+        "Engraved.Core must not depend on MongoDB. Offending types: {0}",
+        Describe(result.FailingTypeNames)
+      );
   }
 
   [Test]
@@ -49,7 +57,11 @@ public class ArchitectureShould
   {
     // Core is the framework-agnostic domain/application layer: it must not reach into ASP.NET Core.
     // Anything that needs the web host belongs in Engraved.Api.
-    TestResult result = Types.InAssembly(CoreAssembly).ShouldNot().HaveDependencyOn("Microsoft.AspNetCore").GetResult();
+    TestResult result = Types
+      .InAssembly(CoreAssembly)
+      .ShouldNot()
+      .HaveDependencyOn("Microsoft.AspNetCore")
+      .GetResult();
 
     result
       .IsSuccessful.Should()

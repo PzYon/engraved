@@ -46,9 +46,11 @@ public class DeleteJournalCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
-      new DeleteJournalCommand { JournalId = JournalId }
-    );
+    CommandResult result = await new DeleteJournalCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore
+    ).Execute(new DeleteJournalCommand { JournalId = JournalId });
 
     // then
     (await _repo.GetJournal(JournalId))
@@ -73,7 +75,9 @@ public class DeleteJournalCommandExecutorShould
     );
 
     (await _repo.GetJournal(JournalId)).Should().BeNull();
-    (await _repo.SearchEntries(null, journalIds: [JournalId])).Should().BeEmpty();
+    (await _repo.SearchEntries(null, journalIds: [JournalId]))
+      .Should()
+      .BeEmpty();
   }
 
   // DeleteEntriesForJournal is a bulk delete that never loads the entries, so the file ids have to
@@ -127,7 +131,11 @@ public class DeleteJournalCommandExecutorShould
   public async Task ReturnEmptyResult_When_JournalDoesNotExist()
   {
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore
+    ).Execute(
       new DeleteJournalCommand { JournalId = "60703c3b0000000000000999" }
     );
 

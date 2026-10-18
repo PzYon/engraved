@@ -52,7 +52,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(startDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(startDate, TimeSpan.FromMilliseconds(100));
     entry.EndDate.Should().BeCloseTo(endDate, TimeSpan.FromMilliseconds(100));
   }
 
@@ -74,7 +76,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
@@ -107,7 +111,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.EndDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    entry
+      .EndDate.Should()
+      .BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
@@ -151,8 +157,12 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
-    entry.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .DateTime.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry.EndDate.Should().Be(newEndDate);
   }
 
@@ -196,8 +206,12 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
-    entry?.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      ?.StartDate.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      ?.DateTime.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry?.EndDate.Should().Be(null);
   }
 }

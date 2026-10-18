@@ -9,7 +9,10 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/auth/e2e")]
 [Authorize]
-public class E2ETestsAuthController(ILoginHandler loginHandler, ICurrentUserService currentUserService) : Controller
+public class E2ETestsAuthController(
+  ILoginHandler loginHandler,
+  ICurrentUserService currentUserService
+) : Controller
 {
   [HttpPost]
   public async Task<AuthResult> LoginForTests()

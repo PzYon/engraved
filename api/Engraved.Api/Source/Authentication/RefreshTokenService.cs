@@ -42,7 +42,9 @@ public class RefreshTokenService(
     }
 
     var hash = Hash(secret);
-    RefreshToken? match = user.RefreshTokens.FirstOrDefault(t => t.TokenHash == hash);
+    RefreshToken? match = user.RefreshTokens.FirstOrDefault(t =>
+      t.TokenHash == hash
+    );
     if (match == null || match.ExpiresAt <= dateService.UtcNow)
     {
       return null;
@@ -57,7 +59,10 @@ public class RefreshTokenService(
 
   public async Task<bool> RevokeOtherTokens(string? refreshToken)
   {
-    if (string.IsNullOrEmpty(refreshToken) || !TryParse(refreshToken, out var userId, out var secret))
+    if (
+      string.IsNullOrEmpty(refreshToken)
+      || !TryParse(refreshToken, out var userId, out var secret)
+    )
     {
       return false;
     }
@@ -69,7 +74,9 @@ public class RefreshTokenService(
     }
 
     var hash = Hash(secret);
-    RefreshToken? current = user.RefreshTokens.FirstOrDefault(t => t.TokenHash == hash);
+    RefreshToken? current = user.RefreshTokens.FirstOrDefault(t =>
+      t.TokenHash == hash
+    );
     if (current == null || current.ExpiresAt <= dateService.UtcNow)
     {
       return false;
@@ -91,7 +98,9 @@ public class RefreshTokenService(
       {
         TokenHash = Hash(secret),
         CreatedOn = dateService.UtcNow,
-        ExpiresAt = dateService.UtcNow.AddMinutes(configuration.RefreshTokenLifetimeMinutes),
+        ExpiresAt = dateService.UtcNow.AddMinutes(
+          configuration.RefreshTokenLifetimeMinutes
+        ),
       }
     );
 
@@ -103,7 +112,11 @@ public class RefreshTokenService(
     return $"{userId}.{secret}";
   }
 
-  private static bool TryParse(string token, out string userId, out string secret)
+  private static bool TryParse(
+    string token,
+    out string userId,
+    out string secret
+  )
   {
     userId = string.Empty;
     secret = string.Empty;

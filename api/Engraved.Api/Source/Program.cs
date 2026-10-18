@@ -38,10 +38,11 @@ builder
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
     // serialize values declared as IEntry/IJournal/IEntity with their full runtime type
-    options.JsonSerializerOptions.TypeInfoResolver = new DefaultJsonTypeInfoResolver
-    {
-      Modifiers = { DomainPolymorphism.ConfigurePolymorphism },
-    };
+    options.JsonSerializerOptions.TypeInfoResolver =
+      new DefaultJsonTypeInfoResolver
+      {
+        Modifiers = { DomainPolymorphism.ConfigurePolymorphism },
+      };
   });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -69,10 +70,17 @@ builder.Services.AddSwaggerGen(option =>
 
 builder.Services.AddHttpContextAccessor();
 
-IConfigurationSection authConfigSection = builder.Configuration.GetSection("Authentication");
-IConfigurationSection notificationsSection = builder.Configuration.GetSection("Notifications");
-IConfigurationSection oneSignalConfigSection = notificationsSection.GetSection("OneSignal");
-IConfigurationSection notificationsJobConfigSection = notificationsSection.GetSection("Job");
+IConfigurationSection authConfigSection = builder.Configuration.GetSection(
+  "Authentication"
+);
+IConfigurationSection notificationsSection = builder.Configuration.GetSection(
+  "Notifications"
+);
+IConfigurationSection oneSignalConfigSection = notificationsSection.GetSection(
+  "OneSignal"
+);
+IConfigurationSection notificationsJobConfigSection =
+  notificationsSection.GetSection("Job");
 
 // https://learn.microsoft.com/en-us/dotnet/core/extensions/logging?tabs=command-line
 if (!builder.Environment.IsDevelopment() && !isE2ETests)
@@ -82,7 +90,9 @@ if (!builder.Environment.IsDevelopment() && !isE2ETests)
 
 builder.Services.Configure<AuthenticationConfig>(authConfigSection);
 builder.Services.Configure<OneSignalConfig>(oneSignalConfigSection);
-builder.Services.Configure<NotificationsJobConfig>(notificationsJobConfigSection);
+builder.Services.Configure<NotificationsJobConfig>(
+  notificationsJobConfigSection
+);
 builder.Services.AddTransient<IDateService, DateService>();
 builder.Services.AddTransient<FileAcceptor>();
 builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
@@ -95,7 +105,11 @@ builder.Services.AddSingleton<UserLoader>();
 builder.Services.AddSingleton<DeleteUserConfirmationStore>();
 builder.Services.AddHostedService<ScheduledNotificationJob>();
 
-PersistenceRegistration.RegisterPersistence(builder.Services, builder.Configuration, isE2ETests);
+PersistenceRegistration.RegisterPersistence(
+  builder.Services,
+  builder.Configuration,
+  isE2ETests
+);
 
 FileStorageRegistration.RegisterFileStorage(
   builder.Services,
@@ -108,9 +122,16 @@ builder.Services.AddMemoryCache();
 builder.Services.AddTransient<QueryCache>();
 builder.Services.AddTransient<Dispatcher>();
 builder.Services.AddTransient<NotificationJob>();
-builder.Services.AddTransient<INotificationService, OneSignalNotificationService>();
+builder.Services.AddTransient<
+  INotificationService,
+  OneSignalNotificationService
+>();
 
-AuthenticationRegistration.RegisterAuthentication(builder.Services, authConfigSection, isE2ETests);
+AuthenticationRegistration.RegisterAuthentication(
+  builder.Services,
+  authConfigSection,
+  isE2ETests
+);
 
 builder.Services.AddResponseCompression(options =>
 {
@@ -133,7 +154,9 @@ app.UseHttpsRedirection();
 // deliberately wide open: auth is bearer-token based (not cookies), so a browser can't get a
 // cross-origin request to carry credentials on its own - the client always has to attach the
 // token itself, which a foreign origin doesn't have.
-app.UseCors(policyBuilder => policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(policyBuilder =>
+  policyBuilder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()
+);
 
 app.UseAuthentication();
 app.UseAuthorization();

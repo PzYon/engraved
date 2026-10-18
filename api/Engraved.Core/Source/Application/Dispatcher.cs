@@ -24,13 +24,19 @@ public class Dispatcher(
   private async Task<TResult> ExecuteQuery<TResult, TQuery>(TQuery query)
     where TQuery : IQuery
   {
-    var queryExecutor = serviceProvider.GetRequiredService<IQueryExecutor<TResult, TQuery>>();
+    var queryExecutor = serviceProvider.GetRequiredService<
+      IQueryExecutor<TResult, TQuery>
+    >();
 
     TResult result = await queryCache.GetOrCreate(queryExecutor, query);
 
     if (typeof(TResult).IsArray)
     {
-      logger.LogInformation("{Name}: Found {Length} results", query.GetType().Name, (result as Array)?.Length ?? 0);
+      logger.LogInformation(
+        "{Name}: Found {Length} results",
+        query.GetType().Name,
+        (result as Array)?.Length ?? 0
+      );
     }
 
     return result;
@@ -45,7 +51,9 @@ public class Dispatcher(
   private async Task<CommandResult> ExecuteCommand<TCommand>(TCommand command)
     where TCommand : ICommand
   {
-    var commandExecutor = serviceProvider.GetRequiredService<ICommandExecutor<TCommand>>();
+    var commandExecutor = serviceProvider.GetRequiredService<
+      ICommandExecutor<TCommand>
+    >();
 
     CommandResult commandResult = await commandExecutor.Execute(command);
 
@@ -56,12 +64,17 @@ public class Dispatcher(
 
   private void InvalidateCache(CommandResult commandResult)
   {
-    var affectedUserIds = commandResult.AffectedUserIds.Union([currentUser.Value.Id!]).ToArray();
+    var affectedUserIds = commandResult
+      .AffectedUserIds.Union([currentUser.Value.Id!])
+      .ToArray();
 
     queryCache.Invalidate(affectedUserIds);
   }
 
-  private async Task<TExecutionResult> Execute<TExecutionResult>(Func<Task<TExecutionResult>> action, object payload)
+  private async Task<TExecutionResult> Execute<TExecutionResult>(
+    Func<Task<TExecutionResult>> action,
+    object payload
+  )
   {
     var name = payload.GetType().Name;
 
@@ -82,9 +95,20 @@ public class Dispatcher(
       TExecutionResult result = await action();
       watch.Stop();
 
-      using (logger.BeginScope(new Dictionary<string, object> { ["Duration"] = watch.ElapsedMilliseconds }))
+      using (
+        logger.BeginScope(
+          new Dictionary<string, object>
+          {
+            ["Duration"] = watch.ElapsedMilliseconds,
+          }
+        )
+      )
       {
-        logger.LogInformation("{Name}: Completed in {WatchElapsedMilliseconds}ms", name, watch.ElapsedMilliseconds);
+        logger.LogInformation(
+          "{Name}: Completed in {WatchElapsedMilliseconds}ms",
+          name,
+          watch.ElapsedMilliseconds
+        );
       }
 
       return result;

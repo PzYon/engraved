@@ -23,7 +23,11 @@ public class FileAcceptor(
 
     foreach (FileRef file in fromClient)
     {
-      accepted.Add(storedById.TryGetValue(file.Id, out FileRef? existing) ? existing : await AcceptNew(file));
+      accepted.Add(
+        storedById.TryGetValue(file.Id, out FileRef? existing)
+          ? existing
+          : await AcceptNew(file)
+      );
     }
 
     // Files the client left out are dropped from the entry here, but their blobs are not: the delete
@@ -55,13 +59,17 @@ public class FileAcceptor(
     // check, so a shared journal's collaborators can still edit a scrap holding someone else's file.
     if (!fileIdFactory.BelongsToUser(file.Id, currentUser.Value.Id!))
     {
-      throw new NotAllowedOperationException("File does not exist or was not uploaded by you.");
+      throw new NotAllowedOperationException(
+        "File does not exist or was not uploaded by you."
+      );
     }
 
     var contentLength = await fileStore.GetContentLength(file.Id);
     if (contentLength == null)
     {
-      throw new NotAllowedOperationException("File does not exist or was not uploaded by you.");
+      throw new NotAllowedOperationException(
+        "File does not exist or was not uploaded by you."
+      );
     }
 
     if (contentLength > FileSizeLimits.MaxFileSizeBytes)

@@ -23,12 +23,25 @@ public class GetAllJournalEntriesQueryExecutorShould
   [Test]
   public async Task Sort_ScrapsJournal_By_EditedOn_Descending()
   {
-    UpsertResult scrapsJournal = await _repo.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+    UpsertResult scrapsJournal = await _repo.UpsertJournal(
+      new ScrapsJournal { Name = "My Scrap" }
+    );
 
-    var olderButRecentlyEditedId = await AddScrap(scrapsJournal.EntityId, DateTime.Now.AddDays(-10), DateTime.Now);
-    var newerButEditedLongAgoId = await AddScrap(scrapsJournal.EntityId, DateTime.Now, DateTime.Now.AddDays(-10));
+    var olderButRecentlyEditedId = await AddScrap(
+      scrapsJournal.EntityId,
+      DateTime.Now.AddDays(-10),
+      DateTime.Now
+    );
+    var newerButEditedLongAgoId = await AddScrap(
+      scrapsJournal.EntityId,
+      DateTime.Now,
+      DateTime.Now.AddDays(-10)
+    );
 
-    var entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
+    var entries = await new GetAllJournalEntriesQueryExecutor(
+      _repo,
+      _repo
+    ).Execute(
       new GetAllJournalEntriesQuery { JournalId = scrapsJournal.EntityId }
     );
 
@@ -40,7 +53,9 @@ public class GetAllJournalEntriesQueryExecutorShould
   [Test]
   public async Task Sort_NonScrapsJournal_By_DateTime_Descending()
   {
-    UpsertResult counterJournal = await _repo.UpsertJournal(new CounterJournal { Name = "My Counter" });
+    UpsertResult counterJournal = await _repo.UpsertJournal(
+      new CounterJournal { Name = "My Counter" }
+    );
 
     var olderButRecentlyEditedId = await AddCounterEntry(
       counterJournal.EntityId,
@@ -53,7 +68,10 @@ public class GetAllJournalEntriesQueryExecutorShould
       DateTime.Now.AddDays(-10)
     );
 
-    var entries = await new GetAllJournalEntriesQueryExecutor(_repo, _repo).Execute(
+    var entries = await new GetAllJournalEntriesQueryExecutor(
+      _repo,
+      _repo
+    ).Execute(
       new GetAllJournalEntriesQuery { JournalId = counterJournal.EntityId }
     );
 
@@ -62,7 +80,11 @@ public class GetAllJournalEntriesQueryExecutorShould
     entries[1].Id.Should().Be(olderButRecentlyEditedId);
   }
 
-  private async Task<string> AddScrap(string journalId, DateTime dateTime, DateTime editedOn)
+  private async Task<string> AddScrap(
+    string journalId,
+    DateTime dateTime,
+    DateTime editedOn
+  )
   {
     var entry = new ScrapsEntry
     {
@@ -78,7 +100,11 @@ public class GetAllJournalEntriesQueryExecutorShould
     return result.EntityId;
   }
 
-  private async Task<string> AddCounterEntry(string journalId, DateTime dateTime, DateTime editedOn)
+  private async Task<string> AddCounterEntry(
+    string journalId,
+    DateTime dateTime,
+    DateTime editedOn
+  )
   {
     var entry = new CounterEntry
     {

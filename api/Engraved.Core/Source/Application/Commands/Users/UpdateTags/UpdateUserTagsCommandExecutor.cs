@@ -4,8 +4,10 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Users.UpdateTags;
 
-public class UpdateUserTagsCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
-  : ICommandExecutor<UpdateUserTagsCommand>
+public class UpdateUserTagsCommandExecutor(
+  IUserRepository userRepository,
+  Lazy<IUser> currentUser
+) : ICommandExecutor<UpdateUserTagsCommand>
 {
   public async Task<CommandResult> Execute(UpdateUserTagsCommand command)
   {
@@ -24,7 +26,11 @@ public class UpdateUserTagsCommandExecutor(IUserRepository userRepository, Lazy<
     }
 
     // all tags that were defined, but aren't anymore
-    foreach (UserTag userTag in user.Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id)).ToList())
+    foreach (
+      UserTag userTag in user
+        .Tags.Where(tag => !command.TagNames.ContainsKey(tag.Id))
+        .ToList()
+    )
     {
       user.Tags.Remove(userTag);
     }

@@ -46,28 +46,66 @@ public static class ExecutorRegistration
   public static void RegisterCommands(IServiceCollection services)
   {
     RegisterCommand<AddJournalCommand, AddJournalCommandExecutor>(services);
-    RegisterCommand<AddJournalToFavoritesCommand, AddJournalToFavoritesCommandExecutor>(services);
-    RegisterCommand<UpdateJournalUserTagsCommand, UpdateJournalUserTagsCommandExecutor>(services);
-    RegisterCommand<UpdateUserTagsCommand, UpdateUserTagsCommandExecutor>(services);
-    RegisterCommand<UpsertCounterEntryCommand, UpsertCounterEntryCommandExecutor>(services);
-    RegisterCommand<UpsertGaugeEntryCommand, UpsertGaugeEntryCommandExecutor>(services);
-    RegisterCommand<UpsertScrapsEntryCommand, UpsertScrapsEntryCommandExecutor>(services);
-    RegisterCommand<UpsertLogBookEntryCommand, UpsertLogBookEntryCommandExecutor>(services);
-    RegisterCommand<UpsertTimerEntryCommand, UpsertTimerEntryCommandExecutor>(services);
+    RegisterCommand<
+      AddJournalToFavoritesCommand,
+      AddJournalToFavoritesCommandExecutor
+    >(services);
+    RegisterCommand<
+      UpdateJournalUserTagsCommand,
+      UpdateJournalUserTagsCommandExecutor
+    >(services);
+    RegisterCommand<UpdateUserTagsCommand, UpdateUserTagsCommandExecutor>(
+      services
+    );
+    RegisterCommand<
+      UpsertCounterEntryCommand,
+      UpsertCounterEntryCommandExecutor
+    >(services);
+    RegisterCommand<UpsertGaugeEntryCommand, UpsertGaugeEntryCommandExecutor>(
+      services
+    );
+    RegisterCommand<UpsertScrapsEntryCommand, UpsertScrapsEntryCommandExecutor>(
+      services
+    );
+    RegisterCommand<
+      UpsertLogBookEntryCommand,
+      UpsertLogBookEntryCommandExecutor
+    >(services);
+    RegisterCommand<UpsertTimerEntryCommand, UpsertTimerEntryCommandExecutor>(
+      services
+    );
     RegisterCommand<DeleteEntryCommand, DeleteEntryCommandExecutor>(services);
-    RegisterCommand<DeleteJournalCommand, DeleteJournalCommandExecutor>(services);
+    RegisterCommand<DeleteJournalCommand, DeleteJournalCommandExecutor>(
+      services
+    );
     RegisterCommand<EditJournalCommand, EditJournalCommandExecutor>(services);
-    RegisterCommand<EditJournalPermissionsCommand, EditJournalPermissionsCommandExecutor>(services);
+    RegisterCommand<
+      EditJournalPermissionsCommand,
+      EditJournalPermissionsCommandExecutor
+    >(services);
     RegisterCommand<MoveEntryCommand, MoveEntryCommandExecutor>(services);
-    RegisterCommand<RemoveJournalFromFavoritesCommand, RemoveJournalFromFavoritesCommandExecutor>(services);
+    RegisterCommand<
+      RemoveJournalFromFavoritesCommand,
+      RemoveJournalFromFavoritesCommandExecutor
+    >(services);
     RegisterCommand<CleanupTagsCommand, CleanupTagsCommandExecutor>(services);
-    RegisterCommand<AddScheduleToJournalCommand, AddScheduleToJournalCommandExecutor>(services);
-    RegisterCommand<AddScheduleToEntryCommand, AddScheduleToEntryCommandExecutor>(services);
+    RegisterCommand<
+      AddScheduleToJournalCommand,
+      AddScheduleToJournalCommandExecutor
+    >(services);
+    RegisterCommand<
+      AddScheduleToEntryCommand,
+      AddScheduleToEntryCommandExecutor
+    >(services);
     RegisterCommand<DeleteUserCommand, DeleteUserCommandExecutor>(services);
-    RegisterCommand<SaveScratchpadCommand, SaveScratchpadCommandExecutor>(services);
+    RegisterCommand<SaveScratchpadCommand, SaveScratchpadCommandExecutor>(
+      services
+    );
   }
 
-  private static void RegisterCommand<TCommand, TCommandExecutor>(IServiceCollection services)
+  private static void RegisterCommand<TCommand, TCommandExecutor>(
+    IServiceCollection services
+  )
     where TCommand : ICommand
     where TCommandExecutor : class, ICommandExecutor<TCommand>
   {
@@ -76,23 +114,65 @@ public static class ExecutorRegistration
 
   public static void RegisterQueries(IServiceCollection services)
   {
-    RegisterQuery<IEntry?, GetActiveEntryQuery, GetActiveEntryQueryExecutor>(services);
+    RegisterQuery<IEntry?, GetActiveEntryQuery, GetActiveEntryQueryExecutor>(
+      services
+    );
     RegisterQuery<IEntry?, GetEntryQuery, GetEntryQueryExecutor>(services);
-    RegisterQuery<SearchEntriesQueryResult, SearchEntriesQuery, SearchEntriesQueryExecutor>(services);
-    RegisterQuery<IEntry[], GetAllJournalEntriesQuery, GetAllJournalEntriesQueryExecutor>(services);
-    RegisterQuery<IJournal[], GetAllJournalsQuery, GetAllJournalsQueryExecutor>(services);
-    RegisterQuery<IJournal?, GetJournalQuery, GetJournalQueryExecutor>(services);
-    RegisterQuery<SearchEntitiesResult, SearchEntitiesQuery, SearchEntitiesQueryExecutor>(services);
-    RegisterQuery<SearchEntitiesResult, GetRelatedEntitiesQuery, GetRelatedEntitiesQueryExecutor>(services);
-    RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(services);
-    RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(services);
-    RegisterQuery<AdminUserItem[], GetAdminUsersOverviewQuery, GetAdminUsersOverviewQueryExecutor>(services);
-    RegisterQuery<CreateFileUploadResult, CreateFileUploadQuery, CreateFileUploadQueryExecutor>(services);
-    RegisterQuery<GetFileUrlResult?, GetFileUrlQuery, GetFileUrlQueryExecutor>(services);
-    RegisterQuery<UserScratchpad?, GetScratchpadQuery, GetScratchpadQueryExecutor>(services);
+    RegisterQuery<
+      SearchEntriesQueryResult,
+      SearchEntriesQuery,
+      SearchEntriesQueryExecutor
+    >(services);
+    RegisterQuery<
+      IEntry[],
+      GetAllJournalEntriesQuery,
+      GetAllJournalEntriesQueryExecutor
+    >(services);
+    RegisterQuery<IJournal[], GetAllJournalsQuery, GetAllJournalsQueryExecutor>(
+      services
+    );
+    RegisterQuery<IJournal?, GetJournalQuery, GetJournalQueryExecutor>(
+      services
+    );
+    RegisterQuery<
+      SearchEntitiesResult,
+      SearchEntitiesQuery,
+      SearchEntitiesQueryExecutor
+    >(services);
+    RegisterQuery<
+      SearchEntitiesResult,
+      GetRelatedEntitiesQuery,
+      GetRelatedEntitiesQueryExecutor
+    >(services);
+    RegisterQuery<SystemInfo, GetSystemInfoQuery, GetSystemInfoQueryExecutor>(
+      services
+    );
+    RegisterQuery<ExportedDataResult, ExportDataQuery, ExportDataQueryExecutor>(
+      services
+    );
+    RegisterQuery<
+      AdminUserItem[],
+      GetAdminUsersOverviewQuery,
+      GetAdminUsersOverviewQueryExecutor
+    >(services);
+    RegisterQuery<
+      CreateFileUploadResult,
+      CreateFileUploadQuery,
+      CreateFileUploadQueryExecutor
+    >(services);
+    RegisterQuery<GetFileUrlResult?, GetFileUrlQuery, GetFileUrlQueryExecutor>(
+      services
+    );
+    RegisterQuery<
+      UserScratchpad?,
+      GetScratchpadQuery,
+      GetScratchpadQueryExecutor
+    >(services);
   }
 
-  private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(IServiceCollection services)
+  private static void RegisterQuery<TResult, TQuery, TQueryExecutor>(
+    IServiceCollection services
+  )
     where TQuery : IQuery
     where TQueryExecutor : class, IQueryExecutor<TResult, TQuery>
   {

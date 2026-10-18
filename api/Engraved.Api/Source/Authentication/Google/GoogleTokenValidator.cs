@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 
 namespace Engraved.Api.Authentication.Google;
 
-public class GoogleTokenValidator(AuthenticationConfig configuration) : IGoogleTokenValidator
+public class GoogleTokenValidator(AuthenticationConfig configuration)
+  : IGoogleTokenValidator
 {
   public GoogleTokenValidator(IOptions<AuthenticationConfig> configuration)
     : this(configuration.Value) { }
@@ -25,7 +26,8 @@ public class GoogleTokenValidator(AuthenticationConfig configuration) : IGoogleT
         Audience = [configuration.GoogleClientId],
       };
 
-      GoogleJsonWebSignature.Payload? payload = await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
+      GoogleJsonWebSignature.Payload? payload =
+        await GoogleJsonWebSignature.ValidateAsync(idToken, validationSettings);
 
       return new ParsedToken
       {
@@ -36,7 +38,9 @@ public class GoogleTokenValidator(AuthenticationConfig configuration) : IGoogleT
     }
     catch (Exception ex)
     {
-      throw new GoogleTokenValidationException($"Failed to validate google token: {ex.Message}");
+      throw new GoogleTokenValidationException(
+        $"Failed to validate google token: {ex.Message}"
+      );
     }
   }
 }

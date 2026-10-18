@@ -13,7 +13,11 @@ namespace Engraved.Api.Bootstrap;
 
 public static class PersistenceRegistration
 {
-  public static void RegisterPersistence(IServiceCollection services, IConfiguration configuration, bool isE2ETests)
+  public static void RegisterPersistence(
+    IServiceCollection services,
+    IConfiguration configuration,
+    bool isE2ETests
+  )
   {
     // it is recommended to only have one instance of the MongoClient:
     // https://mongodb.github.io/mongo-csharp-driver/2.14/reference/driver/connecting/#re-use
@@ -29,7 +33,9 @@ public static class PersistenceRegistration
     RegisterUnrestrictedRepository(services);
   }
 
-  private static void RegisterUserRestrictedRepository(IServiceCollection services)
+  private static void RegisterUserRestrictedRepository(
+    IServiceCollection services
+  )
   {
     // Scoped so the current user is loaded from the database at most once per request: the same
     // Lazy<IUser> instance is shared by the read scope, the write guards and every consumer
@@ -47,20 +53,29 @@ public static class PersistenceRegistration
     // by UserReadScope, writes guarded by JournalWriteGuard), so executors that depend on just the
     // role(s) they use transparently get permission enforcement. Consumers that need unrestricted
     // access inject IUnrestrictedRepository (above) instead.
-    services.AddTransient<IUserRepository>(provider => new UserRestrictedUserRepository(
-      new MongoUserRepository(GetMongoDatabaseClient(provider)),
-      CreateWriteGuard(provider)
-    ));
+    services.AddTransient<IUserRepository>(
+      provider => new UserRestrictedUserRepository(
+        new MongoUserRepository(GetMongoDatabaseClient(provider)),
+        CreateWriteGuard(provider)
+      )
+    );
 
-    services.AddTransient<IJournalRepository>(provider => new UserRestrictedJournalRepository(
-      CreateUserScopedJournalRepository(provider),
-      CreateWriteGuard(provider)
-    ));
+    services.AddTransient<IJournalRepository>(
+      provider => new UserRestrictedJournalRepository(
+        CreateUserScopedJournalRepository(provider),
+        CreateWriteGuard(provider)
+      )
+    );
 
-    services.AddTransient<IEntryRepository>(provider => new UserRestrictedEntryRepository(
-      new MongoEntryRepository(GetMongoDatabaseClient(provider), CreateUserScopedJournalRepository(provider)),
-      CreateWriteGuard(provider)
-    ));
+    services.AddTransient<IEntryRepository>(
+      provider => new UserRestrictedEntryRepository(
+        new MongoEntryRepository(
+          GetMongoDatabaseClient(provider),
+          CreateUserScopedJournalRepository(provider)
+        ),
+        CreateWriteGuard(provider)
+      )
+    );
 
     // PermissionsEnsurer deliberately works on the plain (unguarded) user repository: granting a
     // permission may create the receiving user's record, which the ownership guard on the
@@ -68,12 +83,16 @@ public static class PersistenceRegistration
     // enforced by its consumer (EditJournalPermissionsCommandExecutor).
     services.AddTransient<PermissionsEnsurer>(provider =>
     {
-      var userRepository = new MongoUserRepository(provider.GetRequiredService<MongoDatabaseClient>());
+      var userRepository = new MongoUserRepository(
+        provider.GetRequiredService<MongoDatabaseClient>()
+      );
       return new PermissionsEnsurer(userRepository);
     });
   }
 
-  private static void RegisterUnrestrictedRepository(IServiceCollection services)
+  private static void RegisterUnrestrictedRepository(
+    IServiceCollection services
+  )
   {
     services.AddTransient<IUnrestrictedRepository>(provider =>
     {
@@ -81,10 +100,14 @@ public static class PersistenceRegistration
       return new UnrestrictedMongoRepository(mongoDbClient);
     });
 
-    services.AddTransient<IMaintenanceRepository>(provider => provider.GetRequiredService<IUnrestrictedRepository>());
+    services.AddTransient<IMaintenanceRepository>(provider =>
+      provider.GetRequiredService<IUnrestrictedRepository>()
+    );
   }
 
-  private static MongoJournalRepository CreateUserScopedJournalRepository(IServiceProvider provider)
+  private static MongoJournalRepository CreateUserScopedJournalRepository(
+    IServiceProvider provider
+  )
   {
     return new MongoJournalRepository(
       GetMongoDatabaseClient(provider),
@@ -100,7 +123,9 @@ public static class PersistenceRegistration
     );
   }
 
-  private static MongoDatabaseClient GetMongoDatabaseClient(IServiceProvider provider)
+  private static MongoDatabaseClient GetMongoDatabaseClient(
+    IServiceProvider provider
+  )
   {
     return provider.GetRequiredService<MongoDatabaseClient>();
   }
@@ -110,14 +135,21 @@ public static class PersistenceRegistration
     return isE2ETests ? "engraved_e2e_tests" : null;
   }
 
-  private static MongoRepositorySettings CreateRepositorySettings(IConfiguration configuration, bool isE2ETests)
+  private static MongoRepositorySettings CreateRepositorySettings(
+    IConfiguration configuration,
+    bool isE2ETests
+  )
   {
     var connectionString = configuration.GetConnectionString("engraved_db");
     if (string.IsNullOrEmpty(connectionString) && !isE2ETests)
     {
-      throw new InvalidOperationException("App Service Config: No connection string available.");
+      throw new InvalidOperationException(
+        "App Service Config: No connection string available."
+      );
     }
 
-    return new MongoRepositorySettings(connectionString ?? "mongodb://localhost:27017");
+    return new MongoRepositorySettings(
+      connectionString ?? "mongodb://localhost:27017"
+    );
   }
 }

@@ -11,19 +11,24 @@ public class UpsertTimerEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<UpsertTimerEntryCommand, TimerEntry, TimerJournal>(
-    journalRepository,
-    entryRepository,
-    dateService,
-    fileAcceptor
-  )
+  : BaseUpsertEntryCommandExecutor<
+    UpsertTimerEntryCommand,
+    TimerEntry,
+    TimerJournal
+  >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override async Task<TimerEntry?> LoadEntryToUpdate(UpsertTimerEntryCommand command, TimerJournal journal)
+  protected override async Task<TimerEntry?> LoadEntryToUpdate(
+    UpsertTimerEntryCommand command,
+    TimerJournal journal
+  )
   {
     return await GetActiveEntry(EntryRepository, journal);
   }
 
-  protected override void SetTypeSpecificValues(UpsertTimerEntryCommand command, TimerEntry entry)
+  protected override void SetTypeSpecificValues(
+    UpsertTimerEntryCommand command,
+    TimerEntry entry
+  )
   {
     if (IsNewWithBlankCommand(command, entry))
     {
@@ -40,7 +45,10 @@ public class UpsertTimerEntryCommandExecutor(
 
     if (command.StartDate == null)
     {
-      throw new InvalidCommandException(command, $"Cannot set {nameof(command.StartDate)} to null.");
+      throw new InvalidCommandException(
+        command,
+        $"Cannot set {nameof(command.StartDate)} to null."
+      );
     }
 
     entry.DateTime = command.StartDate;
@@ -48,12 +56,18 @@ public class UpsertTimerEntryCommandExecutor(
     entry.EndDate = command.EndDate;
   }
 
-  private static bool IsNewWithBlankCommand(UpsertTimerEntryCommand command, TimerEntry entry)
+  private static bool IsNewWithBlankCommand(
+    UpsertTimerEntryCommand command,
+    TimerEntry entry
+  )
   {
     return string.IsNullOrEmpty(entry.Id) && command.StartDate == null;
   }
 
-  private static bool IsAutoSetOfEndDate(UpsertTimerEntryCommand command, TimerEntry entry)
+  private static bool IsAutoSetOfEndDate(
+    UpsertTimerEntryCommand command,
+    TimerEntry entry
+  )
   {
     return !string.IsNullOrEmpty(entry.Id)
       && (entry.StartDate == command.StartDate || command.StartDate == null)
@@ -61,13 +75,18 @@ public class UpsertTimerEntryCommandExecutor(
       && command.EndDate == null;
   }
 
-  public static async Task<TimerEntry?> GetActiveEntry(IEntryRepository repository, TimerJournal journal)
+  public static async Task<TimerEntry?> GetActiveEntry(
+    IEntryRepository repository,
+    TimerJournal journal
+  )
   {
     // we get all entries here from the db and do the following filtering
     // in memory. this could be improved, however it would require new method(s)
     // in IDb. for the time being we will skip that.
     var allEntries = await repository.GetEntriesForJournal(journal.Id!);
 
-    return allEntries.OfType<TimerEntry>().FirstOrDefault(m => m.EndDate == null);
+    return allEntries
+      .OfType<TimerEntry>()
+      .FirstOrDefault(m => m.EndDate == null);
   }
 }

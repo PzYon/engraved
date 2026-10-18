@@ -21,7 +21,10 @@ public class EntryDocumentMapperShould
       Id = Id,
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
     };
 
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
@@ -40,7 +43,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
     };
 
     IEntry counterEntry = EntryDocumentMapper.FromDocument(document);
@@ -57,7 +63,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Value = 4.20,
     };
 
@@ -81,7 +90,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Value = 4321,
     };
 
@@ -98,7 +110,10 @@ public class EntryDocumentMapperShould
       Id = Id,
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100),
     };
@@ -124,7 +139,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       StartDate = DateTime.UtcNow.AddHours(-200),
       EndDate = DateTime.UtcNow.AddHours(-100),
     };
@@ -143,7 +161,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Title = "scrap title",
       ScrapType = ScrapType.List,
     };
@@ -168,7 +189,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Title = "scrap title",
       ScrapType = ScrapType.List,
     };
@@ -191,7 +215,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Title = "log book title",
     };
 
@@ -214,7 +241,10 @@ public class EntryDocumentMapperShould
       Notes = "n0t3",
       ParentId = Key,
       DateTime = DateTime.UtcNow,
-      JournalAttributeValues = new Dictionary<string, string[]> { { "wh@t3v3r", ["bla"] } },
+      JournalAttributeValues = new Dictionary<string, string[]>
+      {
+        { "wh@t3v3r", ["bla"] },
+      },
       Title = "log book title",
     };
 
@@ -231,7 +261,9 @@ public class EntryDocumentMapperShould
     actual.DateTime.Should().Be(expected.DateTime);
     actual.Notes.Should().Be(expected.Notes);
     actual.ParentId.Should().Be(expected.ParentId);
-    actual.JournalAttributeValues.Should().BeEquivalentTo(expected.JournalAttributeValues);
+    actual
+      .JournalAttributeValues.Should()
+      .BeEquivalentTo(expected.JournalAttributeValues);
   }
 
   private static void AssertEqual(EntryDocument expected, IEntry actual)
@@ -240,6 +272,8 @@ public class EntryDocumentMapperShould
     actual.DateTime.Should().Be(expected.DateTime);
     actual.Notes.Should().Be(expected.Notes);
     actual.ParentId.Should().Be(expected.ParentId);
-    actual.JournalAttributeValues.Should().BeEquivalentTo(expected.JournalAttributeValues);
+    actual
+      .JournalAttributeValues.Should()
+      .BeEquivalentTo(expected.JournalAttributeValues);
   }
 }

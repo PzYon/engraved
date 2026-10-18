@@ -59,9 +59,12 @@ public class DeleteEntryCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = entryId }
-    );
+    CommandResult result = await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = entryId });
 
     // then
     (await _repo.GetEntry(entryId))
@@ -69,7 +72,9 @@ public class DeleteEntryCommandExecutorShould
       .BeNull();
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
-    journal.EditedOn.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    journal
+      .EditedOn.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
     result.EntityId.Should().Be(entryId);
     result.AffectedUserIds.Should().Contain(otherUserId);
@@ -108,9 +113,12 @@ public class DeleteEntryCommandExecutorShould
       }
     );
 
-    await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = entryId }
-    );
+    await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = entryId });
 
     _fileStore.DeletedFileIds.Should().BeEquivalentTo("file-one", "file-two");
   }
@@ -121,9 +129,12 @@ public class DeleteEntryCommandExecutorShould
     const string missingEntryId = "60703c3b0000000000000004";
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = missingEntryId }
-    );
+    CommandResult result = await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = missingEntryId });
 
     // then
     result.EntityId.Should().BeNull();

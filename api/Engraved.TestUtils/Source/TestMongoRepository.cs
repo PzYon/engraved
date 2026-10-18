@@ -19,7 +19,10 @@ public class TestMongoRepository : UnrestrictedMongoRepository
     _mongoDatabaseClient = mongoDatabaseClient;
   }
 
-  public IMongoCollection<JournalDocument> Journals => _mongoDatabaseClient.JournalsCollection;
-  public IMongoCollection<EntryDocument> Entries => _mongoDatabaseClient.EntriesCollection;
-  public IMongoCollection<UserDocument> Users => _mongoDatabaseClient.UsersCollection;
+  public IMongoCollection<JournalDocument> Journals =>
+    _mongoDatabaseClient.JournalsCollection;
+  public IMongoCollection<EntryDocument> Entries =>
+    _mongoDatabaseClient.EntriesCollection;
+  public IMongoCollection<UserDocument> Users =>
+    _mongoDatabaseClient.UsersCollection;
 }

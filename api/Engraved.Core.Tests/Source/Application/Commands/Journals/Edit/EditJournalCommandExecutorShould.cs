@@ -56,7 +56,9 @@ public class EditJournalCommandExecutorShould
         },
       }
     );
-    await _repo.UpsertJournal(new GaugeJournal { Id = otherJournalId, Name = "other-journal" });
+    await _repo.UpsertJournal(
+      new GaugeJournal { Id = otherJournalId, Name = "other-journal" }
+    );
 
     await _repo.UpsertEntry(
       new GaugeEntry
@@ -76,7 +78,10 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId2,
         ParentId = journalId,
-        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } },
+        JournalAttributeValues = new Dictionary<string, string[]>
+        {
+          { "color", ["red"] },
+        },
       }
     );
     await _repo.UpsertEntry(
@@ -84,11 +89,18 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId3,
         ParentId = otherJournalId,
-        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] } },
+        JournalAttributeValues = new Dictionary<string, string[]>
+        {
+          { "color", ["red"] },
+        },
       }
     );
 
-    await new EditJournalCommandExecutor(_repo, _repo, new FakeDateService()).Execute(
+    await new EditJournalCommandExecutor(
+      _repo,
+      _repo,
+      new FakeDateService()
+    ).Execute(
       new EditJournalCommand
       {
         JournalId = journalId,
@@ -109,9 +121,17 @@ public class EditJournalCommandExecutorShould
 
     var editedJournalEntries = await _repo.GetEntriesForJournal(journalId);
     editedJournalEntries.Should().HaveCount(2);
-    editedJournalEntries.Should().OnlyContain(entry => !entry.JournalAttributeValues.ContainsKey("color"));
-    editedJournalEntries.SelectMany(entry => entry.JournalAttributeValues.Keys).Should().Contain("size");
-    editedJournalEntries.SelectMany(entry => entry.JournalAttributeValues.Keys).Should().Contain("other");
+    editedJournalEntries
+      .Should()
+      .OnlyContain(entry => !entry.JournalAttributeValues.ContainsKey("color"));
+    editedJournalEntries
+      .SelectMany(entry => entry.JournalAttributeValues.Keys)
+      .Should()
+      .Contain("size");
+    editedJournalEntries
+      .SelectMany(entry => entry.JournalAttributeValues.Keys)
+      .Should()
+      .Contain("other");
 
     IEntry? otherJournalEntry = await _repo.GetEntry(entryId3);
     otherJournalEntry.Should().NotBeNull();
@@ -156,11 +176,19 @@ public class EditJournalCommandExecutorShould
       {
         Id = entryId,
         ParentId = journalId,
-        JournalAttributeValues = new Dictionary<string, string[]> { { "color", ["red"] }, { "size", ["large"] } },
+        JournalAttributeValues = new Dictionary<string, string[]>
+        {
+          { "color", ["red"] },
+          { "size", ["large"] },
+        },
       }
     );
 
-    await new EditJournalCommandExecutor(_repo, _repo, new FakeDateService()).Execute(
+    await new EditJournalCommandExecutor(
+      _repo,
+      _repo,
+      new FakeDateService()
+    ).Execute(
       new EditJournalCommand
       {
         JournalId = journalId,

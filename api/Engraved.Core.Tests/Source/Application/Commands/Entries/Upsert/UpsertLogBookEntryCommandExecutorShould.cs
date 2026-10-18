@@ -47,7 +47,10 @@ public class UpsertLogBookEntryCommandExecutorShould
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
-    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("some notes");
+    (await _testRepository.GetEntriesForJournal(JournalId))
+      .First()
+      .Notes.Should()
+      .Be("some notes");
   }
 
   [Test]
@@ -68,7 +71,9 @@ public class UpsertLogBookEntryCommandExecutorShould
       TestFileAcceptor.Create()
     ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
     ((LogBookEntry)entry).Title.Should().Be("some title");
   }
 
@@ -90,7 +95,9 @@ public class UpsertLogBookEntryCommandExecutorShould
       TestFileAcceptor.Create()
     ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
     ((LogBookEntry)entry).Title.Should().BeNull();
   }
 
@@ -174,8 +181,12 @@ public class UpsertLogBookEntryCommandExecutorShould
       TestFileAcceptor.Create()
     ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
-    entry.DateTime.Should().Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
+    entry
+      .DateTime.Should()
+      .Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
     entry.DateTime!.Value.TimeOfDay.Should().Be(TimeSpan.Zero);
     entry.DateTime!.Value.Kind.Should().Be(DateTimeKind.Utc);
   }
@@ -245,6 +256,9 @@ public class UpsertLogBookEntryCommandExecutorShould
     ).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
-    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("updated notes");
+    (await _testRepository.GetEntriesForJournal(JournalId))
+      .First()
+      .Notes.Should()
+      .Be("updated notes");
   }
 }

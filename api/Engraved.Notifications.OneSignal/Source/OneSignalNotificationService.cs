@@ -7,9 +7,14 @@ using OneSignalApi.Model;
 
 namespace Engraved.Notifications.OneSignal;
 
-public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : INotificationService
+public class OneSignalNotificationService(IOptions<OneSignalConfig> config)
+  : INotificationService
 {
-  public async Task<string?> SendNotification(ClientNotification clientNotification, string entityId, bool doNotSend)
+  public async Task<string?> SendNotification(
+    ClientNotification clientNotification,
+    string entityId,
+    bool doNotSend
+  )
   {
     EnsureValidConfig();
 
@@ -24,14 +29,20 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
     // https://github.com/OneSignal/onesignal-dotnet-api/blob/main/docs/Notification.md
     // https://documentation.onesignal.com/docs/push-notification-guide
 
-    var notificationKey = (entityId + "::" + clientNotification.UserId).Replace("-", "");
+    var notificationKey = (entityId + "::" + clientNotification.UserId).Replace(
+      "-",
+      ""
+    );
 
     var notification = new Notification(
       appId: config.Value.AppId,
       webPushTopic: notificationKey,
       collapseId: notificationKey,
       targetChannel: Notification.TargetChannelEnum.Push,
-      includeAliases: new Dictionary<string, List<string>> { { "external_id", [clientNotification.UserId] } },
+      includeAliases: new Dictionary<string, List<string>>
+      {
+        { "external_id", [clientNotification.UserId] },
+      },
       headings: new LanguageStringMap(clientNotification.Title),
       contents: new LanguageStringMap(clientNotification.Message),
       url: clientNotification.OnClickUrl,
@@ -61,7 +72,8 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
       return null;
     }
 
-    CreateNotificationSuccessResponse response = await GetApiInstance().CreateNotificationAsync(notification);
+    CreateNotificationSuccessResponse response = await GetApiInstance()
+      .CreateNotificationAsync(notification);
 
     return response.Id;
   }
@@ -86,7 +98,11 @@ public class OneSignalNotificationService(IOptions<OneSignalConfig> config) : IN
   private DefaultApi GetApiInstance()
   {
     return new DefaultApi(
-      new Configuration { BasePath = "https://onesignal.com/api/v1", AccessToken = config.Value.AppSecret }
+      new Configuration
+      {
+        BasePath = "https://onesignal.com/api/v1",
+        AccessToken = config.Value.AppSecret,
+      }
     );
   }
 }

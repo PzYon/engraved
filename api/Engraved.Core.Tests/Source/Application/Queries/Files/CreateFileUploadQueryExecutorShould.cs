@@ -29,10 +29,18 @@ public class CreateFileUploadQueryExecutorShould
   {
     _seedRepo = await Util.CreateMongoRepository();
 
-    var userId = (await _seedRepo.UpsertUser(new User { Name = UserName })).EntityId;
-    _otherUserId = (await _seedRepo.UpsertUser(new User { Name = OtherUserName })).EntityId;
+    var userId = (
+      await _seedRepo.UpsertUser(new User { Name = UserName })
+    ).EntityId;
+    _otherUserId = (
+      await _seedRepo.UpsertUser(new User { Name = OtherUserName })
+    ).EntityId;
 
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserName, userId, true);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserName,
+      userId,
+      true
+    );
     _fileStore = new FakeFileStore();
     _fileIdFactory = new FileIdFactory("test-signing-key");
   }
@@ -61,8 +69,14 @@ public class CreateFileUploadQueryExecutorShould
 
     CreateFileUploadResult result = await Execute(journalId);
 
-    _fileIdFactory.BelongsToUser(result.File.Id, _repo.CurrentUser.Value.Id!).Should().BeTrue();
-    _fileIdFactory.BelongsToUser(result.File.Id, _otherUserId).Should().BeFalse();
+    _fileIdFactory
+      .BelongsToUser(result.File.Id, _repo.CurrentUser.Value.Id!)
+      .Should()
+      .BeTrue();
+    _fileIdFactory
+      .BelongsToUser(result.File.Id, _otherUserId)
+      .Should()
+      .BeFalse();
   }
 
   // UploadedOn is stamped when the file is accepted onto an entry, not here. A FileRef minted at
@@ -92,7 +106,10 @@ public class CreateFileUploadQueryExecutorShould
   [Test]
   public async Task Return_UploadUrl_When_JournalIsSharedForWriting()
   {
-    var journalId = await AddJournal(_otherUserId, new PermissionDefinition { Kind = PermissionKind.Write });
+    var journalId = await AddJournal(
+      _otherUserId,
+      new PermissionDefinition { Kind = PermissionKind.Write }
+    );
 
     CreateFileUploadResult result = await Execute(journalId);
 
@@ -104,7 +121,10 @@ public class CreateFileUploadQueryExecutorShould
   [Test]
   public async Task Throw_When_JournalIsOnlyReadable()
   {
-    var journalId = await AddJournal(_otherUserId, new PermissionDefinition { Kind = PermissionKind.Read });
+    var journalId = await AddJournal(
+      _otherUserId,
+      new PermissionDefinition { Kind = PermissionKind.Read }
+    );
 
     Func<Task> act = async () => await Execute(journalId);
 
@@ -144,12 +164,18 @@ public class CreateFileUploadQueryExecutorShould
   {
     var journalId = await AddJournal(_repo.CurrentUser.Value.Id!);
 
-    CreateFileUploadResult result = await Execute(journalId, fileName: "eo\"l\r\ninjected: yes.png");
+    CreateFileUploadResult result = await Execute(
+      journalId,
+      fileName: "eo\"l\r\ninjected: yes.png"
+    );
 
     result.File.FileName.Should().Be("eolinjected: yes.png");
   }
 
-  private async Task<string> AddJournal(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
+  private async Task<string> AddJournal(
+    string ownerId,
+    PermissionDefinition? permissionForCurrentUser = null
+  )
   {
     var permissions = new UserPermissions();
 
@@ -171,7 +197,12 @@ public class CreateFileUploadQueryExecutorShould
     string fileName = "holiday.png"
   )
   {
-    return await new CreateFileUploadQueryExecutor(_repo, _fileStore, _fileIdFactory, _repo.CurrentUser).Execute(
+    return await new CreateFileUploadQueryExecutor(
+      _repo,
+      _fileStore,
+      _fileIdFactory,
+      _repo.CurrentUser
+    ).Execute(
       new CreateFileUploadQuery
       {
         JournalId = journalId,

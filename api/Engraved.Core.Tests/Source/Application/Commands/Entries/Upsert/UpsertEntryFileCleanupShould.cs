@@ -40,7 +40,9 @@ public class UpsertEntryFileCleanupShould
       _fileStore,
       _fileIdFactory,
       _dateService,
-      new Lazy<IUser>(() => new User { Id = TestIds.UserId, Name = TestIds.UserId })
+      new Lazy<IUser>(() =>
+        new User { Id = TestIds.UserId, Name = TestIds.UserId }
+      )
     );
 
     await _repo.UpsertJournal(new ScrapsJournal { Id = JournalId });
@@ -117,7 +119,12 @@ public class UpsertEntryFileCleanupShould
 
   private async Task Save(FileRef[] files)
   {
-    await new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, _fileAcceptor).Execute(
+    await new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      _fileAcceptor
+    ).Execute(
       new UpsertScrapsEntryCommand
       {
         Id = EntryId,

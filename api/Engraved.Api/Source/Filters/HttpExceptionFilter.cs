@@ -32,7 +32,8 @@ public class HttpExceptionFilter : IActionFilter
     {
       ITokenValidationException => StatusCodes.Status401Unauthorized,
       NotAllowedOperationException => StatusCodes.Status403Forbidden,
-      InvalidCommandException or InvalidQueryException => StatusCodes.Status400BadRequest,
+      InvalidCommandException or InvalidQueryException =>
+        StatusCodes.Status400BadRequest,
       _ => StatusCodes.Status500InternalServerError,
     };
   }

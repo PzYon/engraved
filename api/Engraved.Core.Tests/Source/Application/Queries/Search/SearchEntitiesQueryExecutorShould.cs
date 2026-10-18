@@ -28,7 +28,11 @@ public class SearchEntitiesQueryExecutorShould
   public async Task SetUp()
   {
     const string userId = TestIds.UserId;
-    _repo = await Util.CreateUserRestrictedMongoRepository(userId, userId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      userId,
+      userId,
+      false
+    );
 
     await _repo.UpsertUser(new User { Id = userId, Name = userId });
 
@@ -41,7 +45,11 @@ public class SearchEntitiesQueryExecutorShould
         NullLogger<Dispatcher>.Instance,
         new TestServiceProvider(_repo),
         _repo.CurrentUser,
-        new QueryCache(NullLogger<QueryCache>.Instance, new MemoryCache(new MemoryCacheOptions()), _repo.CurrentUser)
+        new QueryCache(
+          NullLogger<QueryCache>.Instance,
+          new MemoryCache(new MemoryCacheOptions()),
+          _repo.CurrentUser
+        )
       ),
       fakeCurrentUserService
     );
@@ -53,10 +61,15 @@ public class SearchEntitiesQueryExecutorShould
     await AddJournalToFindWithTwoEntriesToIgnore();
     await AddJournalToIgnoreWithOneEntryToFind();
 
-    SearchEntitiesResult result = await _searchExecutor.Execute(new SearchEntitiesQuery { SearchText = "Yes" });
+    SearchEntitiesResult result = await _searchExecutor.Execute(
+      new SearchEntitiesQuery { SearchText = "Yes" }
+    );
 
     result.Entities.Length.Should().Be(2);
-    result.Entities.Count(e => e.EntityType == EntityType.Journal).Should().Be(1);
+    result
+      .Entities.Count(e => e.EntityType == EntityType.Journal)
+      .Should()
+      .Be(1);
 
     result
       .Entities.Where(e => e.EntityType == EntityType.Journal)
@@ -75,10 +88,19 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand { Name = "Scrap Journal", Type = JournalType.Scraps }
+      new AddJournalCommand
+      {
+        Name = "Scrap Journal",
+        Type = JournalType.Scraps,
+      }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      TestFileAcceptor.Create()
+    );
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -89,13 +111,21 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     SearchEntitiesResult result1 = await _searchExecutor.Execute(
-      new SearchEntitiesQuery { SearchText = "Random", OnlyEntriesOfTypes = [JournalType.Scraps] }
+      new SearchEntitiesQuery
+      {
+        SearchText = "Random",
+        OnlyEntriesOfTypes = [JournalType.Scraps],
+      }
     );
 
     result1.Entities.Length.Should().Be(1);
 
     SearchEntitiesResult result2 = await _searchExecutor.Execute(
-      new SearchEntitiesQuery { SearchText = "Random", OnlyEntriesOfTypes = [JournalType.Gauge] }
+      new SearchEntitiesQuery
+      {
+        SearchText = "Random",
+        OnlyEntriesOfTypes = [JournalType.Gauge],
+      }
     );
 
     result2.Entities.Length.Should().Be(0);
@@ -122,10 +152,17 @@ public class SearchEntitiesQueryExecutorShould
   {
     var addJournalExecutor = new AddJournalCommandExecutor(_repo, _dateService);
     CommandResult commandResult = await addJournalExecutor.Execute(
-      new AddJournalCommand { Name = "Journal with Schedule", Type = JournalType.Scraps }
+      new AddJournalCommand
+      {
+        Name = "Journal with Schedule",
+        Type = JournalType.Scraps,
+      }
     );
 
-    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(_repo, _repo.CurrentUser);
+    var addScheduleExecutor = new AddScheduleToJournalCommandExecutor(
+      _repo,
+      _repo.CurrentUser
+    );
     await addScheduleExecutor.Execute(
       new AddScheduleToJournalCommand
       {
@@ -134,7 +171,12 @@ public class SearchEntitiesQueryExecutorShould
       }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      TestFileAcceptor.Create()
+    );
     CommandResult entryResult = await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -145,9 +187,17 @@ public class SearchEntitiesQueryExecutorShould
     );
 
     // the entry itself is scheduled, so it shows up in a "scheduled only" search.
-    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(_repo, _repo, _repo.CurrentUser);
+    var addEntryScheduleExecutor = new AddScheduleToEntryCommandExecutor(
+      _repo,
+      _repo,
+      _repo.CurrentUser
+    );
     await addEntryScheduleExecutor.Execute(
-      new AddScheduleToEntryCommand { EntryId = entryResult.EntityId, NextOccurrence = _dateService.UtcNow.AddDays(10) }
+      new AddScheduleToEntryCommand
+      {
+        EntryId = entryResult.EntityId,
+        NextOccurrence = _dateService.UtcNow.AddDays(10),
+      }
     );
   }
 
@@ -158,7 +208,12 @@ public class SearchEntitiesQueryExecutorShould
       new AddJournalCommand { Name = "No", Type = JournalType.Scraps }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      TestFileAcceptor.Create()
+    );
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {
@@ -176,7 +231,12 @@ public class SearchEntitiesQueryExecutorShould
       new AddJournalCommand { Name = "Yes", Type = JournalType.Scraps }
     );
 
-    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, TestFileAcceptor.Create());
+    var addEntryExecutor = new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      TestFileAcceptor.Create()
+    );
     await addEntryExecutor.Execute(
       new UpsertScrapsEntryCommand
       {

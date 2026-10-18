@@ -52,7 +52,9 @@ public class FakeFileStore : IFileStore
   public Task<long?> GetContentLength(string fileId)
   {
     return Task.FromResult(
-      _contentLengthsById.TryGetValue(fileId, out var contentLength) ? contentLength : (long?)null
+      _contentLengthsById.TryGetValue(fileId, out var contentLength)
+        ? contentLength
+        : (long?)null
     );
   }
 }

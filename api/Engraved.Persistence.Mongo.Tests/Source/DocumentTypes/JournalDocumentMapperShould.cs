@@ -27,7 +27,9 @@ public class JournalDocumentMapperShould
       EditedOn = DateTime.UtcNow,
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(counterJournal);
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(
+      counterJournal
+    );
 
     var createdJournal = journalDocument as CounterJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -46,7 +48,9 @@ public class JournalDocumentMapperShould
       Name = Name,
     };
 
-    IJournal? journal = JournalDocumentMapper.FromDocument(counterJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(
+      counterJournalDocument
+    );
 
     journal.Should().NotBeNull();
     journal.Should().BeOfType<CounterJournal>();
@@ -65,7 +69,9 @@ public class JournalDocumentMapperShould
       Notes = Notes,
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(gaugeJournal);
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(
+      gaugeJournal
+    );
 
     var createdJournal = journalDocument as GaugeJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -84,7 +90,9 @@ public class JournalDocumentMapperShould
       Notes = Notes,
     };
 
-    IJournal? journal = JournalDocumentMapper.FromDocument(gaugeJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(
+      gaugeJournalDocument
+    );
 
     journal.Should().NotBeNull();
     journal.Should().BeOfType<GaugeJournal>();
@@ -107,12 +115,18 @@ public class JournalDocumentMapperShould
       {
         {
           "flags",
-          new JournalAttribute { Name = "Flags", Values = { { "fl@g", "fl@g_value" } } }
+          new JournalAttribute
+          {
+            Name = "Flags",
+            Values = { { "fl@g", "fl@g_value" } },
+          }
         },
       },
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(timerJournal);
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(
+      timerJournal
+    );
 
     var createdJournal = journalDocument as TimerJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -139,7 +153,9 @@ public class JournalDocumentMapperShould
       Notes = Notes,
     };
 
-    IJournal? journal = JournalDocumentMapper.FromDocument(timerJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(
+      timerJournalDocument
+    );
 
     journal.Should().NotBeNull();
 
@@ -161,7 +177,9 @@ public class JournalDocumentMapperShould
       EditedOn = DateTime.UtcNow,
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(logBookJournal);
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(
+      logBookJournal
+    );
 
     var createdJournal = journalDocument as LogBookJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -180,7 +198,9 @@ public class JournalDocumentMapperShould
       Name = Name,
     };
 
-    IJournal? journal = JournalDocumentMapper.FromDocument(logBookJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(
+      logBookJournalDocument
+    );
 
     journal.Should().NotBeNull();
     journal.Should().BeOfType<LogBookJournal>();
@@ -200,7 +220,9 @@ public class JournalDocumentMapperShould
       EditedOn = DateTime.UtcNow,
     };
 
-    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(scrapsJournal);
+    JournalDocument journalDocument = JournalDocumentMapper.ToDocument(
+      scrapsJournal
+    );
 
     var createdJournal = journalDocument as ScrapsJournalDocument;
     createdJournal.Should().NotBeNull();
@@ -219,7 +241,9 @@ public class JournalDocumentMapperShould
       Name = Name,
     };
 
-    IJournal? journal = JournalDocumentMapper.FromDocument(scrapsJournalDocument);
+    IJournal? journal = JournalDocumentMapper.FromDocument(
+      scrapsJournalDocument
+    );
 
     journal.Should().NotBeNull();
     journal.Should().BeOfType<ScrapsJournal>();
@@ -240,7 +264,11 @@ public class JournalDocumentMapperShould
       {
         {
           "values",
-          new JournalAttribute { Name = "Some Values", Values = { { "foo", "Foo" }, { "bar", "Bar" } } }
+          new JournalAttribute
+          {
+            Name = "Some Values",
+            Values = { { "foo", "Foo" }, { "bar", "Bar" } },
+          }
         },
       },
     };

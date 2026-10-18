@@ -15,7 +15,12 @@ namespace Engraved.Api;
 // discriminator is emitted, so the JSON shape stays unchanged.
 public static class DomainPolymorphism
 {
-  private static readonly Type[] PolymorphicBaseTypes = [typeof(IEntity), typeof(IEntry), typeof(IJournal)];
+  private static readonly Type[] PolymorphicBaseTypes =
+  [
+    typeof(IEntity),
+    typeof(IEntry),
+    typeof(IJournal),
+  ];
 
   // Modifier for a DefaultJsonTypeInfoResolver; wired into the MVC JSON options in Program.cs.
   public static void ConfigurePolymorphism(JsonTypeInfo jsonTypeInfo)
@@ -47,7 +52,10 @@ public static class DomainPolymorphism
 
     return baseType
       .Assembly.GetTypes()
-      .Where(t => t is { IsAbstract: false, IsInterface: false } && baseType.IsAssignableFrom(t))
+      .Where(t =>
+        t is { IsAbstract: false, IsInterface: false }
+        && baseType.IsAssignableFrom(t)
+      )
       .OrderBy(t => t.FullName)
       .ToArray();
   }

@@ -18,7 +18,11 @@ public class AddJournalToFavoritesCommandExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      false
+    );
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
@@ -26,9 +30,10 @@ public class AddJournalToFavoritesCommandExecutorShould
   public async Task AddJournalToFavorites()
   {
     // when
-    await new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new AddJournalToFavoritesCommand { JournalId = JournalId }
-    );
+    await new AddJournalToFavoritesCommandExecutor(
+      _repo,
+      _repo.CurrentUser
+    ).Execute(new AddJournalToFavoritesCommand { JournalId = JournalId });
 
     // then
     (await _repo.GetUser(UserId))!
@@ -45,9 +50,10 @@ public class AddJournalToFavoritesCommandExecutorShould
     await _repo.UpsertUser(user);
 
     // when
-    await new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new AddJournalToFavoritesCommand { JournalId = JournalId }
-    );
+    await new AddJournalToFavoritesCommandExecutor(
+      _repo,
+      _repo.CurrentUser
+    ).Execute(new AddJournalToFavoritesCommand { JournalId = JournalId });
 
     // then
     (await _repo.GetUser(UserId))!
@@ -61,9 +67,10 @@ public class AddJournalToFavoritesCommandExecutorShould
   public async Task Throw_When_JournalIdIsEmpty()
   {
     Func<Task> act = () =>
-      new AddJournalToFavoritesCommandExecutor(_repo, _repo.CurrentUser).Execute(
-        new AddJournalToFavoritesCommand { JournalId = "" }
-      );
+      new AddJournalToFavoritesCommandExecutor(
+        _repo,
+        _repo.CurrentUser
+      ).Execute(new AddJournalToFavoritesCommand { JournalId = "" });
 
     await act.Should().ThrowAsync<InvalidCommandException>();
   }

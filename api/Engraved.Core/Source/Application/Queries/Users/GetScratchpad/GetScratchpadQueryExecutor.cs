@@ -2,7 +2,8 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Users.GetScratchpad;
 
-public class GetScratchpadQueryExecutor(Lazy<IUser> currentUser) : IQueryExecutor<UserScratchpad?, GetScratchpadQuery>
+public class GetScratchpadQueryExecutor(Lazy<IUser> currentUser)
+  : IQueryExecutor<UserScratchpad?, GetScratchpadQuery>
 {
   public bool DisableCache => true;
 

@@ -13,15 +13,22 @@ public class DevelopmentStorageInitializer(
   ILogger<DevelopmentStorageInitializer> logger
 ) : IHostedService
 {
-  private static readonly string[] AllowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+  private static readonly string[] AllowedOrigins =
+  [
+    "http://localhost:3000",
+    "http://localhost:5173",
+  ];
 
   public async Task StartAsync(CancellationToken cancellationToken)
   {
     try
     {
-      await serviceClient.GetBlobContainerClient(settings.ContainerName).CreateIfNotExistsAsync();
+      await serviceClient
+        .GetBlobContainerClient(settings.ContainerName)
+        .CreateIfNotExistsAsync();
 
-      BlobServiceProperties properties = await serviceClient.GetPropertiesAsync();
+      BlobServiceProperties properties =
+        await serviceClient.GetPropertiesAsync();
 
       properties.Cors.Clear();
       properties.Cors.Add(

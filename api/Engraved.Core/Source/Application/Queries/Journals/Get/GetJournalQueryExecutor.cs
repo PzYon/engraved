@@ -3,8 +3,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Journals.Get;
 
-public class GetJournalQueryExecutor(IJournalRepository journalRepository, IUserRepository userRepository)
-  : IQueryExecutor<IJournal?, GetJournalQuery>
+public class GetJournalQueryExecutor(
+  IJournalRepository journalRepository,
+  IUserRepository userRepository
+) : IQueryExecutor<IJournal?, GetJournalQuery>
 {
   public bool DisableCache => false;
 
@@ -12,7 +14,10 @@ public class GetJournalQueryExecutor(IJournalRepository journalRepository, IUser
   {
     if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException(query, $"{nameof(query.JournalId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(query.JournalId)} must be specified."
+      );
     }
 
     IJournal? journal = await journalRepository.GetJournal(query.JournalId);
@@ -21,7 +26,8 @@ public class GetJournalQueryExecutor(IJournalRepository journalRepository, IUser
       return null;
     }
 
-    var journalWithEnsuredPermissions = await JournalQueryUtil.EnsurePermissionUsers(userRepository, journal);
+    var journalWithEnsuredPermissions =
+      await JournalQueryUtil.EnsurePermissionUsers(userRepository, journal);
     return journalWithEnsuredPermissions.First();
   }
 }

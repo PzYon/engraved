@@ -10,8 +10,10 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/notifications")]
 [Authorize]
-public class NotificationsController(ICurrentUserService currentUserService, INotificationService notificationService)
-  : ControllerBase
+public class NotificationsController(
+  ICurrentUserService currentUserService,
+  INotificationService notificationService
+) : ControllerBase
 {
   [HttpPost]
   [Route("send_test")]

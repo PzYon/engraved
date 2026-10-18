@@ -12,8 +12,10 @@ namespace Engraved.Core.Application.Queries.Search.Related;
 // are already visible on the page the user is coming from. Relatedness is based on
 // word overlap: candidates are fetched with a single match-any-word query and then
 // ranked in memory (no $text/Atlas Search available on the Cosmos DB Mongo API).
-public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepository, IEntryRepository entryRepository)
-  : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
+public class GetRelatedEntitiesQueryExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository
+) : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
 {
   private const int MaxWords = 10;
   private const int MinWordLength = 3;
@@ -22,7 +24,11 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
   // only entries of these types have their own routes in the app, so only they
   // are valid navigation targets. journals of ALL types are considered.
-  private static readonly JournalType[] NavigableEntryTypes = [JournalType.Scraps, JournalType.LogBook];
+  private static readonly JournalType[] NavigableEntryTypes =
+  [
+    JournalType.Scraps,
+    JournalType.LogBook,
+  ];
 
   private static readonly HashSet<string> StopWords =
   [
@@ -104,7 +110,10 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
   {
     if (string.IsNullOrEmpty(query.EntityId))
     {
-      throw new InvalidQueryException(query, $"{nameof(GetRelatedEntitiesQuery.EntityId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(GetRelatedEntitiesQuery.EntityId)} must be specified."
+      );
     }
 
     SourceContext source = await LoadSource(query);
@@ -121,9 +130,18 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
     var searchText = string.Join(" ", words);
 
-    var allJournals = await journalRepository.GetAllJournals(null, null, null, null, 1000);
+    var allJournals = await journalRepository.GetAllJournals(
+      null,
+      null,
+      null,
+      null,
+      1000
+    );
 
-    var otherJournalIds = allJournals.Select(j => j.Id!).Where(id => id != source.OwnJournalId).ToArray();
+    var otherJournalIds = allJournals
+      .Select(j => j.Id!)
+      .Where(id => id != source.OwnJournalId)
+      .ToArray();
 
     var journalCandidatesTask = journalRepository.GetAllJournals(
       searchText,
@@ -157,13 +175,21 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
       .Result.Where(j => j.Id != source.OwnJournalId)
       .Select(j => new
       {
-        Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
+        Entity = new SearchResultEntity
+        {
+          EntityType = EntityType.Journal,
+          Entity = j,
+        },
         Score = GetScore(words, j.Name, j.Description),
       })
       .Concat(
         entryCandidatesTask.Result.Select(e => new
         {
-          Entity = new SearchResultEntity { EntityType = EntityType.Entry, Entity = e },
+          Entity = new SearchResultEntity
+          {
+            EntityType = EntityType.Entry,
+            Entity = e,
+          },
           Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes),
         })
       )
@@ -181,7 +207,9 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
     return new SearchEntitiesResult
     {
       Entities = rankedEntities,
-      Journals = allJournals.Where(j => parentJournalIds.Contains(j.Id)).ToArray(),
+      Journals = allJournals
+        .Where(j => parentJournalIds.Contains(j.Id))
+        .ToArray(),
     };
   }
 
@@ -205,14 +233,19 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
       return SourceContext.Inaccessible;
     }
 
-    IJournal? parentJournal = await journalRepository.GetJournal(entry.ParentId);
+    IJournal? parentJournal = await journalRepository.GetJournal(
+      entry.ParentId
+    );
     if (parentJournal == null)
     {
       return SourceContext.Inaccessible;
     }
 
     var title = (entry as ScrapsEntry)?.Title;
-    return new SourceContext(string.IsNullOrWhiteSpace(title) ? entry.Notes : title, entry.ParentId);
+    return new SourceContext(
+      string.IsNullOrWhiteSpace(title) ? entry.Notes : title,
+      entry.ParentId
+    );
   }
 
   private static string[] GetRelevantWords(string? text)

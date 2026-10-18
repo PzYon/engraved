@@ -37,7 +37,9 @@ public class AzureBlobFileStore(
 
   public async Task<Uri> CreateReadUrl(FileRef file)
   {
-    FileDisposition disposition = FileContentPolicy.GetDisposition(file.ContentType);
+    FileDisposition disposition = FileContentPolicy.GetDisposition(
+      file.ContentType
+    );
     var fileName = FileContentPolicy.SanitizeFileName(file.FileName);
 
     return await CreateSasUri(
@@ -74,18 +76,26 @@ public class AzureBlobFileStore(
   {
     await containerClient
       .GetBlobClient(fileId)
-      .SetTagsAsync(new Dictionary<string, string> { [FileTags.StateName] = FileTags.Committed });
+      .SetTagsAsync(
+        new Dictionary<string, string>
+        {
+          [FileTags.StateName] = FileTags.Committed,
+        }
+      );
   }
 
   public async Task<long?> GetContentLength(string fileId)
   {
     try
     {
-      Response<BlobProperties> properties = await containerClient.GetBlobClient(fileId).GetPropertiesAsync();
+      Response<BlobProperties> properties = await containerClient
+        .GetBlobClient(fileId)
+        .GetPropertiesAsync();
 
       return properties.Value.ContentLength;
     }
-    catch (RequestFailedException e) when (e.Status == (int)HttpStatusCode.NotFound)
+    catch (RequestFailedException e)
+      when (e.Status == (int)HttpStatusCode.NotFound)
     {
       return null;
     }
@@ -126,7 +136,9 @@ public class AzureBlobFileStore(
 
     UserDelegationKey key = await userDelegationKeyProvider.Get();
 
-    var query = builder.ToSasQueryParameters(key, containerClient.AccountName).ToString();
+    var query = builder
+      .ToSasQueryParameters(key, containerClient.AccountName)
+      .ToString();
 
     return new UriBuilder(blobClient.Uri) { Query = query }.Uri;
   }

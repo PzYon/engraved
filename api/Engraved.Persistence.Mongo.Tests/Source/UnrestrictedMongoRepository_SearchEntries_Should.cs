@@ -61,7 +61,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries()
   {
-    var results = await _repository.SearchEntries("Beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "Beta",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -69,7 +75,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
-    var results = await _repository.SearchEntries("beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "beta",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -77,7 +89,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_MultipleWords()
   {
-    var results = await _repository.SearchEntries("beta gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "beta gam",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -85,7 +103,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
-    var results = await _repository.SearchEntries("alpha gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "alpha gam",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -95,7 +119,16 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // "alpha" and "heiri" occur in two different entries; with match-any
     // semantics both entries are returned (regular search would return none).
-    var results = await _repository.SearchEntries("alpha heiri", null, null, [_journalId], 10, null, false, true);
+    var results = await _repository.SearchEntries(
+      "alpha heiri",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      false,
+      true
+    );
 
     results.Length.Should().Be(2);
   }
@@ -105,7 +138,16 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // "gam" is a substring of "Gamma"; unlike the regular (substring) search,
     // match-any only matches whole words.
-    var results = await _repository.SearchEntries("gam", null, null, [_journalId], 10, null, false, true);
+    var results = await _repository.SearchEntries(
+      "gam",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      false,
+      true
+    );
 
     results.Should().BeEmpty();
   }
@@ -126,7 +168,16 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    var results = await _repository.SearchEntries("übung", null, null, [_journalId], 10, null, false, true);
+    var results = await _repository.SearchEntries(
+      "übung",
+      null,
+      null,
+      [_journalId],
+      10,
+      null,
+      false,
+      true
+    );
 
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(5);
@@ -147,7 +198,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
 
     // "(USD)" is a valid regex (a group); when matched literally it must only
     // find the entry that actually contains the parentheses.
-    var results = await _repository.SearchEntries("(USD)", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "(USD)",
+      null,
+      null,
+      [_journalId],
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(4);
@@ -158,7 +215,9 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // An unbalanced bracket is an invalid regex. Before escaping, this threw
     // while building the filter (and surfaced as a 500).
-    Assert.DoesNotThrowAsync(async () => await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10));
+    Assert.DoesNotThrowAsync(async () =>
+      await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
+    );
   }
 
   [Test]
@@ -184,7 +243,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    var results = await _repository.SearchEntries("heiri", null, null, [result.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "heiri",
+      null,
+      null,
+      [result.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
     ((ScrapsEntry)results[0]).Title.Should().Be("Heiri");
@@ -195,7 +260,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
 
-    var results = await _repository.SearchEntries("budget", null, null, [journal.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].Files[0].FileName.Should().Be("budget-2026.xlsx");
@@ -206,9 +277,18 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // A dotted path into an array of sub-documents matches when ANY element matches, so the
     // second attachment must be found just as well as the first.
-    UpsertResult journal = await AddScrapWithAttachment("first.pdf", "second.pdf");
+    UpsertResult journal = await AddScrapWithAttachment(
+      "first.pdf",
+      "second.pdf"
+    );
 
-    var results = await _repository.SearchEntries("second", null, null, [journal.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "second",
+      null,
+      null,
+      [journal.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
   }
@@ -219,7 +299,15 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     // The title-only search exists to be narrow; folding attachments into it would defeat that.
     UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
 
-    var results = await _repository.SearchEntries("budget", null, null, [journal.EntityId], 10, null, true);
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10,
+      null,
+      true
+    );
 
     results.Should().BeEmpty();
   }
@@ -231,7 +319,16 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     // alone - an entry matched purely by a file name would score zero there.
     UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
 
-    var results = await _repository.SearchEntries("budget", null, null, [journal.EntityId], 10, null, false, true);
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10,
+      null,
+      false,
+      true
+    );
 
     results.Should().BeEmpty();
   }
@@ -239,7 +336,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task Consider_JournalTypes_Negative()
   {
-    var results = await _repository.SearchEntries(null, null, [JournalType.Counter], null, 10);
+    var results = await _repository.SearchEntries(
+      null,
+      null,
+      [JournalType.Counter],
+      null,
+      10
+    );
 
     results.Should().BeEmpty();
   }
@@ -259,7 +362,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    var results = await _repository.SearchEntries(null, null, [JournalType.Scraps], null, 10);
+    var results = await _repository.SearchEntries(
+      null,
+      null,
+      [JournalType.Scraps],
+      null,
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].Should().BeOfType<ScrapsEntry>();
@@ -271,9 +380,17 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     var journal = new LogBookJournal { Name = "My LogBook" };
     UpsertResult result = await _repository.UpsertJournal(journal);
 
-    await _repository.UpsertEntry(new LogBookEntry { ParentId = result.EntityId, Notes = "log book entry" });
+    await _repository.UpsertEntry(
+      new LogBookEntry { ParentId = result.EntityId, Notes = "log book entry" }
+    );
 
-    var results = await _repository.SearchEntries(null, null, [JournalType.LogBook], null, 10);
+    var results = await _repository.SearchEntries(
+      null,
+      null,
+      [JournalType.LogBook],
+      null,
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].Should().BeOfType<LogBookEntry>();
@@ -336,7 +453,14 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    var results = await _repository.SearchEntries(null, ScheduleMode.CurrentUserFirst, null, null, 20, currentUserId);
+    var results = await _repository.SearchEntries(
+      null,
+      ScheduleMode.CurrentUserFirst,
+      null,
+      null,
+      20,
+      currentUserId
+    );
 
     results.Length.Should().Be(6);
     ((ScrapsEntry)results[0]).Title.Should().Be("WithSchedule");
@@ -351,7 +475,9 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     // A scheduled entry that was edited long ago must NOT be floated to the top.
     var currentUserId = ObjectId.GenerateNewId().ToString();
 
-    UpsertResult journal = await _repository.UpsertJournal(new ScrapsJournal { Name = "Tab", UserId = currentUserId });
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "Tab", UserId = currentUserId }
+    );
 
     await _repository.UpsertEntry(
       new ScrapsEntry
@@ -380,16 +506,27 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       }
     );
 
-    var results = await _repository.SearchEntries(null, ScheduleMode.None, null, [journal.EntityId], 20, currentUserId);
+    var results = await _repository.SearchEntries(
+      null,
+      ScheduleMode.None,
+      null,
+      [journal.EntityId],
+      20,
+      currentUserId
+    );
 
     results.Length.Should().Be(2);
     ((ScrapsEntry)results[0]).Title.Should().Be("RecentUnscheduled");
     ((ScrapsEntry)results[1]).Title.Should().Be("OldButScheduled");
   }
 
-  private async Task<UpsertResult> AddScrapWithAttachment(params string[] fileNames)
+  private async Task<UpsertResult> AddScrapWithAttachment(
+    params string[] fileNames
+  )
   {
-    UpsertResult journal = await _repository.UpsertJournal(new ScrapsJournal { Name = "With Files" });
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "With Files" }
+    );
 
     await _repository.UpsertEntry(
       new ScrapsEntry
@@ -419,7 +556,9 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     // has fired (NextOccurrence nulled out), so such an entry must NOT be returned as "scheduled".
     var currentUserId = ObjectId.GenerateNewId().ToString();
 
-    UpsertResult journal = await _repository.UpsertJournal(new ScrapsJournal { Name = "Tab", UserId = currentUserId });
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "Tab", UserId = currentUserId }
+    );
 
     await _repository.UpsertEntry(
       new ScrapsEntry

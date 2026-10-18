@@ -7,11 +7,15 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/auth")]
 [AllowAnonymous]
-public class AuthRefreshController(RefreshHandler refreshHandler, RefreshTokenService refreshTokenService)
-  : ControllerBase
+public class AuthRefreshController(
+  RefreshHandler refreshHandler,
+  RefreshTokenService refreshTokenService
+) : ControllerBase
 {
   [HttpPost("refresh")]
-  public async Task<ActionResult<AuthResult>> Refresh([FromBody] RefreshPayload payload)
+  public async Task<ActionResult<AuthResult>> Refresh(
+    [FromBody] RefreshPayload payload
+  )
   {
     AuthResult? result = await refreshHandler.Refresh(payload.RefreshToken);
     return result == null ? Unauthorized() : result;

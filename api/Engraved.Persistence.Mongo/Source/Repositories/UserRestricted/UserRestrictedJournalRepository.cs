@@ -8,8 +8,10 @@ namespace Engraved.Persistence.Mongo.Repositories.UserRestricted;
 // Decorator adding the write guards for the current user on top of the (read-scoped) journal
 // repository. Reads pass through - they are shaped by the UserReadScope injected into the inner
 // repository.
-public class UserRestrictedJournalRepository(MongoJournalRepository journalRepository, JournalWriteGuard writeGuard)
-  : IJournalRepository
+public class UserRestrictedJournalRepository(
+  MongoJournalRepository journalRepository,
+  JournalWriteGuard writeGuard
+) : IJournalRepository
 {
   public Task<IJournal[]> GetAllJournals(
     string? searchText = null,
@@ -41,7 +43,9 @@ public class UserRestrictedJournalRepository(MongoJournalRepository journalRepos
   {
     if (!string.IsNullOrEmpty(journal.Id))
     {
-      IJournal? existingJournal = await journalRepository.GetJournalUnscoped(journal.Id);
+      IJournal? existingJournal = await journalRepository.GetJournalUnscoped(
+        journal.Id
+      );
 
       if (existingJournal != null)
       {

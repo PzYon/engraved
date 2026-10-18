@@ -4,8 +4,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.Get;
 
-public class GetEntryQueryExecutor(IEntryRepository entryRepository, IJournalRepository journalRepository)
-  : IQueryExecutor<IEntry?, GetEntryQuery>
+public class GetEntryQueryExecutor(
+  IEntryRepository entryRepository,
+  IJournalRepository journalRepository
+) : IQueryExecutor<IEntry?, GetEntryQuery>
 {
   public bool DisableCache => false;
 
@@ -13,7 +15,10 @@ public class GetEntryQueryExecutor(IEntryRepository entryRepository, IJournalRep
   {
     if (string.IsNullOrEmpty(query.EntryId))
     {
-      throw new InvalidQueryException(query, $"{nameof(GetEntryQuery.EntryId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(GetEntryQuery.EntryId)} must be specified."
+      );
     }
 
     IEntry? entry = await entryRepository.GetEntry(query.EntryId);

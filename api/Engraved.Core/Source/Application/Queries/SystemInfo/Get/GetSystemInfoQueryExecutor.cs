@@ -3,8 +3,9 @@ using Engraved.Core.Application.Persistence.Repositories;
 
 namespace Engraved.Core.Application.Queries.SystemInfo.Get;
 
-public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceRepository)
-  : IQueryExecutor<SystemInfo, GetSystemInfoQuery>
+public class GetSystemInfoQueryExecutor(
+  IMaintenanceRepository maintenanceRepository
+) : IQueryExecutor<SystemInfo, GetSystemInfoQuery>
 {
   private const string DevInformationalVersion =
     "1.0.0+42+78c0eab8a6ac0ab631cd93a3e41dd8c5ff5e116f+2017-04-20T07:56:16.666Z";
@@ -47,7 +48,9 @@ public class GetSystemInfoQueryExecutor(IMaintenanceRepository maintenanceReposi
         .FirstOrDefault() as AssemblyInformationalVersionAttribute
     )?.InformationalVersion;
 
-    return string.IsNullOrEmpty(informationalAssemblyVersion) || informationalAssemblyVersion == "1.0.0"
+    return
+      string.IsNullOrEmpty(informationalAssemblyVersion)
+      || informationalAssemblyVersion == "1.0.0"
       ? DevInformationalVersion
       : informationalAssemblyVersion;
   }

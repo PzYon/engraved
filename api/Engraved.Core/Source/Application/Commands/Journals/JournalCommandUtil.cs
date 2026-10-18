@@ -15,14 +15,20 @@ public static class JournalCommandUtil
   {
     if (string.IsNullOrEmpty(journalId))
     {
-      throw new InvalidCommandException(command, $"A {nameof(BaseUpsertEntryCommand.JournalId)} must be specified.");
+      throw new InvalidCommandException(
+        command,
+        $"A {nameof(BaseUpsertEntryCommand.JournalId)} must be specified."
+      );
     }
 
     IJournal? journal = await repository.GetJournal(journalId);
 
     if (journal is not TJournal specificJournal)
     {
-      throw new InvalidCommandException(command, $"A journal with key \"{journalId}\" does not exist.");
+      throw new InvalidCommandException(
+        command,
+        $"A journal with key \"{journalId}\" does not exist."
+      );
     }
 
     return specificJournal;

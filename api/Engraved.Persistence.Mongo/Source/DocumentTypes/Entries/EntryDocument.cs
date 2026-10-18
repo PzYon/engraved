@@ -23,7 +23,9 @@ public abstract class EntryDocument : IUserOwnedDocument, IScheduledDocument
 
   public FileRefSubDocument[] Files { get; set; } = [];
 
-  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } =
+    new();
 
-  public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } = new();
+  public Dictionary<string, ScheduleSubDocument> Schedules { get; set; } =
+    new();
 }

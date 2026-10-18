@@ -34,12 +34,19 @@ namespace Engraved.Api.Tests;
 // not reach any client, not even their owner's. The scratchpad is only served by its own endpoint.
 public class UserDataInResponsesShould
 {
-  private const string JwtSecret = "user-data-test-secret-long-enough-to-be-valid-0123456";
+  private const string JwtSecret =
+    "user-data-test-secret-long-enough-to-be-valid-0123456";
   private const string OwnerName = "owner@user-data.test";
   private const string ReaderName = "reader@user-data.test";
   private const string ScratchpadContent = "owner's scratchpad";
 
-  private static readonly string[] PublicUserProperties = ["id", "name", "displayName", "imageUrl"];
+  private static readonly string[] PublicUserProperties =
+  [
+    "id",
+    "name",
+    "displayName",
+    "imageUrl",
+  ];
 
   private WebApplicationFactory<Program> _factory = null!;
   private HttpClient _ownerClient = null!;
@@ -51,24 +58,28 @@ public class UserDataInResponsesShould
   [OneTimeSetUp]
   public async Task OneTimeSetUp()
   {
-    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-    {
-      builder.UseEnvironment("Development");
-      builder.ConfigureAppConfiguration(
-        (_, config) =>
-        {
-          config.AddInMemoryCollection(
-            new Dictionary<string, string?>
-            {
-              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-              ["Authentication:JwtSecret"] = JwtSecret,
-            }
-          );
-        }
-      );
+    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(
+      builder =>
+      {
+        builder.UseEnvironment("Development");
+        builder.ConfigureAppConfiguration(
+          (_, config) =>
+          {
+            config.AddInMemoryCollection(
+              new Dictionary<string, string?>
+              {
+                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+                ["Authentication:JwtSecret"] = JwtSecret,
+              }
+            );
+          }
+        );
 
-      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-    });
+        builder.ConfigureServices(services =>
+          services.RemoveAll<IHostedService>()
+        );
+      }
+    );
 
     await SeedJournalSharedWithReader();
 
@@ -87,9 +98,14 @@ public class UserDataInResponsesShould
   [Test]
   public async Task Expose_Only_PublicData_Of_Other_Users_When_Returning_Journal()
   {
-    JsonElement journal = await GetJson(_readerClient, $"/api/journals/{_journalId}");
+    JsonElement journal = await GetJson(
+      _readerClient,
+      $"/api/journals/{_journalId}"
+    );
 
-    GetPermissionUserProperties(journal, _ownerId).Should().BeEquivalentTo(PublicUserProperties);
+    GetPermissionUserProperties(journal, _ownerId)
+      .Should()
+      .BeEquivalentTo(PublicUserProperties);
     journal.GetRawText().Should().NotContain("tokenHash");
   }
 
@@ -98,8 +114,12 @@ public class UserDataInResponsesShould
   {
     JsonElement journals = await GetJson(_readerClient, "/api/journals");
 
-    JsonElement journal = journals.EnumerateArray().Single(j => j.GetProperty("id").GetString() == _journalId);
-    GetPermissionUserProperties(journal, _ownerId).Should().BeEquivalentTo(PublicUserProperties);
+    JsonElement journal = journals
+      .EnumerateArray()
+      .Single(j => j.GetProperty("id").GetString() == _journalId);
+    GetPermissionUserProperties(journal, _ownerId)
+      .Should()
+      .BeEquivalentTo(PublicUserProperties);
     journals.GetRawText().Should().NotContain("tokenHash");
   }
 
@@ -108,7 +128,9 @@ public class UserDataInResponsesShould
   {
     JsonElement user = await GetJson(_ownerClient, "/api/user");
 
-    user.TryGetProperty("favoriteJournalIds", out _).Should().BeTrue("own data is still returned");
+    user.TryGetProperty("favoriteJournalIds", out _)
+      .Should()
+      .BeTrue("own data is still returned");
     user.TryGetProperty("refreshTokens", out _).Should().BeFalse();
   }
 
@@ -123,10 +145,23 @@ public class UserDataInResponsesShould
     );
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
-    JsonElement authResult = await response.Content.ReadFromJsonAsync<JsonElement>();
-    authResult.GetProperty("refreshToken").GetString().Should().NotBeNullOrEmpty();
-    authResult.GetProperty("user").TryGetProperty("refreshTokens", out _).Should().BeFalse();
-    authResult.GetProperty("user").TryGetProperty("scratchpad", out _).Should().BeFalse();
+    JsonElement authResult =
+      await response.Content.ReadFromJsonAsync<JsonElement>();
+    authResult
+      .GetProperty("refreshToken")
+      .GetString()
+      .Should()
+      .NotBeNullOrEmpty();
+    authResult
+      .GetProperty("user")
+      .TryGetProperty("refreshTokens", out _)
+      .Should()
+      .BeFalse();
+    authResult
+      .GetProperty("user")
+      .TryGetProperty("scratchpad", out _)
+      .Should()
+      .BeFalse();
   }
 
   [Test]
@@ -141,20 +176,32 @@ public class UserDataInResponsesShould
   [Test]
   public async Task Return_Scratchpad_From_Its_Own_Endpoint()
   {
-    JsonElement scratchpad = await GetJson(_ownerClient, "/api/user/scratchpad");
+    JsonElement scratchpad = await GetJson(
+      _ownerClient,
+      "/api/user/scratchpad"
+    );
 
-    scratchpad.GetProperty("content").GetString().Should().Be(ScratchpadContent);
+    scratchpad
+      .GetProperty("content")
+      .GetString()
+      .Should()
+      .Be(ScratchpadContent);
   }
 
   [Test]
   public async Task Return_NoScratchpad_When_NeverSaved()
   {
-    HttpResponseMessage response = await _readerClient.GetAsync("/api/user/scratchpad");
+    HttpResponseMessage response = await _readerClient.GetAsync(
+      "/api/user/scratchpad"
+    );
 
     response.StatusCode.Should().Be(HttpStatusCode.NoContent);
   }
 
-  private static IEnumerable<string> GetPermissionUserProperties(JsonElement journal, string userId)
+  private static IEnumerable<string> GetPermissionUserProperties(
+    JsonElement journal,
+    string userId
+  )
   {
     return journal
       .GetProperty("permissions")
@@ -180,9 +227,14 @@ public class UserDataInResponsesShould
     owner.Id = (await repo.UpsertUser(owner)).EntityId;
     _ownerId = owner.Id;
 
-    await repo.UpdateScratchpad(_ownerId, new UserScratchpad { Content = ScratchpadContent });
+    await repo.UpdateScratchpad(
+      _ownerId,
+      new UserScratchpad { Content = ScratchpadContent }
+    );
 
-    UpsertResult readerResult = await repo.UpsertUser(new User { Name = ReaderName });
+    UpsertResult readerResult = await repo.UpsertUser(
+      new User { Name = ReaderName }
+    );
 
     UpsertResult journalResult = await repo.UpsertJournal(
       new ScrapsJournal
@@ -202,13 +254,18 @@ public class UserDataInResponsesShould
     _journalId = journalResult.EntityId;
 
     using IServiceScope scope = _factory.Services.CreateScope();
-    _ownerRefreshToken = await scope.ServiceProvider.GetRequiredService<RefreshTokenService>().Issue(owner);
+    _ownerRefreshToken = await scope
+      .ServiceProvider.GetRequiredService<RefreshTokenService>()
+      .Issue(owner);
   }
 
   private HttpClient CreateClient(string userName)
   {
     HttpClient client = _factory.CreateClient();
-    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateToken(userName));
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+      "Bearer",
+      CreateToken(userName)
+    );
     return client;
   }
 
@@ -217,7 +274,9 @@ public class UserDataInResponsesShould
     var tokenHandler = new JwtSecurityTokenHandler();
     var tokenDescriptor = new SecurityTokenDescriptor
     {
-      Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userName)]),
+      Subject = new ClaimsIdentity([
+        new Claim(ClaimTypes.NameIdentifier, userName),
+      ]),
       Expires = DateTime.UtcNow.AddMinutes(5),
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),

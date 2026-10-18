@@ -27,9 +27,17 @@ public class CreateFileUploadQueryExecutor(
     // saved again), so access is decided on the journal the file is destined for. Read access on the
     // file afterwards is decided by the entry that ends up holding it - see GetFileUrlQueryExecutor.
     IJournal? journal = await journalRepository.GetJournal(query.JournalId!);
-    if (!JournalAccessPolicy.HasAccess(journal, currentUser.Value.Id, PermissionKind.Write))
+    if (
+      !JournalAccessPolicy.HasAccess(
+        journal,
+        currentUser.Value.Id,
+        PermissionKind.Write
+      )
+    )
     {
-      throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
+      throw new NotAllowedOperationException(
+        "Journal doesn't exist or you do not have permissions."
+      );
     }
 
     var file = new FileRef
@@ -59,17 +67,26 @@ public class CreateFileUploadQueryExecutor(
   {
     if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.JournalId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(CreateFileUploadQuery.JournalId)} must be specified."
+      );
     }
 
     if (string.IsNullOrEmpty(query.FileName))
     {
-      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.FileName)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(CreateFileUploadQuery.FileName)} must be specified."
+      );
     }
 
     if (string.IsNullOrEmpty(query.ContentType))
     {
-      throw new InvalidQueryException(query, $"{nameof(CreateFileUploadQuery.ContentType)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(CreateFileUploadQuery.ContentType)} must be specified."
+      );
     }
 
     if (query.ContentLength <= 0)

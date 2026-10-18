@@ -17,7 +17,11 @@ public class UpdateUserTagsCommandExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      false
+    );
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
@@ -26,7 +30,10 @@ public class UpdateUserTagsCommandExecutorShould
   {
     // when
     await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "tag-id", "Label" } } }
+      new UpdateUserTagsCommand
+      {
+        TagNames = new Dictionary<string, string> { { "tag-id", "Label" } },
+      }
     );
 
     // then
@@ -46,7 +53,10 @@ public class UpdateUserTagsCommandExecutorShould
 
     // when
     await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "tag-id", "New" } } }
+      new UpdateUserTagsCommand
+      {
+        TagNames = new Dictionary<string, string> { { "tag-id", "New" } },
+      }
     );
 
     // then
@@ -67,7 +77,10 @@ public class UpdateUserTagsCommandExecutorShould
 
     // when
     await new UpdateUserTagsCommandExecutor(_repo, _repo.CurrentUser).Execute(
-      new UpdateUserTagsCommand { TagNames = new Dictionary<string, string> { { "keep", "Keep" } } }
+      new UpdateUserTagsCommand
+      {
+        TagNames = new Dictionary<string, string> { { "keep", "Keep" } },
+      }
     );
 
     // then

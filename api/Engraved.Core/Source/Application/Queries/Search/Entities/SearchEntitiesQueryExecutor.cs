@@ -6,18 +6,27 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Search.Entities;
 
-public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserService currentUserService)
-  : IQueryExecutor<SearchEntitiesResult, SearchEntitiesQuery>
+public class SearchEntitiesQueryExecutor(
+  Dispatcher dispatcher,
+  ICurrentUserService currentUserService
+) : IQueryExecutor<SearchEntitiesResult, SearchEntitiesQuery>
 {
   public bool DisableCache => false;
 
   public async Task<SearchEntitiesResult> Execute(SearchEntitiesQuery query)
   {
     var journalsTask = dispatcher.Query<IJournal[], GetAllJournalsQuery>(
-      new GetAllJournalsQuery { SearchText = query.SearchText, ScheduledOnly = query.ScheduledOnly }
+      new GetAllJournalsQuery
+      {
+        SearchText = query.SearchText,
+        ScheduledOnly = query.ScheduledOnly,
+      }
     );
 
-    var entriesTask = dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
+    var entriesTask = dispatcher.Query<
+      SearchEntriesQueryResult,
+      SearchEntriesQuery
+    >(
       new SearchEntriesQuery
       {
         SearchText = query.SearchText,
@@ -31,7 +40,11 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
     await Task.WhenAll(journalsTask, entriesTask);
 
     var searchResultEntities = journalsTask
-      .Result.Select(journal => new SearchResultEntity { EntityType = EntityType.Journal, Entity = journal })
+      .Result.Select(journal => new SearchResultEntity
+      {
+        EntityType = EntityType.Journal,
+        Entity = journal,
+      })
       .Union(
         entriesTask.Result.Entries.Select(entry => new SearchResultEntity
         {
@@ -55,7 +68,9 @@ public class SearchEntitiesQueryExecutor(Dispatcher dispatcher, ICurrentUserServ
   {
     if (!query.ScheduledOnly)
     {
-      return searchResultEntities.OrderByDescending(e => e.Entity.EditedOn).ToArray();
+      return searchResultEntities
+        .OrderByDescending(e => e.Entity.EditedOn)
+        .ToArray();
     }
 
     IUser user = await currentUserService.LoadUser();

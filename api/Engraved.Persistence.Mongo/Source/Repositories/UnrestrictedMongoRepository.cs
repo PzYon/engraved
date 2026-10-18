@@ -29,8 +29,14 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     _mongoDatabaseClient = mongoDatabaseClient;
 
     _userRepository = new MongoUserRepository(mongoDatabaseClient);
-    _journalRepository = new MongoJournalRepository(mongoDatabaseClient, UnrestrictedReadScope.Instance);
-    _entryRepository = new MongoEntryRepository(mongoDatabaseClient, _journalRepository);
+    _journalRepository = new MongoJournalRepository(
+      mongoDatabaseClient,
+      UnrestrictedReadScope.Instance
+    );
+    _entryRepository = new MongoEntryRepository(
+      mongoDatabaseClient,
+      _journalRepository
+    );
   }
 
   public Task<IUser?> GetUser(string? nameOrId)
@@ -108,7 +114,14 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
     SortEntriesBy sortOrder = SortEntriesBy.DateTime
   )
   {
-    return _entryRepository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText, sortOrder);
+    return _entryRepository.GetEntriesForJournal(
+      journalId,
+      fromDate,
+      toDate,
+      attributeValues,
+      searchText,
+      sortOrder
+    );
   }
 
   public Task<IEntry[]> SearchEntries(
@@ -167,7 +180,9 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
 
   public async Task WakeMeUp()
   {
-    await _mongoDatabaseClient.UsersCollection.FindAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId));
+    await _mongoDatabaseClient.UsersCollection.FindAsync(
+      MongoUtil.GetDocumentByIdFilter<UserDocument>(RandomDocId)
+    );
   }
 
   public async Task<long> CountAllUsers()
@@ -217,7 +232,9 @@ public class UnrestrictedMongoRepository : IUnrestrictedRepository
   public async Task<string[]> GetJournalIdsForUser(string userId)
   {
     var ids = await _mongoDatabaseClient
-      .JournalsCollection.Find(Builders<JournalDocument>.Filter.Where(d => d.UserId == userId))
+      .JournalsCollection.Find(
+        Builders<JournalDocument>.Filter.Where(d => d.UserId == userId)
+      )
       .Project(d => d.Id)
       .ToListAsync();
 

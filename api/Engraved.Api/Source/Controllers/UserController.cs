@@ -16,7 +16,8 @@ namespace Engraved.Api.Controllers;
 [ApiController]
 [Route("api/user")]
 [Authorize]
-public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher) : Controller
+public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
+  : Controller
 {
   [HttpGet]
   public IUser GetCurrentUser()
@@ -51,7 +52,10 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher) : Co
   [Route("favorites/{journalId}")]
   public async Task<CommandResult> RemoveJournalFromFavorites(string journalId)
   {
-    var command = new RemoveJournalFromFavoritesCommand { JournalId = journalId };
+    var command = new RemoveJournalFromFavoritesCommand
+    {
+      JournalId = journalId,
+    };
 
     return await dispatcher.Command(command);
   }
@@ -60,7 +64,9 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher) : Co
   [Route("scratchpad")]
   public async Task<UserScratchpad?> GetScratchpad()
   {
-    return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(new GetScratchpadQuery());
+    return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(
+      new GetScratchpadQuery()
+    );
   }
 
   [HttpPut]
@@ -74,6 +80,8 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher) : Co
   [Route("export-data")]
   public async Task<ExportedDataResult> Export()
   {
-    return await dispatcher.Query<ExportedDataResult, ExportDataQuery>(new ExportDataQuery());
+    return await dispatcher.Query<ExportedDataResult, ExportDataQuery>(
+      new ExportDataQuery()
+    );
   }
 }

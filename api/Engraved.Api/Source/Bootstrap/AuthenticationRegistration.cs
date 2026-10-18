@@ -26,14 +26,18 @@ public static class AuthenticationRegistration
     {
       services
         .AddAuthentication("BasicAuthentication")
-        .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+        .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>(
+          "BasicAuthentication",
+          null
+        );
       return;
     }
 
     services
       .AddAuthentication(options =>
       {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme =
+          JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
       })
       .AddJwtBearer(options =>
@@ -42,14 +46,19 @@ public static class AuthenticationRegistration
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))),
+          IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.ASCII.GetBytes(GetJwtSecret(authConfigSection))
+          ),
           ValidateAudience = false,
           ValidateIssuer = false,
           ValidateIssuerSigningKey = true,
           ValidateLifetime = true,
           ClockSkew = TimeSpan.Zero,
         };
-        options.Events = new JwtBearerEvents { OnTokenValidated = OnTokenValidated };
+        options.Events = new JwtBearerEvents
+        {
+          OnTokenValidated = OnTokenValidated,
+        };
       });
   }
 
@@ -66,17 +75,23 @@ public static class AuthenticationRegistration
       return Task.CompletedTask;
     }
 
-    context.HttpContext.RequestServices.GetRequiredService<ICurrentUserService>().SetUserName(nameClaim.Value);
+    context
+      .HttpContext.RequestServices.GetRequiredService<ICurrentUserService>()
+      .SetUserName(nameClaim.Value);
 
     return Task.CompletedTask;
   }
 
   private static string GetJwtSecret(IConfigurationSection configurationSection)
   {
-    var jwtSecret = configurationSection.GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
+    var jwtSecret = configurationSection.GetValue<string>(
+      nameof(AuthenticationConfig.JwtSecret)
+    );
     if (string.IsNullOrEmpty(jwtSecret))
     {
-      throw new InvalidOperationException("App Service Config: No JWT Secret available.");
+      throw new InvalidOperationException(
+        "App Service Config: No JWT Secret available."
+      );
     }
 
     return jwtSecret;

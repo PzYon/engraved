@@ -21,6 +21,10 @@ public static class WholeWordRegex
   public static bool IsMatch(string? text, string word)
   {
     return !string.IsNullOrEmpty(text)
-      && Regex.IsMatch(text, BuildPattern(word), RegexOptions.IgnoreCase | RegexOptions.Multiline);
+      && Regex.IsMatch(
+        text,
+        BuildPattern(word),
+        RegexOptions.IgnoreCase | RegexOptions.Multiline
+      );
   }
 }

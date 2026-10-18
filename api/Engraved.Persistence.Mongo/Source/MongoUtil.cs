@@ -7,19 +7,30 @@ namespace Engraved.Persistence.Mongo;
 
 public static class MongoUtil
 {
-  public static UpsertResult CreateUpsertResult(string? entityId, ReplaceOneResult replaceOneResult)
+  public static UpsertResult CreateUpsertResult(
+    string? entityId,
+    ReplaceOneResult replaceOneResult
+  )
   {
     return CreateUpsertResult(entityId, replaceOneResult.UpsertedId);
   }
 
-  public static UpsertResult CreateUpsertResult(string? entityId, UpdateResult updateResult)
+  public static UpsertResult CreateUpsertResult(
+    string? entityId,
+    UpdateResult updateResult
+  )
   {
     return CreateUpsertResult(entityId, updateResult.UpsertedId);
   }
 
-  private static UpsertResult CreateUpsertResult(string? entityId, BsonValue upsertedId)
+  private static UpsertResult CreateUpsertResult(
+    string? entityId,
+    BsonValue upsertedId
+  )
   {
-    var id = (string.IsNullOrEmpty(entityId) ? upsertedId.ToString() : entityId)!;
+    var id = (
+      string.IsNullOrEmpty(entityId) ? upsertedId.ToString() : entityId
+    )!;
 
     return new UpsertResult { EntityId = id };
   }
@@ -30,9 +41,14 @@ public static class MongoUtil
     return Builders<TDocument>.Filter.Empty;
   }
 
-  public static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(string? documentId)
+  public static FilterDefinition<TDocument> GetDocumentByIdFilter<TDocument>(
+    string? documentId
+  )
   {
-    return Builders<TDocument>.Filter.Eq(nameof(IDocument.Id), EnsureObjectId(documentId));
+    return Builders<TDocument>.Filter.Eq(
+      nameof(IDocument.Id),
+      EnsureObjectId(documentId)
+    );
   }
 
   public static string GenerateNewIdAsString()
@@ -57,6 +73,9 @@ public static class MongoUtil
       return objectId;
     }
 
-    throw new ArgumentOutOfRangeException(nameof(id), $"\"{id}\" is not a valid ID.");
+    throw new ArgumentOutOfRangeException(
+      nameof(id),
+      $"\"{id}\" is not a valid ID."
+    );
   }
 }

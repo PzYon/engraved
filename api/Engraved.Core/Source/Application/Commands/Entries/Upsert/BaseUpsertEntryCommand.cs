@@ -17,7 +17,8 @@ public abstract class BaseUpsertEntryCommand : ICommand
   // from the entry. What is believed of each item is decided by FileAcceptor.
   public FileRef[] Files { get; set; } = [];
 
-  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } =
+    new();
 
   public abstract JournalType GetSupportedJournalType();
 }

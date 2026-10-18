@@ -20,7 +20,9 @@ public static class CurrentUserLoader
       IUser user = currentUserService.LoadUser().Result;
       if (string.IsNullOrEmpty(user.Name))
       {
-        throw new NotAllowedOperationException("Current user is not available.");
+        throw new NotAllowedOperationException(
+          "Current user is not available."
+        );
       }
 
       IUser? dbUser = userRepository.GetUser(user.Id ?? user.Name).Result;

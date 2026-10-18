@@ -16,7 +16,15 @@ public class UnrestrictedMongoRepository_Files_Should
 {
   private const string FileId = "8a1d3f9c4b2e4a7f9c0d1e2f";
 
-  private static readonly DateTime UploadedOn = new(2026, 7, 27, 14, 30, 0, DateTimeKind.Utc);
+  private static readonly DateTime UploadedOn = new(
+    2026,
+    7,
+    27,
+    14,
+    30,
+    0,
+    DateTimeKind.Utc
+  );
 
   private TestMongoRepository _repo = null!;
 
@@ -38,7 +46,10 @@ public class UnrestrictedMongoRepository_Files_Should
     entry.Files[0].FileName.Should().Be("holiday.png");
     entry.Files[0].ContentType.Should().Be("image/png");
     entry.Files[0].ContentLength.Should().Be(1234);
-    entry.Files[0].UploadedOn.Should().BeCloseTo(UploadedOn, TimeSpan.FromMilliseconds(1));
+    entry
+      .Files[0]
+      .UploadedOn.Should()
+      .BeCloseTo(UploadedOn, TimeSpan.FromMilliseconds(1));
     entry.Files[0].Width.Should().Be(800);
     entry.Files[0].Height.Should().Be(600);
   }

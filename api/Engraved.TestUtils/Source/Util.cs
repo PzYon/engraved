@@ -29,7 +29,8 @@ public static class Util
   // smoke test) can point the real application at this instance.
   public static string ConnectionString => Runner.ConnectionString;
 
-  private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
+  private static IMongoRepositorySettings Settings =>
+    new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);
 
   /// <summary>

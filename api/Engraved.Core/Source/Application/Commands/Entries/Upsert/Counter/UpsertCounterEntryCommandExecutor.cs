@@ -11,12 +11,14 @@ public class UpsertCounterEntryCommandExecutor(
   IDateService dateService,
   FileAcceptor fileAcceptor
 )
-  : BaseUpsertEntryCommandExecutor<UpsertCounterEntryCommand, CounterEntry, CounterJournal>(
-    journalRepository,
-    entryRepository,
-    dateService,
-    fileAcceptor
-  )
+  : BaseUpsertEntryCommandExecutor<
+    UpsertCounterEntryCommand,
+    CounterEntry,
+    CounterJournal
+  >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override void SetTypeSpecificValues(UpsertCounterEntryCommand command, CounterEntry entry) { }
+  protected override void SetTypeSpecificValues(
+    UpsertCounterEntryCommand command,
+    CounterEntry entry
+  ) { }
 }

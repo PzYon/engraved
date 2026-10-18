@@ -7,11 +7,18 @@ namespace Engraved.Core.Application.Queries.Journals;
 
 public static class JournalQueryUtil
 {
-  public static async Task<IJournal[]> EnsurePermissionUsers(IUserRepository repository, params IJournal[] journals)
+  public static async Task<IJournal[]> EnsurePermissionUsers(
+    IUserRepository repository,
+    params IJournal[] journals
+  )
   {
     var distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
-      .Union(journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!))
+      .Union(
+        journals
+          .Where(m => !string.IsNullOrEmpty(m.UserId))
+          .Select(m => m.UserId!)
+      )
       .Distinct()
       .ToArray();
 
@@ -33,7 +40,10 @@ public static class JournalQueryUtil
     };
   }
 
-  private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, PermissionUser> userById)
+  private static IJournal EnsureUsers(
+    IJournal journal,
+    IReadOnlyDictionary<string, PermissionUser> userById
+  )
   {
     // write all users on to object
     foreach ((var key, PermissionDefinition value) in journal.Permissions)

@@ -19,16 +19,20 @@ public class SaveScratchpadCommandExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      false
+    );
     await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
   }
 
   [Test]
   public async Task Return_NoScratchpad_When_NeverSaved()
   {
-    UserScratchpad? scratchpad = await new GetScratchpadQueryExecutor(_repo.CurrentUser).Execute(
-      new GetScratchpadQuery()
-    );
+    UserScratchpad? scratchpad = await new GetScratchpadQueryExecutor(
+      _repo.CurrentUser
+    ).Execute(new GetScratchpadQuery());
 
     scratchpad.Should().BeNull();
   }

@@ -20,7 +20,8 @@ public class LoginHandlerShould
     JwtSecret = "cfadd57e-990a-4e95-9141-aa2493417126",
     TokenAudience = "http://au.dien.ce",
     TokenIssuer = "http://is.su.er",
-    GoogleClientId = "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com",
+    GoogleClientId =
+      "791638561996-u8a0gf3af7b33qtk178djpek4054ir4d.apps.googleusercontent.com",
     AccessTokenLifetimeMinutes = 60,
     RefreshTokenLifetimeMinutes = 1440,
   };
@@ -39,7 +40,9 @@ public class LoginHandlerShould
 
     _dateService = new FakeDateService();
 
-    _loginHandler = CreateLoginHandler(new GoogleTokenValidator(_authenticationConfig));
+    _loginHandler = CreateLoginHandler(
+      new GoogleTokenValidator(_authenticationConfig)
+    );
   }
 
   [TearDown]
@@ -56,7 +59,11 @@ public class LoginHandlerShould
       _dateService,
       _userLoader,
       new JwtTokenFactory(_authenticationConfig, _dateService),
-      new RefreshTokenService(_testRepository, _authenticationConfig, _dateService)
+      new RefreshTokenService(
+        _testRepository,
+        _authenticationConfig,
+        _dateService
+      )
     );
   }
 
@@ -85,7 +92,9 @@ public class LoginHandlerShould
     const string imageUrl = "https://im.age.url";
     const string userName = "ha-pe";
 
-    LoginHandler loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
+    LoginHandler loginHandler = CreateLoginHandler(
+      new FakeGoogleTokenValidator(imageUrl, userName, displayName)
+    );
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
@@ -98,8 +107,12 @@ public class LoginHandlerShould
     result.User.Name.Should().Be(userName);
     result.User.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().NotBeNull();
-    result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
-    result.User.IsAdmin.Should().BeFalse("a brand new user is never an admin by default");
+    result
+      .User.LastLoginDate.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    result
+      .User.IsAdmin.Should()
+      .BeFalse("a brand new user is never an admin by default");
 
     var users = await _testRepository.GetAllUsers();
 
@@ -111,7 +124,8 @@ public class LoginHandlerShould
     user.Name.Should().Be(userName);
     user.ImageUrl.Should().Be(imageUrl);
     user.Id.Should().NotBeNull();
-    user.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    user.LastLoginDate.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
     user.FavoriteJournalIds.Count().Should().Be(1);
     user.GlobalUniqueId.Should().NotBeNull();
 
@@ -119,7 +133,9 @@ public class LoginHandlerShould
     IJournal? journal = await _testRepository.GetJournal(quickNotesId);
     journal.Should().NotBeNull();
     journal.Id.Should().Be(quickNotesId);
-    journal.UserId.Should().Be(user.Id, "the Quick Scraps journal must be owned by the new user");
+    journal
+      .UserId.Should()
+      .Be(user.Id, "the Quick Scraps journal must be owned by the new user");
   }
 
   [Test]
@@ -156,7 +172,9 @@ public class LoginHandlerShould
 
     await _testRepository.UpsertUser(existingUser);
 
-    LoginHandler loginHandler = CreateLoginHandler(new FakeGoogleTokenValidator(imageUrl, userName, displayName));
+    LoginHandler loginHandler = CreateLoginHandler(
+      new FakeGoogleTokenValidator(imageUrl, userName, displayName)
+    );
 
     AuthResult result = await loginHandler.Login("D03sNotM@tt3r");
 
@@ -166,8 +184,12 @@ public class LoginHandlerShould
     result.User!.ImageUrl.Should().Be(imageUrl);
     result.User.Id.Should().Be(userId);
     result.User.GlobalUniqueId.Should().Be(globalUniqueId);
-    result.User.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
-    result.User.IsAdmin.Should().BeTrue("the existing user's admin flag must be preserved across login");
+    result
+      .User.LastLoginDate.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    result
+      .User.IsAdmin.Should()
+      .BeTrue("the existing user's admin flag must be preserved across login");
 
     var users = await _testRepository.GetAllUsers();
 
@@ -179,6 +201,7 @@ public class LoginHandlerShould
     user.Name.Should().Be(userName);
     user.ImageUrl.Should().Be(imageUrl);
     user.Id.Should().Be(userId);
-    user.LastLoginDate.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    user.LastLoginDate.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 }

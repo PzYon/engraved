@@ -16,7 +16,10 @@ public class AddScheduleToEntryCommandExecutor(
   {
     if (string.IsNullOrEmpty(command.EntryId))
     {
-      throw new InvalidCommandException(command, $"{nameof(AddScheduleToEntryCommand.EntryId)} is required");
+      throw new InvalidCommandException(
+        command,
+        $"{nameof(AddScheduleToEntryCommand.EntryId)} is required"
+      );
     }
 
     IEntry entry = (await entryRepository.GetEntry(command.EntryId))!;
@@ -38,7 +41,9 @@ public class AddScheduleToEntryCommandExecutor(
     await entryRepository.UpsertEntry(entry);
 
     IJournal journal = (await journalRepository.GetJournal(entry.ParentId))!;
-    var userIdsWithAccess = journal.Permissions.GetUserIdsWithAccess().ToArray();
+    var userIdsWithAccess = journal
+      .Permissions.GetUserIdsWithAccess()
+      .ToArray();
 
     return new CommandResult(command.EntryId, userIdsWithAccess);
   }

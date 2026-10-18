@@ -5,7 +5,8 @@ namespace Engraved.Api.Controllers;
 
 [ApiController]
 [Route("")]
-public class RootController(IUnrestrictedRepository unrestrictedRepository) : Controller
+public class RootController(IUnrestrictedRepository unrestrictedRepository)
+  : Controller
 {
   [HttpGet]
   public async Task Get()

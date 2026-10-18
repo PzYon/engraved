@@ -53,7 +53,9 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_OneJournal_WithUpcomingNextOccurrence()
   {
-    await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(1));
+    await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(1)
+    );
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -63,7 +65,9 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence()
   {
-    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -82,7 +86,9 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_OneJournal_WithExistingNotifiedOn()
   {
-    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
     journal.Schedules[UserName1].NotifiedOn = _dateService.UtcNow.AddHours(-1);
@@ -97,8 +103,12 @@ public class NotificationJobShould
   [Test]
   public async Task Process_Journal_WithUpcomingNextOccurrence_MultipleUsers()
   {
-    var journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
-    var journalId2 = await _testContext2.AddJournal(nextOccurrence: _dateService.UtcNow.AddMinutes(-2));
+    var journalId1 = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
+    var journalId2 = await _testContext2.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddMinutes(-2)
+    );
 
     NotificationJobResult result = await _job.Execute(false);
 
@@ -112,10 +122,15 @@ public class NotificationJobShould
   [Test]
   public async Task NotProcess_Journal_WithUpcomingNextOccurrence_MultipleUsers()
   {
-    var journalId1 = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId1 = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
 
     IJournal journal = (await _repo.GetJournal(journalId1))!;
-    journal.Schedules[UserName2] = new Schedule { NextOccurrence = _dateService.UtcNow.AddDays(23) };
+    journal.Schedules[UserName2] = new Schedule
+    {
+      NextOccurrence = _dateService.UtcNow.AddDays(23),
+    };
     await _repo.UpsertJournal(journal);
 
     NotificationJobResult result = await _job.Execute(false);
@@ -128,7 +143,9 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneJournal_WithPassedNextOccurrence_OnlyOnce()
   {
-    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
+    var journalId = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
 
     NotificationJobResult firstResult = await _job.Execute(false);
 
@@ -144,8 +161,13 @@ public class NotificationJobShould
   [Test]
   public async Task Process_OneEntryAndOneJournal_WithPassedNextOccurrence_OnlyOnce()
   {
-    var journalId = await _testContext1.AddJournal(nextOccurrence: _dateService.UtcNow.AddDays(-1));
-    var entryId = await _testContext1.AddEntry(journalId, _dateService.UtcNow.AddMinutes(-5));
+    var journalId = await _testContext1.AddJournal(
+      nextOccurrence: _dateService.UtcNow.AddDays(-1)
+    );
+    var entryId = await _testContext1.AddEntry(
+      journalId,
+      _dateService.UtcNow.AddMinutes(-5)
+    );
 
     NotificationJobResult firstResult = await _job.Execute(false);
 

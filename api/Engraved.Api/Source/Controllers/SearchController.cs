@@ -25,19 +25,33 @@ public class SearchController(Dispatcher dispatcher) : ControllerBase
       SearchText = searchText ?? "",
       Limit = 30,
       ScheduledOnly = scheduledOnly.HasValue && scheduledOnly.Value,
-      OnlyEntriesOfTypes = ControllerUtils.ParseJournalTypes(onlyEntriesOfTypes),
+      OnlyEntriesOfTypes = ControllerUtils.ParseJournalTypes(
+        onlyEntriesOfTypes
+      ),
       OnlyConsiderTitle = onlyConsiderTitle,
     };
 
-    return await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(query);
+    return await dispatcher.Query<SearchEntitiesResult, SearchEntitiesQuery>(
+      query
+    );
   }
 
   [Route("related")]
   [HttpGet]
-  public async Task<SearchEntitiesResult> GetRelatedEntities(string entityId, EntityType entityType)
+  public async Task<SearchEntitiesResult> GetRelatedEntities(
+    string entityId,
+    EntityType entityType
+  )
   {
-    var query = new GetRelatedEntitiesQuery { EntityId = entityId, EntityType = entityType };
+    var query = new GetRelatedEntitiesQuery
+    {
+      EntityId = entityId,
+      EntityType = entityType,
+    };
 
-    return await dispatcher.Query<SearchEntitiesResult, GetRelatedEntitiesQuery>(query);
+    return await dispatcher.Query<
+      SearchEntitiesResult,
+      GetRelatedEntitiesQuery
+    >(query);
   }
 }

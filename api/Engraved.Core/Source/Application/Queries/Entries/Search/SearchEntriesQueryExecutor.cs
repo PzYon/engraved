@@ -14,7 +14,13 @@ public class SearchEntriesQueryExecutor(
 
   public async Task<SearchEntriesQueryResult> Execute(SearchEntriesQuery query)
   {
-    var allJournals = await journalRepository.GetAllJournals(null, null, null, null, 1000);
+    var allJournals = await journalRepository.GetAllJournals(
+      null,
+      null,
+      null,
+      null,
+      1000
+    );
     var allJournalIds = allJournals.Select(j => j.Id!).ToArray();
 
     // for "scheduled only" we ask the repository to return just the entries that have a schedule
@@ -37,7 +43,9 @@ public class SearchEntriesQueryExecutor(
 
     return new SearchEntriesQueryResult
     {
-      Journals = allJournals.Where(j => relevantJournalIds.Contains(j.Id)).ToArray(),
+      Journals = allJournals
+        .Where(j => relevantJournalIds.Contains(j.Id))
+        .ToArray(),
       Entries = allEntries.ToArray(),
     };
   }

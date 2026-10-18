@@ -29,10 +29,18 @@ public class GetFileUrlQueryExecutorShould
   {
     _seedRepo = await Util.CreateMongoRepository();
 
-    _userId = (await _seedRepo.UpsertUser(new User { Name = UserName })).EntityId;
-    _ownerUserId = (await _seedRepo.UpsertUser(new User { Name = OwnerUserName })).EntityId;
+    _userId = (
+      await _seedRepo.UpsertUser(new User { Name = UserName })
+    ).EntityId;
+    _ownerUserId = (
+      await _seedRepo.UpsertUser(new User { Name = OwnerUserName })
+    ).EntityId;
 
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserName, _userId, true);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserName,
+      _userId,
+      true
+    );
     _fileStore = new FakeFileStore();
   }
 
@@ -84,7 +92,10 @@ public class GetFileUrlQueryExecutorShould
   [Test]
   public async Task Return_Url_When_JournalIsSharedReadOnly()
   {
-    await AddScrapWithFile(_ownerUserId, new PermissionDefinition { Kind = PermissionKind.Read });
+    await AddScrapWithFile(
+      _ownerUserId,
+      new PermissionDefinition { Kind = PermissionKind.Read }
+    );
 
     GetFileUrlResult? result = await Execute();
 
@@ -93,10 +104,15 @@ public class GetFileUrlQueryExecutorShould
 
   private async Task<GetFileUrlResult?> Execute()
   {
-    return await new GetFileUrlQueryExecutor(_repo, _repo, _fileStore).Execute(new GetFileUrlQuery { FileId = FileId });
+    return await new GetFileUrlQueryExecutor(_repo, _repo, _fileStore).Execute(
+      new GetFileUrlQuery { FileId = FileId }
+    );
   }
 
-  private async Task AddScrapWithFile(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
+  private async Task AddScrapWithFile(
+    string ownerId,
+    PermissionDefinition? permissionForCurrentUser = null
+  )
   {
     var permissions = new UserPermissions();
 

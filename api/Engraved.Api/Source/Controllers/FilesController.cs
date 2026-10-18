@@ -18,18 +18,24 @@ public class FilesController(Dispatcher dispatcher) : ControllerBase
   // a URL to read them back - the last one because until the entry is saved nothing references the
   // file, and GetUrl resolves permissions through the owning entry.
   [HttpPost]
-  public async Task<CreateFileUploadResult> CreateUpload([FromBody] CreateFileUploadQuery query)
+  public async Task<CreateFileUploadResult> CreateUpload(
+    [FromBody] CreateFileUploadQuery query
+  )
   {
-    return await dispatcher.Query<CreateFileUploadResult, CreateFileUploadQuery>(query);
+    return await dispatcher.Query<
+      CreateFileUploadResult,
+      CreateFileUploadQuery
+    >(query);
   }
 
   [HttpGet]
   [Route("{fileId}/url")]
   public async Task<ActionResult<GetFileUrlResult>> GetUrl(string fileId)
   {
-    GetFileUrlResult? result = await dispatcher.Query<GetFileUrlResult?, GetFileUrlQuery>(
-      new GetFileUrlQuery { FileId = fileId }
-    );
+    GetFileUrlResult? result = await dispatcher.Query<
+      GetFileUrlResult?,
+      GetFileUrlQuery
+    >(new GetFileUrlQuery { FileId = fileId });
 
     if (result == null)
     {

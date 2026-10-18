@@ -29,24 +29,29 @@ public class CommandExecutorResolutionShould
   [SetUp]
   public void SetUp()
   {
-    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-    {
-      builder.UseEnvironment("Development");
-      builder.ConfigureAppConfiguration(
-        (_, config) =>
-        {
-          config.AddInMemoryCollection(
-            new Dictionary<string, string?>
-            {
-              ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-              ["Authentication:JwtSecret"] = "resolution-test-secret-long-enough-0123456789",
-            }
-          );
-        }
-      );
+    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(
+      builder =>
+      {
+        builder.UseEnvironment("Development");
+        builder.ConfigureAppConfiguration(
+          (_, config) =>
+          {
+            config.AddInMemoryCollection(
+              new Dictionary<string, string?>
+              {
+                ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
+                ["Authentication:JwtSecret"] =
+                  "resolution-test-secret-long-enough-0123456789",
+              }
+            );
+          }
+        );
 
-      builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
-    });
+        builder.ConfigureServices(services =>
+          services.RemoveAll<IHostedService>()
+        );
+      }
+    );
   }
 
   [TearDown]
@@ -64,7 +69,10 @@ public class CommandExecutorResolutionShould
       .Assembly.GetTypes()
       .Where(t => t is { IsAbstract: false, IsGenericTypeDefinition: false })
       .SelectMany(t => t.GetInterfaces())
-      .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommandExecutor<>))
+      .Where(i =>
+        i.IsGenericType
+        && i.GetGenericTypeDefinition() == typeof(ICommandExecutor<>)
+      )
       .Distinct()
       .ToArray();
 
@@ -72,9 +80,14 @@ public class CommandExecutorResolutionShould
 
     foreach (Type executorType in executorTypes)
     {
-      Action resolve = () => scope.ServiceProvider.GetRequiredService(executorType);
+      Action resolve = () =>
+        scope.ServiceProvider.GetRequiredService(executorType);
 
-      resolve.Should().NotThrow($"{executorType.GenericTypeArguments[0].Name} must be executable");
+      resolve
+        .Should()
+        .NotThrow(
+          $"{executorType.GenericTypeArguments[0].Name} must be executable"
+        );
     }
   }
 }

@@ -51,7 +51,11 @@ public class MoveEntryCommandExecutorShould
 
     // when
     await new MoveEntryCommandExecutor(_repo, _repo, _dateService).Execute(
-      new MoveEntryCommand { EntryId = entryId, TargetJournalId = targetJournalId }
+      new MoveEntryCommand
+      {
+        EntryId = entryId,
+        TargetJournalId = targetJournalId,
+      }
     );
 
     // then
@@ -108,8 +112,16 @@ public class MoveEntryCommandExecutorShould
     );
 
     // when
-    CommandResult result = await new MoveEntryCommandExecutor(_repo, _repo, _dateService).Execute(
-      new MoveEntryCommand { EntryId = entryId, TargetJournalId = targetJournalId }
+    CommandResult result = await new MoveEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService
+    ).Execute(
+      new MoveEntryCommand
+      {
+        EntryId = entryId,
+        TargetJournalId = targetJournalId,
+      }
     );
 
     // then: users of BOTH journals are affected (e.g. for cache invalidation),

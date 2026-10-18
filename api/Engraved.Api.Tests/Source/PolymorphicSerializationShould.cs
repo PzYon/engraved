@@ -19,9 +19,14 @@ namespace Engraved.Api.Tests;
 // into the JSON. Uses the same resolver setup as the MVC pipeline in Program.cs.
 public class PolymorphicSerializationShould
 {
-  private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
+  private static readonly JsonSerializerOptions Options = new(
+    JsonSerializerDefaults.Web
+  )
   {
-    TypeInfoResolver = new DefaultJsonTypeInfoResolver { Modifiers = { DomainPolymorphism.ConfigurePolymorphism } },
+    TypeInfoResolver = new DefaultJsonTypeInfoResolver
+    {
+      Modifiers = { DomainPolymorphism.ConfigurePolymorphism },
+    },
   };
 
   [Test]
@@ -47,7 +52,11 @@ public class PolymorphicSerializationShould
   [Test]
   public void SerializeRuntimeTypeProperties_ForValueDeclaredAsIJournal()
   {
-    IJournal journal = new GaugeJournal { Name = "my journal", UserRole = UserRole.Owner };
+    IJournal journal = new GaugeJournal
+    {
+      Name = "my journal",
+      UserRole = UserRole.Owner,
+    };
 
     var json = JsonSerializer.Serialize(journal, Options);
 

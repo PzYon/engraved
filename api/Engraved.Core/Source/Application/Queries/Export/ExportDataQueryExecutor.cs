@@ -16,7 +16,8 @@ public class ExportedJournal
   public IEntry[] Entries { get; set; } = [];
 }
 
-public class ExportDataQueryExecutor(Dispatcher dispatcher) : IQueryExecutor<ExportedDataResult, ExportDataQuery>
+public class ExportDataQueryExecutor(Dispatcher dispatcher)
+  : IQueryExecutor<ExportedDataResult, ExportDataQuery>
 {
   public bool DisableCache => true;
 
@@ -24,15 +25,24 @@ public class ExportDataQueryExecutor(Dispatcher dispatcher) : IQueryExecutor<Exp
   {
     var exportedData = new ExportedDataResult();
 
-    var journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(new GetAllJournalsQuery());
+    var journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(
+      new GetAllJournalsQuery()
+    );
 
     foreach (IJournal journal in journals)
     {
-      var entriesQuery = new GetAllJournalEntriesQuery { JournalId = journal.Id };
+      var entriesQuery = new GetAllJournalEntriesQuery
+      {
+        JournalId = journal.Id,
+      };
 
-      var entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(entriesQuery);
+      var entries = await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(
+        entriesQuery
+      );
 
-      exportedData.ExportedJournals.Add(new ExportedJournal { Journal = journal, Entries = entries });
+      exportedData.ExportedJournals.Add(
+        new ExportedJournal { Journal = journal, Entries = entries }
+      );
     }
 
     return exportedData;

@@ -5,8 +5,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.GetActive;
 
-public class GetActiveEntryQueryExecutor(IJournalRepository journalRepository, IEntryRepository entryRepository)
-  : IQueryExecutor<IEntry?, GetActiveEntryQuery>
+public class GetActiveEntryQueryExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository
+) : IQueryExecutor<IEntry?, GetActiveEntryQuery>
 {
   public bool DisableCache => false;
 
@@ -14,14 +16,20 @@ public class GetActiveEntryQueryExecutor(IJournalRepository journalRepository, I
   {
     if (string.IsNullOrEmpty(query.JournalId))
     {
-      throw new InvalidQueryException(query, $"{nameof(GetActiveEntryQuery.JournalId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(GetActiveEntryQuery.JournalId)} must be specified."
+      );
     }
 
     IJournal? journal = await journalRepository.GetJournal(query.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidQueryException(query, $"Journal with key \"{query.JournalId}\" does not exist.");
+      throw new InvalidQueryException(
+        query,
+        $"Journal with key \"{query.JournalId}\" does not exist."
+      );
     }
 
     if (journal.Type != JournalType.Timer)
@@ -29,6 +37,9 @@ public class GetActiveEntryQueryExecutor(IJournalRepository journalRepository, I
       return null;
     }
 
-    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(entryRepository, (TimerJournal)journal);
+    return await UpsertTimerEntryCommandExecutor.GetActiveEntry(
+      entryRepository,
+      (TimerJournal)journal
+    );
   }
 }

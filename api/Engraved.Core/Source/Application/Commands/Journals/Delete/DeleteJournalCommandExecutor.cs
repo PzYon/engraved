@@ -34,6 +34,9 @@ public class DeleteJournalCommandExecutor(
       await fileStore.Delete(fileId);
     }
 
-    return new CommandResult(command.JournalId, journal.Permissions.GetUserIdsWithAccess());
+    return new CommandResult(
+      command.JournalId,
+      journal.Permissions.GetUserIdsWithAccess()
+    );
   }
 }
