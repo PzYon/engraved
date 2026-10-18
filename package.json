@@ -11,8 +11,8 @@
   "scripts": {
     "prepare": "husky",
     "fallow": "fallow dead-code",
-    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
-    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html}\"",
+    "prettier:check": "prettier --check \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html,yml,yaml}\"",
+    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx,css,scss,md,json,html,yml,yaml}\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -20,7 +20,8 @@
     "**/*.{js,jsx,ts,tsx,css,md,json}": [
       "npx prettier --write",
       "npx eslint --fix"
-    ]
+    ],
+    "**/*.{scss,html,yml,yaml}": "npx prettier --write"
   },
   "repository": {
     "type": "git",
