@@ -87,12 +87,12 @@ jobs:
   # still need detect-changes so they are skipped along with it.
   build-api:
     name: Build API
-    needs: [ detect-changes ]
+    needs: [detect-changes]
     uses: ./.github/workflows/build-api.yml
 
   build-app:
     name: Build App
-    needs: [ detect-changes ]
+    needs: [detect-changes]
     uses: ./.github/workflows/build-app.yml
     secrets: inherit
     # Uploads the Fallow SARIF results to code scanning.
@@ -102,7 +102,7 @@ jobs:
 
   e2e-tests:
     name: E2E Tests
-    needs: [ build-api, build-app ]
+    needs: [build-api, build-app]
     if: |
       always() &&
       needs.build-api.result == 'success' &&
@@ -111,7 +111,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [ detect-changes, e2e-tests ]
+    needs: [detect-changes, e2e-tests]
     if: |
       always() &&
       needs.e2e-tests.result == 'success' &&
@@ -132,7 +132,7 @@ jobs:
   # don't keep overwriting the preview.
   deploy-preview:
     name: Deploy Preview
-    needs: [ e2e-tests ]
+    needs: [e2e-tests]
     if: |
       always() &&
       needs.e2e-tests.result == 'success' &&
