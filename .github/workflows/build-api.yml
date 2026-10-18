@@ -26,6 +26,13 @@ jobs:
             api/**/*.csproj
             api/Directory.Packages.props
 
+      # Also runs in the pre-commit hook, but Renovate, agents and --no-verify
+      # commits skip that.
+      - name: CSharpier
+        run: |
+          dotnet tool restore
+          dotnet csharpier check api
+
       - name: Cache EphemeralMongo binaries
         uses: actions/cache@v6
         with:

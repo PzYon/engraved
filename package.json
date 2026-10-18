@@ -21,7 +21,8 @@
       "npx prettier --write",
       "npx eslint --fix"
     ],
-    "**/*.{scss,html,yml,yaml}": "npx prettier --write"
+    "**/*.{scss,html,yml,yaml}": "npx prettier --write",
+    "api/**/*.{cs,csproj,props}": "dotnet csharpier format"
   },
   "repository": {
     "type": "git",

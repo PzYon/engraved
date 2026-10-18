@@ -42,10 +42,11 @@ In production the app is hosted on Azure Static Web Apps and the API on Azure Ap
 - [MongoDB](https://www.mongodb.com/try/download/community) on `localhost:27017`, e.g. `docker run -d -p 27017:27017 mongo`
 - Optional, only when working on file uploads: [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite), started with `npm run storage:start` from `/app` (no separate install needed)
 
-Install the npm dependencies once from the repository root (`app` and `tests` are npm workspaces sharing one lockfile):
+Install the npm dependencies and the .NET tools (CSharpier) once from the repository root (`app` and `tests` are npm workspaces sharing one lockfile):
 
 ```sh
 npm ci
+dotnet tool restore
 ```
 
 The API runs on `https://localhost:7072`, so trust the .NET development certificate once:
@@ -106,8 +107,11 @@ Formatting, linting and unused-code detection, from the repository root (also ru
 ```sh
 npm run prettier:check
 npm run lint
-npm run knip
+npm run fallow
+dotnet csharpier check api
 ```
+
+C# and the `.csproj`/`.props` files are formatted with [CSharpier](https://csharpier.com) (settings in `api/.csharpierrc.json`). Format them with `dotnet csharpier format api`, or install the CSharpier plugin for Rider, Visual Studio or VS Code and enable format on save.
 
 API, from `/api`:
 
