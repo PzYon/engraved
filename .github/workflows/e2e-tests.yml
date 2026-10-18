@@ -1,6 +1,6 @@
 name: E2E Tests
+
 on:
-  workflow_dispatch:
   workflow_call:
 
 jobs:
@@ -30,13 +30,13 @@ jobs:
           name: api
           path: ./api-artifact
 
-      - name: Download App artifact
+      - name: Download app artifact
         uses: actions/download-artifact@v8
         with:
           name: app
           path: ./app-artifact
 
-      - name: Set up .NET Core
+      - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
           global-json-file: api/global.json
@@ -48,7 +48,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: NPM install ./tests
+      - name: npm install
         run: npm ci --workspace tests --include-workspace-root
 
       - name: Check types
@@ -62,7 +62,7 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('tests/package.json') }}
 
-      - name: Install Playwright chromium browser
+      - name: Install Playwright browser
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         working-directory: tests
         run: npx playwright install --with-deps chromium
@@ -76,22 +76,18 @@ jobs:
         working-directory: tests
         run: npm run e2e:run-tests -- --project=${{ matrix.project }}
 
-      - name: Prepare artifact name suffix
-        if: failure()
-        run: echo "ARTIFACT_SUFFIX=${{ matrix.project }}-${{ github.run_id }}-$(date -u +%Y-%m-%d-%H%M%S)" >> $GITHUB_ENV
-
-      - name: Upload playwright-report
+      - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-${{ env.ARTIFACT_SUFFIX }}
+          name: playwright-report-${{ matrix.project }}-${{ github.run_attempt }}
           path: tests/playwright-report/**/*
           retention-days: 5
 
-      - name: Upload test-results
+      - name: Upload Playwright test results
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-test-results-${{ env.ARTIFACT_SUFFIX }}
+          name: playwright-test-results-${{ matrix.project }}-${{ github.run_attempt }}
           path: tests/test-results/**/*
           retention-days: 5

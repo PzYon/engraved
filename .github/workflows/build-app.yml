@@ -2,10 +2,6 @@ name: Build App
 
 on:
   workflow_call:
-    outputs:
-      artifact-name:
-        description: "The name of the uploaded artifact"
-        value: ${{ jobs.build.outputs.artifact-name }}
   workflow_dispatch:
 
 jobs:
@@ -13,8 +9,6 @@ jobs:
     name: Build App
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    outputs:
-      artifact-name: app
     permissions:
       contents: read
       security-events: write
@@ -32,7 +26,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: NPM install
+      - name: npm install
         run: npm ci
 
       - name: Check types
@@ -42,7 +36,6 @@ jobs:
       # The audit below only reports findings in changed files, so it misses
       # code that a change elsewhere left unused. This scans the whole project.
       - name: Fallow dead code
-        working-directory: ./
         run: npm run fallow
 
       - name: Determine fallow diff base
@@ -71,26 +64,19 @@ jobs:
           changed-since: ${{ steps.fallow-base.outputs.ref }}
 
       - name: Lint
-        working-directory: ./
         run: npm run lint
 
       - name: Run tests
         working-directory: app
         run: npx vitest run
 
-      - name: Get current time
-        id: current-time
-        shell: bash
-        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
-
       - name: Build
         working-directory: app
         env:
-          VITE_COMMIT_HASH: ${{github.sha}}
-          VITE_VERSION: ${{github.run_number}}
-          VITE_MERGE_DATE_TIME: ${{steps.current-time.outputs.time}}
-          VITE_APP_INSIGHTS_CONNECTING_STRING: ${{secrets.APP_INSIGHTS_CONNECTING_STRING}}
-        run: npm run build
+          VITE_COMMIT_HASH: ${{ github.sha }}
+          VITE_VERSION: ${{ github.run_number }}
+          VITE_APP_INSIGHTS_CONNECTING_STRING: ${{ secrets.APP_INSIGHTS_CONNECTING_STRING }}
+        run: VITE_MERGE_DATE_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ') npm run build
 
       - name: Merge Fallow SARIF runs
         if: always() && hashFiles('fallow-results.sarif') != ''
@@ -103,13 +89,13 @@ jobs:
             fallow-results.sarif > fallow-results.merged.sarif
           mv fallow-results.merged.sarif fallow-results.sarif
 
-      - name: Upload Fallow Results
+      - name: Upload Fallow SARIF results
         uses: github/codeql-action/upload-sarif@v4
         if: always() && hashFiles('fallow-results.sarif') != ''
         with:
           sarif_file: fallow-results.sarif
 
-      - name: Upload artifact for deployment job
+      - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: app
