@@ -1,8 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "ignorePaths": [],
   "minimumReleaseAge": "10 days",
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
@@ -10,6 +13,26 @@
       "automerge": true,
       "automergeType": "branch",
       "platformAutomerge": true
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@mui/**"],
+      "groupName": "MUI"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@tanstack/**"],
+      "groupName": "TanStack"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@tiptap/**"],
+      "groupName": "Tiptap"
+    },
+    {
+      "matchDatasources": ["nuget"],
+      "matchPackageNames": ["Microsoft.**"],
+      "groupName": "Microsoft NuGet packages"
     }
   ]
 }
