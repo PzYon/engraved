@@ -40,6 +40,7 @@ Run the relevant suites before declaring a task complete.
 npm run prettier:fix
 npm run lint:fix
 npm run fallow
+dotnet csharpier format api
 ```
 
 **Backend** — from `/api`:

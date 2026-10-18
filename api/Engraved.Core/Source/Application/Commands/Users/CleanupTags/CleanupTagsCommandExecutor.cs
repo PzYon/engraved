@@ -8,8 +8,7 @@ public class CleanupTagsCommandExecutor(
   IUserRepository userRepository,
   IJournalRepository journalRepository,
   Lazy<IUser> currentUser
-)
-  : ICommandExecutor<CleanupTagsCommand>
+) : ICommandExecutor<CleanupTagsCommand>
 {
   public async Task<CommandResult> Execute(CleanupTagsCommand command)
   {
@@ -23,7 +22,7 @@ public class CleanupTagsCommandExecutor(
 
     var result = new CleanupTagsCommandResult(user.Id!, [user.Id!])
     {
-      DryRun = command.DryRun
+      DryRun = command.DryRun,
     };
 
     if (!journalIdsFromTags.Any())
@@ -31,7 +30,9 @@ public class CleanupTagsCommandExecutor(
       return result;
     }
 
-    var allJournals = await journalRepository.GetAllJournals(journalIds: journalIdsFromTags.ToArray());
+    var allJournals = await journalRepository.GetAllJournals(
+      journalIds: journalIdsFromTags.ToArray()
+    );
     var allJournalIds = allJournals.Select(x => x.Id);
 
     var lostJournalIds = journalIdsFromTags

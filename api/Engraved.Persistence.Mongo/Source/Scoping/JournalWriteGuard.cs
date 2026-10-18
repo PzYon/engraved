@@ -11,20 +11,31 @@ namespace Engraved.Persistence.Mongo.Scoping;
 // without scoping, then apply the permission rule in memory via JournalAccessPolicy. Reads
 // (UserReadScope) and writes (here) therefore enforce one shared rule (JournalAccessPolicy /
 // JournalAccessFilter).
-public class JournalWriteGuard(MongoJournalRepository journalRepository, Lazy<IUser> currentUser)
+public class JournalWriteGuard(
+  MongoJournalRepository journalRepository,
+  Lazy<IUser> currentUser
+)
 {
   public async Task EnsureUserHasWritePermission(string? journalId)
   {
     if (!string.IsNullOrEmpty(journalId))
     {
       IJournal? journal = await journalRepository.GetJournalUnscoped(journalId);
-      if (JournalAccessPolicy.HasAccess(journal, currentUser.Value.Id, PermissionKind.Write))
+      if (
+        JournalAccessPolicy.HasAccess(
+          journal,
+          currentUser.Value.Id,
+          PermissionKind.Write
+        )
+      )
       {
         return;
       }
     }
 
-    throw new NotAllowedOperationException("Journal doesn't exist or you do not have permissions.");
+    throw new NotAllowedOperationException(
+      "Journal doesn't exist or you do not have permissions."
+    );
   }
 
   public void EnsureUserId(IUserOwned entity)
@@ -41,7 +52,9 @@ public class JournalWriteGuard(MongoJournalRepository journalRepository, Lazy<IU
   {
     if (entityUserId != currentUser.Value.Id)
     {
-      throw new NotAllowedOperationException("Entity does not belong to current user.");
+      throw new NotAllowedOperationException(
+        "Entity does not belong to current user."
+      );
     }
   }
 }

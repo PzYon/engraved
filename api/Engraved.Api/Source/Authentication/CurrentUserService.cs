@@ -5,8 +5,10 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Api.Authentication;
 
-public class CurrentUserService(IHttpContextAccessor httpContextAccessor, UserLoader userLoader)
-  : ICurrentUserService
+public class CurrentUserService(
+  IHttpContextAccessor httpContextAccessor,
+  UserLoader userLoader
+) : ICurrentUserService
 {
   private const string Key = "AuthenticatedUserId";
 

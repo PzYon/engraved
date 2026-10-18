@@ -8,13 +8,14 @@ public class MoveEntryCommandExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
   IDateService dateService
-)
-  : ICommandExecutor<MoveEntryCommand>
+) : ICommandExecutor<MoveEntryCommand>
 {
   public async Task<CommandResult> Execute(MoveEntryCommand command)
   {
     // can user access target journal?
-    IJournal? targetJournal = await journalRepository.GetJournal(command.TargetJournalId);
+    IJournal? targetJournal = await journalRepository.GetJournal(
+      command.TargetJournalId
+    );
     if (targetJournal == null)
     {
       return new CommandResult();
@@ -28,7 +29,9 @@ public class MoveEntryCommandExecutor(
     }
 
     // update source journal EditedOn
-    IJournal sourceJournal = (await journalRepository.GetJournal(entry.ParentId))!;
+    IJournal sourceJournal = (
+      await journalRepository.GetJournal(entry.ParentId)
+    )!;
     sourceJournal.EditedOn = dateService.UtcNow;
     await journalRepository.UpsertJournal(sourceJournal);
 
@@ -44,13 +47,11 @@ public class MoveEntryCommandExecutor(
 
     // use the source journal loaded above: entry.ParentId already points to the target here,
     // so re-loading via the entry would wrongly derive both sides from the target journal.
-    var affectedUserIds = targetJournal.Permissions.GetUserIdsWithAccess()
+    var affectedUserIds = targetJournal
+      .Permissions.GetUserIdsWithAccess()
       .Union(sourceJournal.Permissions.GetUserIdsWithAccess())
       .ToArray();
 
-    return new CommandResult(
-      command.EntryId,
-      affectedUserIds
-    );
+    return new CommandResult(command.EntryId, affectedUserIds);
   }
 }

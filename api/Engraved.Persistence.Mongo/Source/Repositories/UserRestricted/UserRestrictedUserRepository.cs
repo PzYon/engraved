@@ -7,8 +7,10 @@ namespace Engraved.Persistence.Mongo.Repositories.UserRestricted;
 
 // Decorator adding the ownership write guard for the current user: only the current user's own
 // record may be upserted. Reads pass through unguarded.
-public class UserRestrictedUserRepository(MongoUserRepository userRepository, JournalWriteGuard writeGuard)
-  : IUserRepository
+public class UserRestrictedUserRepository(
+  MongoUserRepository userRepository,
+  JournalWriteGuard writeGuard
+) : IUserRepository
 {
   public Task<IUser?> GetUser(string? nameOrId)
   {
@@ -42,6 +44,8 @@ public class UserRestrictedUserRepository(MongoUserRepository userRepository, Jo
   // only through IUnrestrictedRepository (see DeleteUserCommandExecutor).
   public Task DeleteUser(string userId)
   {
-    throw new NotAllowedOperationException("Users cannot be deleted through the restricted repository.");
+    throw new NotAllowedOperationException(
+      "Users cannot be deleted through the restricted repository."
+    );
   }
 }

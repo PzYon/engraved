@@ -21,14 +21,26 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   {
     _repository = await Util.CreateMongoRepository();
 
-    var gauge = new GaugeJournal { Name = "Gauge", Description = "G@ug3 Description" };
+    var gauge = new GaugeJournal
+    {
+      Name = "Gauge",
+      Description = "G@ug3 Description",
+    };
     UpsertResult upsertGaugeJournal = await _repository.UpsertJournal(gauge);
     _gaugeJournalId = upsertGaugeJournal.EntityId;
 
-    var counter = new CounterJournal { Name = "Counter", Description = "Count3r Description" };
+    var counter = new CounterJournal
+    {
+      Name = "Counter",
+      Description = "Count3r Description",
+    };
     await _repository.UpsertJournal(counter);
 
-    var timer = new TimerJournal { Name = "Timer", Description = "Tim3r Description" };
+    var timer = new TimerJournal
+    {
+      Name = "Timer",
+      Description = "Tim3r Description",
+    };
     await _repository.UpsertJournal(timer);
   }
 
@@ -65,7 +77,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_JournalTypes()
   {
-    var results = await _repository.GetAllJournals(null, null, [JournalType.Timer, JournalType.Gauge]);
+    var results = await _repository.GetAllJournals(
+      null,
+      null,
+      [JournalType.Timer, JournalType.Gauge]
+    );
     results.Length.Should().Be(2);
   }
 
@@ -74,7 +90,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   {
     await _repository.UpsertJournal(new LogBookJournal { Name = "LogBook" });
 
-    var results = await _repository.GetAllJournals(null, null, [JournalType.LogBook]);
+    var results = await _repository.GetAllJournals(
+      null,
+      null,
+      [JournalType.LogBook]
+    );
 
     results.Length.Should().Be(1);
     results[0].Should().BeOfType<LogBookJournal>();
@@ -83,7 +103,13 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
   [Test]
   public async Task Return_Matching_JournalId()
   {
-    var results = await _repository.GetAllJournals(null, null, null, [_gaugeJournalId], 10);
+    var results = await _repository.GetAllJournals(
+      null,
+      null,
+      null,
+      [_gaugeJournalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].Id.Should().Be(_gaugeJournalId);
   }
@@ -96,8 +122,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
@@ -106,8 +135,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "franz", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "franz",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
@@ -131,8 +163,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = DateTime.Now.AddDays(3) } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(3) }
+          },
+        },
       }
     );
 
@@ -142,8 +177,11 @@ public class UnrestrictedMongoRepository_GetAllJournals_Should
       {
         Schedules = new Dictionary<string, Schedule>
         {
-          { "max", new Schedule { NextOccurrence = null } }
-        }
+          {
+            "max",
+            new Schedule { NextOccurrence = null }
+          },
+        },
       }
     );
 

@@ -7,22 +7,32 @@ using Newtonsoft.Json;
 
 namespace Engraved.Core.Application.Queries;
 
-public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, Lazy<IUser> currentUser)
+public class QueryCache(
+  ILogger<QueryCache> logger,
+  IMemoryCache memoryCache,
+  Lazy<IUser> currentUser
+)
 {
   private const string KeysByUserId = "___keysByUserId";
   private const string GenerationIdsByUserId = "___generationsByUserId";
 
-  private ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> QueryKeysByUser
-    => memoryCache.GetOrCreate(
+  private ConcurrentDictionary<
+    string,
+    ConcurrentDictionary<string, byte>
+  > QueryKeysByUser =>
+    memoryCache.GetOrCreate(
       KeysByUserId,
-      _ => new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>()
+      _ => new ConcurrentDictionary<
+        string,
+        ConcurrentDictionary<string, byte>
+      >()
     )!;
 
   // Monotonically increasing "generation" per user, bumped on every
   // invalidation. A cached item is only valid while its generation still
   // matches the user's current generation (see TryGetValue).
-  private ConcurrentDictionary<string, long> GenerationIdsByUser
-    => memoryCache.GetOrCreate(
+  private ConcurrentDictionary<string, long> GenerationIdsByUser =>
+    memoryCache.GetOrCreate(
       GenerationIdsByUserId,
       _ => new ConcurrentDictionary<string, long>()
     )!;
@@ -58,11 +68,7 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     return value;
   }
 
-  public void Set<TValue, TQuery>(
-    TQuery query,
-    TValue value,
-    long generationId
-  )
+  public void Set<TValue, TQuery>(TQuery query, TValue value, long generationId)
     where TQuery : IQuery
   {
     var key = GetKey(query);
@@ -75,9 +81,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
       {
         Value = value,
         ConfigToken = GetConfigToken(query),
-        GenerationId = generationId
+        GenerationId = generationId,
       },
-      new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+      new MemoryCacheEntryOptions().SetAbsoluteExpiration(
+        TimeSpan.FromMinutes(10)
+      )
     );
   }
 
@@ -105,7 +113,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     var configToken = GetConfigToken(query);
     if (cacheItem.ConfigToken != configToken)
     {
-      logger.LogInformation("{Key}: Cache miss (different token): {ConfigToken}", key, configToken);
+      logger.LogInformation(
+        "{Key}: Cache miss (different token): {ConfigToken}",
+        key,
+        SanitizeForLog(configToken)
+      );
       value = default!;
       return false;
     }
@@ -130,7 +142,9 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
 
   public long GetGenerationId()
   {
-    return GenerationIdsByUser.TryGetValue(GetUserId(), out var generation) ? generation : 0;
+    return GenerationIdsByUser.TryGetValue(GetUserId(), out var generation)
+      ? generation
+      : 0;
   }
 
   private void ClearForUser(string userId)
@@ -138,7 +152,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
     // Bump the generation first: this is what makes invalidation safe against a
     // concurrent query that has already read its data but not yet written it to
     // the cache (such a write would carry the now-outdated generation).
-    var generation = GenerationIdsByUser.AddOrUpdate(userId, 1, (_, current) => current + 1);
+    var generation = GenerationIdsByUser.AddOrUpdate(
+      userId,
+      1,
+      (_, current) => current + 1
+    );
 
     if (!QueryKeysByUser.TryGetValue(userId, out var keys) || keys.IsEmpty)
     {
@@ -166,6 +184,11 @@ public class QueryCache(ILogger<QueryCache> logger, IMemoryCache memoryCache, La
   private static string GetConfigToken(IQuery query)
   {
     return JsonConvert.SerializeObject(query);
+  }
+
+  private static string SanitizeForLog(string value)
+  {
+    return value.Replace("\r", "").Replace("\n", "");
   }
 
   private void RememberQueryKeyForUser(string queryKey)

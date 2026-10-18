@@ -43,10 +43,7 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   [Route("favorites/{journalId}")]
   public async Task<CommandResult> AddJournalToFavorites(string journalId)
   {
-    var command = new AddJournalToFavoritesCommand
-    {
-      JournalId = journalId
-    };
+    var command = new AddJournalToFavoritesCommand { JournalId = journalId };
 
     return await dispatcher.Command(command);
   }
@@ -57,7 +54,7 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   {
     var command = new RemoveJournalFromFavoritesCommand
     {
-      JournalId = journalId
+      JournalId = journalId,
     };
 
     return await dispatcher.Command(command);
@@ -67,7 +64,9 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   [Route("scratchpad")]
   public async Task<UserScratchpad?> GetScratchpad()
   {
-    return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(new GetScratchpadQuery());
+    return await dispatcher.Query<UserScratchpad?, GetScratchpadQuery>(
+      new GetScratchpadQuery()
+    );
   }
 
   [HttpPut]
@@ -81,6 +80,8 @@ public class UserController(Lazy<IUser> currentUser, Dispatcher dispatcher)
   [Route("export-data")]
   public async Task<ExportedDataResult> Export()
   {
-    return await dispatcher.Query<ExportedDataResult, ExportDataQuery>(new ExportDataQuery());
+    return await dispatcher.Query<ExportedDataResult, ExportDataQuery>(
+      new ExportDataQuery()
+    );
   }
 }

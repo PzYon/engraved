@@ -8,8 +8,7 @@ namespace Engraved.Core.Application.Queries.Entries.GetAllJournal;
 public class GetAllJournalEntriesQueryExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository
-)
-  : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
+) : IQueryExecutor<IEntry[], GetAllJournalEntriesQuery>
 {
   public bool DisableCache => false;
 
@@ -36,9 +35,10 @@ public class GetAllJournalEntriesQueryExecutor(
     // Scraps are notes that get revisited and edited over time, so the most recently edited one
     // should surface first. Other journal types show a value/measurement history, where the
     // entry's own DateTime (not when it was last edited) is what matters for ordering.
-    SortEntriesBy sortOrder = journal.Type == JournalType.Scraps
-      ? SortEntriesBy.EditedOn
-      : SortEntriesBy.DateTime;
+    SortEntriesBy sortOrder =
+      journal.Type == JournalType.Scraps
+        ? SortEntriesBy.EditedOn
+        : SortEntriesBy.DateTime;
 
     return await entryRepository.GetEntriesForJournal(
       query.JournalId,

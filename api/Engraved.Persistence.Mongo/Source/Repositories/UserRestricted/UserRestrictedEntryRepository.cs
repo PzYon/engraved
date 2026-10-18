@@ -10,8 +10,10 @@ namespace Engraved.Persistence.Mongo.Repositories.UserRestricted;
 // writes require write permission on the parent journal). Reads pass through: GetEntriesForJournal
 // is scoped via the inner repository's journal access, while SearchEntries and GetEntry are
 // unscoped primitives whose callers enforce access (see the comments in MongoEntryRepository).
-public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository, JournalWriteGuard writeGuard)
-  : IEntryRepository
+public class UserRestrictedEntryRepository(
+  MongoEntryRepository entryRepository,
+  JournalWriteGuard writeGuard
+) : IEntryRepository
 {
   public Task<IEntry[]> GetEntriesForJournal(
     string journalId,
@@ -22,7 +24,14 @@ public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository,
     SortEntriesBy sortOrder = SortEntriesBy.DateTime
   )
   {
-    return entryRepository.GetEntriesForJournal(journalId, fromDate, toDate, attributeValues, searchText, sortOrder);
+    return entryRepository.GetEntriesForJournal(
+      journalId,
+      fromDate,
+      toDate,
+      attributeValues,
+      searchText,
+      sortOrder
+    );
   }
 
   public Task<IEntry[]> SearchEntries(
@@ -66,7 +75,9 @@ public class UserRestrictedEntryRepository(MongoEntryRepository entryRepository,
   public async Task<UpsertResult> UpsertEntry<TEntry>(TEntry entry)
     where TEntry : IEntry
   {
-    IEntry? existingEntry = string.IsNullOrEmpty(entry.Id) ? null : await entryRepository.GetEntry(entry.Id);
+    IEntry? existingEntry = string.IsNullOrEmpty(entry.Id)
+      ? null
+      : await entryRepository.GetEntry(entry.Id);
 
     if (existingEntry == null)
     {

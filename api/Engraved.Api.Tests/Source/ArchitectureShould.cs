@@ -26,16 +26,18 @@ public class ArchitectureShould
       "WakeMeUpController", // keep-alive, runs without a user
       "UserLoader", // authentication, runs before a user context exists
       "LoginHandler", // login, runs before a user context exists
-      "RefreshTokenService" // token refresh, runs before a user context exists
+      "RefreshTokenService", // token refresh, runs before a user context exists
     ];
 
-    var actualConsumers = Types.InAssembly(ApiAssembly)
+    var actualConsumers = Types
+      .InAssembly(ApiAssembly)
       .That()
       .HaveDependencyOn(typeof(IUnrestrictedRepository).FullName)
       .GetTypes()
       .Select(type => type.Name);
 
-    actualConsumers.Should()
+    actualConsumers
+      .Should()
       .BeSubsetOf(
         allowedConsumers,
         "only sanctioned consumers in Engraved.Api may depend on the unrestricted persistence seam"

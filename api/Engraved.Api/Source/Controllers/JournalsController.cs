@@ -33,7 +33,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
       SearchText = searchText,
       JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes),
       FavoritesOnly = favoritesOnly,
-      JournalIds = ControllerUtils.ParseMultiValueStringParam(journalIds)
+      JournalIds = ControllerUtils.ParseMultiValueStringParam(journalIds),
     };
 
     return await dispatcher.Query<IJournal[], GetAllJournalsQuery>(query);
@@ -43,7 +43,9 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [HttpGet]
   public async Task<IJournal?> Get(string journalId)
   {
-    return await dispatcher.Query<IJournal?, GetJournalQuery>(new GetJournalQuery { JournalId = journalId });
+    return await dispatcher.Query<IJournal?, GetJournalQuery>(
+      new GetJournalQuery { JournalId = journalId }
+    );
   }
 
   [HttpPost]
@@ -60,11 +62,17 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
 
   [HttpPost]
   [Route("{journalId}/schedule")]
-  public async Task<CommandResult> AddSchedule(string journalId, [FromBody] AddScheduleToJournalCommand command)
+  public async Task<CommandResult> AddSchedule(
+    string journalId,
+    [FromBody] AddScheduleToJournalCommand command
+  )
   {
     if (journalId != command.JournalId)
     {
-      throw new InvalidCommandException(command, "JournalIds from URL and body do not match.");
+      throw new InvalidCommandException(
+        command,
+        "JournalIds from URL and body do not match."
+      );
     }
 
     return await dispatcher.Command(command);
@@ -80,7 +88,7 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
     var command = new EditJournalPermissionsCommand
     {
       JournalId = journalId,
-      Permissions = permissions
+      Permissions = permissions,
     };
 
     return await dispatcher.Command(command);
@@ -90,16 +98,24 @@ public class JournalsController(Dispatcher dispatcher) : ControllerBase
   [Route("{journalId}")]
   public async Task<CommandResult> Delete(string journalId)
   {
-    return await dispatcher.Command(new DeleteJournalCommand { JournalId = journalId });
+    return await dispatcher.Command(
+      new DeleteJournalCommand { JournalId = journalId }
+    );
   }
 
   [HttpPatch]
   [Route("{journalId}/tags")]
-  public async Task<CommandResult> UpdateUserTags(string journalId, UpdateJournalUserTagsCommand command)
+  public async Task<CommandResult> UpdateUserTags(
+    string journalId,
+    UpdateJournalUserTagsCommand command
+  )
   {
     if (journalId != command.JournalId)
     {
-      throw new InvalidCommandException(command, "JournalIds from URL and body do not match.");
+      throw new InvalidCommandException(
+        command,
+        "JournalIds from URL and body do not match."
+      );
     }
 
     return await dispatcher.Command(command);

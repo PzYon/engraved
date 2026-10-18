@@ -31,17 +31,28 @@ public class GetAdminUsersOverviewQueryExecutorShould
   public async Task ReturnEachUser_With_JournalAndEntryCounts()
   {
     // given
-    await _repo.UpsertUser(new User { Id = UserId, Name = "someone@x.com", DisplayName = "Someone" });
-    await _repo.UpsertJournal(new CounterJournal { Id = JournalId, UserId = UserId });
-    await _repo.UpsertJournal(new CounterJournal { Id = OtherJournalId, UserId = UserId });
+    await _repo.UpsertUser(
+      new User
+      {
+        Id = UserId,
+        Name = "someone@x.com",
+        DisplayName = "Someone",
+      }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = JournalId, UserId = UserId }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = OtherJournalId, UserId = UserId }
+    );
     await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
     await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
     await _repo.UpsertEntry(new CounterEntry { ParentId = OtherJournalId });
 
     // when
-    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
-      new GetAdminUsersOverviewQuery()
-    );
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(
+      _repo
+    ).Execute(new GetAdminUsersOverviewQuery());
 
     // then
     result.Should().ContainSingle();
@@ -61,9 +72,9 @@ public class GetAdminUsersOverviewQueryExecutorShould
     await _repo.UpsertUser(new User { Id = UserId, Name = "someone@x.com" });
 
     // when
-    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
-      new GetAdminUsersOverviewQuery()
-    );
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(
+      _repo
+    ).Execute(new GetAdminUsersOverviewQuery());
 
     // then
     result.Should().ContainSingle();
@@ -76,22 +87,38 @@ public class GetAdminUsersOverviewQueryExecutorShould
   {
     // given
     await _repo.UpsertUser(
-      new User { Id = UserId, Name = "oldest@x.com", LastLoginDate = new DateTime(2026, 1, 1) }
+      new User
+      {
+        Id = UserId,
+        Name = "oldest@x.com",
+        LastLoginDate = new DateTime(2026, 1, 1),
+      }
     );
     await _repo.UpsertUser(
-      new User { Id = OtherUserId, Name = "newest@x.com", LastLoginDate = new DateTime(2026, 3, 1) }
+      new User
+      {
+        Id = OtherUserId,
+        Name = "newest@x.com",
+        LastLoginDate = new DateTime(2026, 3, 1),
+      }
     );
     await _repo.UpsertUser(
-      new User { Id = ThirdUserId, Name = "never-logged-in@x.com", LastLoginDate = null }
+      new User
+      {
+        Id = ThirdUserId,
+        Name = "never-logged-in@x.com",
+        LastLoginDate = null,
+      }
     );
 
     // when
-    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(_repo).Execute(
-      new GetAdminUsersOverviewQuery()
-    );
+    AdminUserItem[] result = await new GetAdminUsersOverviewQueryExecutor(
+      _repo
+    ).Execute(new GetAdminUsersOverviewQuery());
 
     // then
-    result.Select(i => i.Name)
+    result
+      .Select(i => i.Name)
       .Should()
       .Equal("newest@x.com", "oldest@x.com", "never-logged-in@x.com");
   }

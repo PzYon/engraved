@@ -19,7 +19,8 @@ public abstract class BaseEntry : IEntry
 
   public FileRef[] Files { get; set; } = [];
 
-  public Dictionary<string, string[]> JournalAttributeValues { get; set; } = new();
+  public Dictionary<string, string[]> JournalAttributeValues { get; set; } =
+    new();
 
   public Dictionary<string, Schedule> Schedules { get; set; } = new();
 

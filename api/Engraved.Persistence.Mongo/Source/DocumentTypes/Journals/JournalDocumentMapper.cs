@@ -20,14 +20,23 @@ public static class JournalDocumentMapper
 
       ScrapsJournal sj => MapToDocument(sj, new ScrapsJournalDocument()),
 
-      _ => throw new ArgumentOutOfRangeException(nameof(journal), journal, null)
+      _ => throw new ArgumentOutOfRangeException(
+        nameof(journal),
+        journal,
+        null
+      ),
     };
   }
 
-  private static TDocument MapToDocument<TDocument>(IJournal journal, TDocument document)
+  private static TDocument MapToDocument<TDocument>(
+    IJournal journal,
+    TDocument document
+  )
     where TDocument : JournalDocument
   {
-    document.Id = string.IsNullOrEmpty(journal.Id) ? ObjectId.Empty : ObjectId.Parse(journal.Id);
+    document.Id = string.IsNullOrEmpty(journal.Id)
+      ? ObjectId.Empty
+      : ObjectId.Parse(journal.Id);
     document.UserId = journal.UserId;
     document.Name = journal.Name;
     document.Description = journal.Description;
@@ -42,11 +51,15 @@ public static class JournalDocumentMapper
     return document;
   }
 
-  private static Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>> MapThresholds(
+  private static Dictionary<
+    string,
+    Dictionary<string, ThresholdDefinitionDocument>
+  > MapThresholds(
     Dictionary<string, Dictionary<string, ThresholdDefinition>> thresholds
   )
   {
-    var result = new Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>>();
+    var result =
+      new Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>>();
 
     foreach (var (key, innerDict) in thresholds)
     {
@@ -56,7 +69,7 @@ public static class JournalDocumentMapper
         innerResult[innerKey] = new ThresholdDefinitionDocument
         {
           Value = threshold.Value,
-          Scope = threshold.Scope
+          Scope = threshold.Scope,
         };
       }
 
@@ -80,11 +93,14 @@ public static class JournalDocumentMapper
 
       LogBookJournalDocument lbj => MapFromDocument(lbj, new LogBookJournal()),
 
-      _ => null
+      _ => null,
     };
   }
 
-  private static TJournal MapFromDocument<TJournal>(JournalDocument document, TJournal journal)
+  private static TJournal MapFromDocument<TJournal>(
+    JournalDocument document,
+    TJournal journal
+  )
     where TJournal : IJournal
   {
     journal.Id = document.Id.ToString();
@@ -97,26 +113,37 @@ public static class JournalDocumentMapper
     journal.EditedOn = document.EditedOn;
     journal.Permissions = document.Permissions;
     journal.CustomProps = document.CustomProps;
-    journal.Schedules = ScheduleMapper.MapSchedulesFromDocument(document.Schedules);
+    journal.Schedules = ScheduleMapper.MapSchedulesFromDocument(
+      document.Schedules
+    );
 
     return journal;
   }
 
-  private static Dictionary<string, Dictionary<string, ThresholdDefinition>> MapThresholdsFromDocument(
-    Dictionary<string, Dictionary<string, ThresholdDefinitionDocument>> thresholds
+  private static Dictionary<
+    string,
+    Dictionary<string, ThresholdDefinition>
+  > MapThresholdsFromDocument(
+    Dictionary<
+      string,
+      Dictionary<string, ThresholdDefinitionDocument>
+    > thresholds
   )
   {
-    var result = new Dictionary<string, Dictionary<string, ThresholdDefinition>>();
+    var result =
+      new Dictionary<string, Dictionary<string, ThresholdDefinition>>();
 
     foreach (var (key, innerDict) in thresholds)
     {
       var innerResult = new Dictionary<string, ThresholdDefinition>();
-      foreach ((var innerKey, ThresholdDefinitionDocument threshold) in innerDict)
+      foreach (
+        (var innerKey, ThresholdDefinitionDocument threshold) in innerDict
+      )
       {
         innerResult[innerKey] = new ThresholdDefinition
         {
           Value = threshold.Value,
-          Scope = threshold.Scope
+          Scope = threshold.Scope,
         };
       }
 

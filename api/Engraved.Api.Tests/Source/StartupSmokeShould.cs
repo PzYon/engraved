@@ -30,32 +30,37 @@ namespace Engraved.Api.Tests;
 // and serves a request, and pins that the repository seams resolve to the intended concrete types.
 public class StartupSmokeShould
 {
-  private const string JwtSecret = "smoke-test-secret-long-enough-to-be-valid-0123456789";
+  private const string JwtSecret =
+    "smoke-test-secret-long-enough-to-be-valid-0123456789";
 
   private WebApplicationFactory<Program> _factory = null!;
 
   [SetUp]
   public void SetUp()
   {
-    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(
+      builder =>
       {
         // "Development" skips Azure Monitor / OpenTelemetry; the app then uses the JWT auth path,
         // so we supply a secret. Point mongo at the shared ephemeral instance.
         builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
+        builder.ConfigureAppConfiguration(
+          (_, config) =>
           {
             config.AddInMemoryCollection(
               new Dictionary<string, string?>
               {
                 ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = JwtSecret
+                ["Authentication:JwtSecret"] = JwtSecret,
               }
             );
           }
         );
 
         // the background notification job is irrelevant to startup wiring (and would tick mongo).
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+        builder.ConfigureServices(services =>
+          services.RemoveAll<IHostedService>()
+        );
       }
     );
   }
@@ -84,25 +89,44 @@ public class StartupSmokeShould
 
     // unrestricted seam -> raw UnrestrictedMongoRepository; the narrow roles -> the user-restricted
     // decorators (reads shaped by UserReadScope, writes guarded by JournalWriteGuard)
-    services.GetRequiredService<IUnrestrictedRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
-    services.GetRequiredService<IUserRepository>().Should().BeOfType<UserRestrictedUserRepository>();
-    services.GetRequiredService<IJournalRepository>().Should().BeOfType<UserRestrictedJournalRepository>();
-    services.GetRequiredService<IEntryRepository>().Should().BeOfType<UserRestrictedEntryRepository>();
+    services
+      .GetRequiredService<IUnrestrictedRepository>()
+      .Should()
+      .BeOfType<UnrestrictedMongoRepository>();
+    services
+      .GetRequiredService<IUserRepository>()
+      .Should()
+      .BeOfType<UserRestrictedUserRepository>();
+    services
+      .GetRequiredService<IJournalRepository>()
+      .Should()
+      .BeOfType<UserRestrictedJournalRepository>();
+    services
+      .GetRequiredService<IEntryRepository>()
+      .Should()
+      .BeOfType<UserRestrictedEntryRepository>();
 
     // maintenance is inherently unrestricted, so it resolves to the raw UnrestrictedMongoRepository
-    services.GetRequiredService<IMaintenanceRepository>().Should().BeOfType<UnrestrictedMongoRepository>();
+    services
+      .GetRequiredService<IMaintenanceRepository>()
+      .Should()
+      .BeOfType<UnrestrictedMongoRepository>();
 
     // the edit-permissions executor is the only one with a non-repository dependency
     // (PermissionsEnsurer); resolve it so a broken registration fails here and not at runtime
-    services.GetRequiredService<ICommandExecutor<EditJournalPermissionsCommand>>();
+    services.GetRequiredService<
+      ICommandExecutor<EditJournalPermissionsCommand>
+    >();
   }
 
   [Test]
   public async Task Return_Unauthorized_For_ValidlySignedToken_Missing_NameIdClaim()
   {
     HttpClient client = _factory.CreateClient();
-    client.DefaultRequestHeaders.Authorization =
-      new AuthenticationHeaderValue("Bearer", CreateTokenWithoutNameIdClaim());
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+      "Bearer",
+      CreateTokenWithoutNameIdClaim()
+    );
 
     // any [Authorize] endpoint works - the request must never reach the controller.
     HttpResponseMessage response = await client.GetAsync("/api/system_info");
@@ -130,7 +154,7 @@ public class StartupSmokeShould
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
         SecurityAlgorithms.HmacSha256Signature
-      )
+      ),
     };
 
     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

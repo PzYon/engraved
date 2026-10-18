@@ -9,7 +9,8 @@ public static class FileStorageRegistration
 {
   private const string SectionName = "FileStorage";
 
-  private const string DevelopmentConnectionString = "UseDevelopmentStorage=true";
+  private const string DevelopmentConnectionString =
+    "UseDevelopmentStorage=true";
 
   public static void RegisterFileStorage(
     IServiceCollection services,
@@ -17,7 +18,10 @@ public static class FileStorageRegistration
     bool useDevelopmentDefaults
   )
   {
-    BlobStorageSettings settings = CreateSettings(configuration, useDevelopmentDefaults);
+    BlobStorageSettings settings = CreateSettings(
+      configuration,
+      useDevelopmentDefaults
+    );
 
     services.AddSingleton<IBlobStorageSettings>(settings);
 
@@ -25,17 +29,20 @@ public static class FileStorageRegistration
     // one to an entry can be checked without storing anything. Reuses the JWT secret on purpose: it
     // is already configured on both app services, and a second secret would be a second thing to
     // keep in sync for no gain.
-    services.AddSingleton<IFileIdFactory>(
-      _ => new FileIdFactory(GetSigningKey(configuration, useDevelopmentDefaults))
-    );
+    services.AddSingleton<IFileIdFactory>(_ => new FileIdFactory(
+      GetSigningKey(configuration, useDevelopmentDefaults)
+    ));
 
     // Built here rather than inside a factory lambda so that unusable configuration fails the
     // startup. Resolved lazily, the first construction happens on an entry upsert - every upsert
     // signs file ids - so a bad value would show up as failing saves in an application that came up
     // fine, rather than as a deployment that does not come up. Neither constructor does any I/O, so
     // this costs nothing and still says nothing about whether the account can be reached.
-    BlobServiceClient serviceClient = BlobContainerClientFactory.CreateServiceClient(settings);
-    BlobContainerClient containerClient = serviceClient.GetBlobContainerClient(settings.ContainerName);
+    BlobServiceClient serviceClient =
+      BlobContainerClientFactory.CreateServiceClient(settings);
+    BlobContainerClient containerClient = serviceClient.GetBlobContainerClient(
+      settings.ContainerName
+    );
 
     // The blob clients hold the connection pool and, with managed identity, a cached token, so they
     // are meant to live as long as the application rather than be rebuilt per request. The same
@@ -46,7 +53,10 @@ public static class FileStorageRegistration
     services.AddSingleton<IFileStore>(
       new AzureBlobFileStore(
         containerClient,
-        BlobContainerClientFactory.CreateUserDelegationKeyProvider(serviceClient, containerClient)
+        BlobContainerClientFactory.CreateUserDelegationKeyProvider(
+          serviceClient,
+          containerClient
+        )
       )
     );
 
@@ -58,9 +68,13 @@ public static class FileStorageRegistration
     }
   }
 
-  private static string GetSigningKey(IConfiguration configuration, bool useDevelopmentDefaults)
+  private static string GetSigningKey(
+    IConfiguration configuration,
+    bool useDevelopmentDefaults
+  )
   {
-    var jwtSecret = configuration.GetSection("Authentication")
+    var jwtSecret = configuration
+      .GetSection("Authentication")
       .GetValue<string>(nameof(AuthenticationConfig.JwtSecret));
 
     if (!string.IsNullOrEmpty(jwtSecret))
@@ -73,13 +87,18 @@ public static class FileStorageRegistration
     // working there; outside development a missing secret is a real misconfiguration.
     if (!useDevelopmentDefaults)
     {
-      throw new InvalidOperationException("App Service Config: No JWT Secret available to sign file ids.");
+      throw new InvalidOperationException(
+        "App Service Config: No JWT Secret available to sign file ids."
+      );
     }
 
     return "development-file-id-signing-key";
   }
 
-  private static BlobStorageSettings CreateSettings(IConfiguration configuration, bool useDevelopmentDefaults)
+  private static BlobStorageSettings CreateSettings(
+    IConfiguration configuration,
+    bool useDevelopmentDefaults
+  )
   {
     var settings = new BlobStorageSettings();
 
@@ -87,7 +106,10 @@ public static class FileStorageRegistration
 
     Validate(settings);
 
-    if (!string.IsNullOrEmpty(settings.ConnectionString) || !string.IsNullOrEmpty(settings.BlobEndpoint))
+    if (
+      !string.IsNullOrEmpty(settings.ConnectionString)
+      || !string.IsNullOrEmpty(settings.BlobEndpoint)
+    )
     {
       return settings;
     }
@@ -98,7 +120,9 @@ public static class FileStorageRegistration
     // misconfiguration and has to fail loudly rather than quietly point at a local emulator.
     if (!useDevelopmentDefaults)
     {
-      throw new InvalidOperationException("App Service Config: No file storage configuration available.");
+      throw new InvalidOperationException(
+        "App Service Config: No file storage configuration available."
+      );
     }
 
     settings.ConnectionString = DevelopmentConnectionString;
@@ -114,35 +138,45 @@ public static class FileStorageRegistration
     var connectionString = settings.ConnectionString;
     var blobEndpoint = settings.BlobEndpoint;
 
-    if (!string.IsNullOrEmpty(connectionString) && !string.IsNullOrEmpty(blobEndpoint))
+    if (
+      !string.IsNullOrEmpty(connectionString)
+      && !string.IsNullOrEmpty(blobEndpoint)
+    )
     {
       throw new InvalidOperationException(
         $"App Service Config: only one of {Setting(nameof(settings.ConnectionString))} and "
-        + $"{Setting(nameof(settings.BlobEndpoint))} can be set. The connection string takes precedence "
-        + "and the endpoint is then never read, which is never what is meant."
+          + $"{Setting(nameof(settings.BlobEndpoint))} can be set. The connection string takes precedence "
+          + "and the endpoint is then never read, which is never what is meant."
       );
     }
 
-    if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains('='))
+    if (
+      !string.IsNullOrEmpty(connectionString) && !connectionString.Contains('=')
+    )
     {
       throw new InvalidOperationException(
         $"App Service Config: {Setting(nameof(settings.ConnectionString))} is not a connection string, "
-        + "which is a list of \"name=value\" pairs. To authenticate with the managed identity, leave it "
-        + $"unset and put the account URL into {Setting(nameof(settings.BlobEndpoint))} instead."
+          + "which is a list of \"name=value\" pairs. To authenticate with the managed identity, leave it "
+          + $"unset and put the account URL into {Setting(nameof(settings.BlobEndpoint))} instead."
       );
     }
 
-    if (!string.IsNullOrEmpty(blobEndpoint) && !Uri.TryCreate(blobEndpoint, UriKind.Absolute, out _))
+    if (
+      !string.IsNullOrEmpty(blobEndpoint)
+      && !Uri.TryCreate(blobEndpoint, UriKind.Absolute, out _)
+    )
     {
       throw new InvalidOperationException(
         $"App Service Config: {Setting(nameof(settings.BlobEndpoint))} is not an absolute URL, e.g. "
-        + "\"https://<account>.blob.core.windows.net\"."
+          + "\"https://<account>.blob.core.windows.net\"."
       );
     }
 
     if (string.IsNullOrWhiteSpace(settings.ContainerName))
     {
-      throw new InvalidOperationException($"App Service Config: {Setting(nameof(settings.ContainerName))} is empty.");
+      throw new InvalidOperationException(
+        $"App Service Config: {Setting(nameof(settings.ContainerName))} is empty."
+      );
     }
   }
 

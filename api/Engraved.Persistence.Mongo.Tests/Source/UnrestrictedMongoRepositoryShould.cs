@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Engraved.Persistence.Mongo.Tests;
 
-// consider using Commands and Queries here to improve data consistency and 
+// consider using Commands and Queries here to improve data consistency and
 // have a more end-to-end view, e.g. something like this:
 // await new AddCounterEntryCommand().CreateExecutor().Execute(_repository, null);
 
@@ -43,7 +43,8 @@ public class UnrestrictedMongoRepositoryShould
     var counterJournal = new CounterJournal { Name = "First" };
     UpsertResult result = await _repository.UpsertJournal(counterJournal);
 
-    counterJournal = (CounterJournal?)await _repository.GetJournal(result.EntityId);
+    counterJournal = (CounterJournal?)
+      await _repository.GetJournal(result.EntityId);
 
     counterJournal.Should().NotBeNull();
 
@@ -69,10 +70,10 @@ public class UnrestrictedMongoRepositoryShould
           new JournalAttribute
           {
             Name = "Random Values",
-            Values = { { "fl@g", "fl@g_value" } }
+            Values = { { "fl@g", "fl@g_value" } },
           }
-        }
-      }
+        },
+      },
     };
 
     UpsertResult result = await _repository.UpsertJournal(counterJournal);
@@ -93,9 +94,15 @@ public class UnrestrictedMongoRepositoryShould
     var journal = new GaugeJournal { Name = "N@me" };
     UpsertResult result = await _repository.UpsertJournal(journal);
 
-    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 123 });
-    await _repository.UpsertEntry(new GaugeEntry { ParentId = "wrongId", Value = 456 });
-    await _repository.UpsertEntry(new GaugeEntry { ParentId = result.EntityId, Value = 789 });
+    await _repository.UpsertEntry(
+      new GaugeEntry { ParentId = result.EntityId, Value = 123 }
+    );
+    await _repository.UpsertEntry(
+      new GaugeEntry { ParentId = "wrongId", Value = 456 }
+    );
+    await _repository.UpsertEntry(
+      new GaugeEntry { ParentId = result.EntityId, Value = 789 }
+    );
 
     var allEntries = await _repository.GetEntriesForJournal(result.EntityId);
 
@@ -107,19 +114,22 @@ public class UnrestrictedMongoRepositoryShould
   {
     await _repository.UpsertUser(new User { Name = "schorsch" });
 
-    Assert.ThrowsAsync<ArgumentException>(async () => await _repository.UpsertUser(new User { Name = "schorsch" })
+    Assert.ThrowsAsync<ArgumentException>(async () =>
+      await _repository.UpsertUser(new User { Name = "schorsch" })
     );
   }
 
   [Test]
   public async Task Persist_UiSettings()
   {
-    var value = JsonConvert.SerializeObject(new Dictionary<string, object> { { "simpleSetting", true } });
+    var value = JsonConvert.SerializeObject(
+      new Dictionary<string, object> { { "simpleSetting", true } }
+    );
 
     var journal = new GaugeJournal
     {
       Name = "N@me",
-      CustomProps = new Dictionary<string, string> { { "uiSettings", value } }
+      CustomProps = new Dictionary<string, string> { { "uiSettings", value } },
     };
 
     UpsertResult result = await _repository.UpsertJournal(journal);

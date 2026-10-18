@@ -35,17 +35,27 @@ public class DeleteJournalCommandExecutorShould
       new CounterJournal
       {
         Id = JournalId,
-        Permissions = new UserPermissions { { UserId, new PermissionDefinition { Kind = PermissionKind.Write } } }
+        Permissions = new UserPermissions
+        {
+          {
+            UserId,
+            new PermissionDefinition { Kind = PermissionKind.Write }
+          },
+        },
       }
     );
 
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
-      new DeleteJournalCommand { JournalId = JournalId }
-    );
+    CommandResult result = await new DeleteJournalCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore
+    ).Execute(new DeleteJournalCommand { JournalId = JournalId });
 
     // then
-    (await _repo.GetJournal(JournalId)).Should().BeNull();
+    (await _repo.GetJournal(JournalId))
+      .Should()
+      .BeNull();
 
     result.EntityId.Should().Be(JournalId);
     result.AffectedUserIds.Should().Contain(UserId);
@@ -65,7 +75,9 @@ public class DeleteJournalCommandExecutorShould
     );
 
     (await _repo.GetJournal(JournalId)).Should().BeNull();
-    (await _repo.SearchEntries(null, journalIds: [JournalId])).Should().BeEmpty();
+    (await _repo.SearchEntries(null, journalIds: [JournalId]))
+      .Should()
+      .BeEmpty();
   }
 
   // DeleteEntriesForJournal is a bulk delete that never loads the entries, so the file ids have to
@@ -80,7 +92,15 @@ public class DeleteJournalCommandExecutorShould
       {
         ParentId = JournalId,
         Title = "first",
-        Files = [new FileRef { Id = "file-one", FileName = "a.png", ContentType = "image/png" }]
+        Files =
+        [
+          new FileRef
+          {
+            Id = "file-one",
+            FileName = "a.png",
+            ContentType = "image/png",
+          },
+        ],
       }
     );
     await _repo.UpsertEntry(
@@ -88,7 +108,15 @@ public class DeleteJournalCommandExecutorShould
       {
         ParentId = JournalId,
         Title = "second",
-        Files = [new FileRef { Id = "file-two", FileName = "b.pdf", ContentType = "application/pdf" }]
+        Files =
+        [
+          new FileRef
+          {
+            Id = "file-two",
+            FileName = "b.pdf",
+            ContentType = "application/pdf",
+          },
+        ],
       }
     );
 
@@ -103,7 +131,11 @@ public class DeleteJournalCommandExecutorShould
   public async Task ReturnEmptyResult_When_JournalDoesNotExist()
   {
     // when
-    CommandResult result = await new DeleteJournalCommandExecutor(_repo, _repo, _fileStore).Execute(
+    CommandResult result = await new DeleteJournalCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore
+    ).Execute(
       new DeleteJournalCommand { JournalId = "60703c3b0000000000000999" }
     );
 

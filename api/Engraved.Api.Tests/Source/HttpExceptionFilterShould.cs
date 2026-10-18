@@ -24,25 +24,37 @@ public class HttpExceptionFilterShould
   [Test]
   public void Map_InvalidCommandException_To_400()
   {
-    GetStatusCodeFor(new InvalidCommandException(new AddJournalCommand(), "invalid")).Should().Be(400);
+    GetStatusCodeFor(
+        new InvalidCommandException(new AddJournalCommand(), "invalid")
+      )
+      .Should()
+      .Be(400);
   }
 
   [Test]
   public void Map_InvalidQueryException_To_400()
   {
-    GetStatusCodeFor(new InvalidQueryException(new GetJournalQuery(), "invalid")).Should().Be(400);
+    GetStatusCodeFor(
+        new InvalidQueryException(new GetJournalQuery(), "invalid")
+      )
+      .Should()
+      .Be(400);
   }
 
   [Test]
   public void Map_NotAllowedOperationException_To_403()
   {
-    GetStatusCodeFor(new NotAllowedOperationException("not allowed")).Should().Be(403);
+    GetStatusCodeFor(new NotAllowedOperationException("not allowed"))
+      .Should()
+      .Be(403);
   }
 
   [Test]
   public void Map_TokenValidationException_To_401()
   {
-    GetStatusCodeFor(new GoogleTokenValidationException("invalid token")).Should().Be(401);
+    GetStatusCodeFor(new GoogleTokenValidationException("invalid token"))
+      .Should()
+      .Be(401);
   }
 
   [Test]
@@ -73,10 +85,18 @@ public class HttpExceptionFilterShould
 
   private static ActionExecutedContext CreateContext(Exception? exception)
   {
-    var actionContext = new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor());
-    return new ActionExecutedContext(actionContext, new List<IFilterMetadata>(), new object())
+    var actionContext = new ActionContext(
+      new DefaultHttpContext(),
+      new RouteData(),
+      new ActionDescriptor()
+    );
+    return new ActionExecutedContext(
+      actionContext,
+      new List<IFilterMetadata>(),
+      new object()
+    )
     {
-      Exception = exception
+      Exception = exception,
     };
   }
 }

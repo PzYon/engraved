@@ -4,8 +4,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Queries.Entries.Get;
 
-public class GetEntryQueryExecutor(IEntryRepository entryRepository, IJournalRepository journalRepository)
-  : IQueryExecutor<IEntry?, GetEntryQuery>
+public class GetEntryQueryExecutor(
+  IEntryRepository entryRepository,
+  IJournalRepository journalRepository
+) : IQueryExecutor<IEntry?, GetEntryQuery>
 {
   public bool DisableCache => false;
 

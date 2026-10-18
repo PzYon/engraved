@@ -14,7 +14,11 @@ public static class JournalQueryUtil
   {
     var distinctUserIds = journals
       .SelectMany(m => m.Permissions.Keys)
-      .Union(journals.Where(m => !string.IsNullOrEmpty(m.UserId)).Select(m => m.UserId!))
+      .Union(
+        journals
+          .Where(m => !string.IsNullOrEmpty(m.UserId))
+          .Select(m => m.UserId!)
+      )
       .Distinct()
       .ToArray();
 
@@ -32,21 +36,23 @@ public static class JournalQueryUtil
       Id = user.Id,
       Name = user.Name,
       DisplayName = user.DisplayName,
-      ImageUrl = user.ImageUrl
+      ImageUrl = user.ImageUrl,
     };
   }
 
-  private static IJournal EnsureUsers(IJournal journal, IReadOnlyDictionary<string, PermissionUser> userById)
+  private static IJournal EnsureUsers(
+    IJournal journal,
+    IReadOnlyDictionary<string, PermissionUser> userById
+  )
   {
     // write all users on to object
     foreach ((var key, PermissionDefinition value) in journal.Permissions)
     {
       value.User = userById[key];
-      value.UserRole = journal.UserId == key
-        ? UserRole.Owner
-        : value.Kind == PermissionKind.Write
-          ? UserRole.Writer
-          : UserRole.Reader;
+      value.UserRole =
+        journal.UserId == key ? UserRole.Owner
+        : value.Kind == PermissionKind.Write ? UserRole.Writer
+        : UserRole.Reader;
     }
 
     var journalOwnerId = journal.UserId!;
@@ -57,7 +63,7 @@ public static class JournalQueryUtil
       {
         User = userById[journalOwnerId],
         UserRole = UserRole.Owner,
-        Kind = PermissionKind.Write
+        Kind = PermissionKind.Write,
       }
     );
 

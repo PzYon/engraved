@@ -12,10 +12,13 @@ namespace Engraved.Persistence.Mongo.Repositories;
 
 // Journal data access. Reads are shaped by the injected IReadScope; the write guards live on top of
 // this (see UserRestrictedJournalRepository).
-public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IReadScope readScope)
-  : IJournalRepository
+public class MongoJournalRepository(
+  MongoDatabaseClient mongoDatabaseClient,
+  IReadScope readScope
+) : IJournalRepository
 {
-  private IMongoCollection<JournalDocument> JournalsCollection => mongoDatabaseClient.JournalsCollection;
+  private IMongoCollection<JournalDocument> JournalsCollection =>
+    mongoDatabaseClient.JournalsCollection;
 
   public async Task<IJournal[]> GetAllJournals(
     string? searchText = null,
@@ -35,7 +38,11 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     {
       filters.Add(
         Builders<JournalDocument>.Filter.Or(
-          journalTypes.Select(t => Builders<JournalDocument>.Filter.Where(GetIsJournalTypeExpression(t)))
+          journalTypes.Select(t =>
+            Builders<JournalDocument>.Filter.Where(
+              GetIsJournalTypeExpression(t)
+            )
+          )
         )
       );
     }
@@ -43,7 +50,9 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     if (journalIds is { Length: > 0 })
     {
       var objectIds = journalIds
-        .Select(i => ObjectId.TryParse(i, out ObjectId id) ? (ObjectId?)id : null)
+        .Select(i =>
+          ObjectId.TryParse(i, out ObjectId id) ? (ObjectId?)id : null
+        )
         .Where(id => id.HasValue)
         .Select(id => id!.Value)
         .ToList();
@@ -61,16 +70,17 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
 
     if (scheduleMode == ScheduleMode.AnySchedule)
     {
-      filters.Add(
-        Builders<JournalDocument>.Filter.Exists(d => d.Schedules)
-      );
+      filters.Add(Builders<JournalDocument>.Filter.Exists(d => d.Schedules));
     }
 
     if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new ArgumentException("Current user id is required", nameof(currentUserId));
+        throw new ArgumentException(
+          "Current user id is required",
+          nameof(currentUserId)
+        );
       }
 
       // "scheduled" means a schedule with a pending occurrence: a fired schedule keeps its sub-document
@@ -78,7 +88,10 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
       filters.Add(
         Builders<JournalDocument>.Filter.And(
           Builders<JournalDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-          Builders<JournalDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
+          Builders<JournalDocument>.Filter.Ne(
+            $"Schedules.{currentUserId}.NextOccurrence",
+            BsonNull.Value
+          )
         )
       );
     }
@@ -96,12 +109,22 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
     }
 
     var journals = await JournalsCollection
-      .Find(filters.Count > 0 ? Builders<JournalDocument>.Filter.And(filters) : Builders<JournalDocument>.Filter.Empty)
-      .Sort(Builders<JournalDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id))
+      .Find(
+        filters.Count > 0
+          ? Builders<JournalDocument>.Filter.And(filters)
+          : Builders<JournalDocument>.Filter.Empty
+      )
+      .Sort(
+        Builders<JournalDocument>
+          .Sort.Descending(d => d.EditedOn)
+          .Descending(d => d.Id)
+      )
       .Limit(limit)
       .ToListAsync();
 
-    return journals.Select(j => JournalDocumentMapper.FromDocument(j)!).ToArray();
+    return journals
+      .Select(j => JournalDocumentMapper.FromDocument(j)!)
+      .ToArray();
   }
 
   public async Task<IJournal?> GetJournal(string journalId)
@@ -113,11 +136,12 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
   {
     JournalDocument document = JournalDocumentMapper.ToDocument(journal);
 
-    ReplaceOneResult? replaceOneResult = await JournalsCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<JournalDocument>(journal.Id),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
+    ReplaceOneResult? replaceOneResult =
+      await JournalsCollection.ReplaceOneAsync(
+        MongoUtil.GetDocumentByIdFilter<JournalDocument>(journal.Id),
+        document,
+        new ReplaceOptions { IsUpsert = true }
+      );
 
     return MongoUtil.CreateUpsertResult(journal.Id, replaceOneResult);
   }
@@ -142,14 +166,25 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
   // it is about to update. Deliberately not part of IJournalRepository.
   public Task<IJournal?> GetJournalUnscoped(string journalId)
   {
-    return GetJournal(journalId, PermissionKind.None, UnrestrictedReadScope.Instance);
+    return GetJournal(
+      journalId,
+      PermissionKind.None,
+      UnrestrictedReadScope.Instance
+    );
   }
 
-  private async Task<IJournal?> GetJournal(string journalId, PermissionKind permissionKind, IReadScope scope)
+  private async Task<IJournal?> GetJournal(
+    string journalId,
+    PermissionKind permissionKind,
+    IReadScope scope
+  )
   {
     if (string.IsNullOrEmpty(journalId))
     {
-      throw new ArgumentNullException(nameof(journalId), "Id must be specified.");
+      throw new ArgumentNullException(
+        nameof(journalId),
+        "Id must be specified."
+      );
     }
 
     JournalDocument? document = await JournalsCollection
@@ -167,7 +202,9 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
   // there must be a better solution than this, but it works for the moment... i believe
   // Builders<JournalDocument>.Filter.Where(t => t.Type == journalType) does not work because
   // JournalDocument.Type is an ABSTRACT property.
-  private static Expression<Func<JournalDocument, bool>> GetIsJournalTypeExpression(JournalType journalType)
+  private static Expression<
+    Func<JournalDocument, bool>
+  > GetIsJournalTypeExpression(JournalType journalType)
   {
     return journalType switch
     {
@@ -180,7 +217,7 @@ public class MongoJournalRepository(MongoDatabaseClient mongoDatabaseClient, IRe
         nameof(journalType),
         journalType,
         $"{nameof(GetIsJournalTypeExpression)} not defined for {journalType}."
-      )
+      ),
     };
   }
 }

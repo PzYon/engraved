@@ -6,7 +6,9 @@ public static class SasExpiry
   // survive long and is never worth caching.
   public static readonly TimeSpan UploadValidity = TimeSpan.FromMinutes(15);
 
-  private static readonly TimeSpan MinimumReadValidity = TimeSpan.FromMinutes(15);
+  private static readonly TimeSpan MinimumReadValidity = TimeSpan.FromMinutes(
+    15
+  );
 
   // Read URLs are rounded up to a full hour so that everyone asking for the same file within the
   // same window gets a byte-identical URL. Without that, every request would produce a new signature,

@@ -2,7 +2,10 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Api.Authentication;
 
-public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFactory jwtTokenFactory)
+public class RefreshHandler(
+  RefreshTokenService refreshTokenService,
+  JwtTokenFactory jwtTokenFactory
+)
 {
   public async Task<AuthResult?> Refresh(string? refreshToken)
   {
@@ -11,7 +14,9 @@ public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFac
       return null;
     }
 
-    RotatedRefreshToken? rotated = await refreshTokenService.ValidateAndRotate(refreshToken);
+    RotatedRefreshToken? rotated = await refreshTokenService.ValidateAndRotate(
+      refreshToken
+    );
     if (rotated == null)
     {
       return null;
@@ -25,7 +30,7 @@ public class RefreshHandler(RefreshTokenService refreshTokenService, JwtTokenFac
       JwtToken = jwtTokenFactory.CreateAccessToken(user.Name, expiresAt),
       ExpiresAt = expiresAt,
       RefreshToken = rotated.Token,
-      User = user
+      User = user,
     };
   }
 }

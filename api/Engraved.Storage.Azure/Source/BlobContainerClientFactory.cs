@@ -5,7 +5,9 @@ namespace Engraved.Storage.Azure;
 
 public static class BlobContainerClientFactory
 {
-  public static BlobServiceClient CreateServiceClient(IBlobStorageSettings settings)
+  public static BlobServiceClient CreateServiceClient(
+    IBlobStorageSettings settings
+  )
   {
     if (!string.IsNullOrEmpty(settings.ConnectionString))
     {
@@ -16,13 +18,16 @@ public static class BlobContainerClientFactory
     {
       throw new InvalidOperationException(
         $"File storage: either {nameof(IBlobStorageSettings.ConnectionString)} or "
-        + $"{nameof(IBlobStorageSettings.BlobEndpoint)} must be configured."
+          + $"{nameof(IBlobStorageSettings.BlobEndpoint)} must be configured."
       );
     }
 
     // No secret to configure or rotate: in Azure this resolves to the app service's managed
     // identity, locally to the developer's Azure login.
-    return new BlobServiceClient(new Uri(settings.BlobEndpoint), new DefaultAzureCredential());
+    return new BlobServiceClient(
+      new Uri(settings.BlobEndpoint),
+      new DefaultAzureCredential()
+    );
   }
 
   // Signing SAS tokens with the account key is only possible when the client was built from a
@@ -33,6 +38,8 @@ public static class BlobContainerClientFactory
     BlobContainerClient containerClient
   )
   {
-    return containerClient.CanGenerateSasUri ? null : new UserDelegationKeyProvider(serviceClient);
+    return containerClient.CanGenerateSasUri
+      ? null
+      : new UserDelegationKeyProvider(serviceClient);
   }
 }

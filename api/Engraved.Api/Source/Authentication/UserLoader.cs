@@ -11,12 +11,15 @@ namespace Engraved.Api.Authentication;
 // authenticated stayed in memory forever and was never re-read from the database. A dedicated
 // MemoryCache bounds both problems - a hard entry cap caps memory, and a sliding expiration evicts
 // users that stop making requests while periodically forcing a refresh for those that keep going.
-public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) : IDisposable
+public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository)
+  : IDisposable
 {
   private const int MaxCachedUsers = 10_000;
   private static readonly TimeSpan SlidingExpiration = TimeSpan.FromMinutes(10);
 
-  private readonly MemoryCache _cache = new(new MemoryCacheOptions { SizeLimit = MaxCachedUsers });
+  private readonly MemoryCache _cache = new(
+    new MemoryCacheOptions { SizeLimit = MaxCachedUsers }
+  );
 
   public void Dispose()
   {
@@ -31,8 +34,11 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
     }
 
     // deliberately do not cache misses: a user that doesn't exist yet may be created moments later
-    IUser user = await unrestrictedRepository.GetUser(name)
-                 ?? throw new NotAllowedOperationException($"Current user '{name}' does not exist.");
+    IUser user =
+      await unrestrictedRepository.GetUser(name)
+      ?? throw new NotAllowedOperationException(
+        $"Current user '{name}' does not exist."
+      );
 
     Cache(user);
 
@@ -52,7 +58,7 @@ public sealed class UserLoader(IUnrestrictedRepository unrestrictedRepository) :
       new MemoryCacheEntryOptions
       {
         Size = 1,
-        SlidingExpiration = SlidingExpiration
+        SlidingExpiration = SlidingExpiration,
       }
     );
   }

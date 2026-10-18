@@ -17,7 +17,7 @@ public class RefreshHandlerShould
     TokenAudience = "http://au.dien.ce",
     TokenIssuer = "http://is.su.er",
     AccessTokenLifetimeMinutes = 15,
-    RefreshTokenLifetimeMinutes = 1440
+    RefreshTokenLifetimeMinutes = 1440,
   };
 
   private FakeDateService _dateService = null!;
@@ -31,10 +31,22 @@ public class RefreshHandlerShould
   {
     _repository = await Util.CreateMongoRepository();
     _dateService = new FakeDateService();
-    _refreshTokenService = new RefreshTokenService(_repository, _config, _dateService);
-    _refreshHandler = new RefreshHandler(_refreshTokenService, new JwtTokenFactory(_config, _dateService));
+    _refreshTokenService = new RefreshTokenService(
+      _repository,
+      _config,
+      _dateService
+    );
+    _refreshHandler = new RefreshHandler(
+      _refreshTokenService,
+      new JwtTokenFactory(_config, _dateService)
+    );
 
-    _user = new User { Id = TestIds.OtherUserId, Name = "me@tests", IsAdmin = true };
+    _user = new User
+    {
+      Id = TestIds.OtherUserId,
+      Name = "me@tests",
+      IsAdmin = true,
+    };
     await _repository.UpsertUser(_user);
   }
 
@@ -49,9 +61,13 @@ public class RefreshHandlerShould
     result!.JwtToken.Should().NotBeNullOrEmpty();
     result.ExpiresAt.Should().Be(_dateService.UtcNow.AddMinutes(15));
     result.RefreshToken.Should().NotBeNullOrEmpty();
-    result.RefreshToken.Should().NotBe(refreshToken, "the refresh token must be rotated");
+    result
+      .RefreshToken.Should()
+      .NotBe(refreshToken, "the refresh token must be rotated");
     result.User!.Id.Should().Be(_user.Id);
-    result.User.IsAdmin.Should().BeTrue("the user's admin flag must be preserved across a token refresh");
+    result
+      .User.IsAdmin.Should()
+      .BeTrue("the user's admin flag must be preserved across a token refresh");
   }
 
   [Test]
@@ -62,7 +78,9 @@ public class RefreshHandlerShould
     await _refreshHandler.Refresh(refreshToken);
 
     // the original token was rotated away and must no longer be accepted
-    (await _refreshHandler.Refresh(refreshToken)).Should().BeNull();
+    (await _refreshHandler.Refresh(refreshToken))
+      .Should()
+      .BeNull();
   }
 
   [Test]
@@ -93,7 +111,9 @@ public class RefreshHandlerShould
   {
     var refreshToken = await _refreshTokenService.Issue(_user);
 
-    _dateService.UtcNow = _dateService.UtcNow.AddMinutes(_config.RefreshTokenLifetimeMinutes + 1);
+    _dateService.UtcNow = _dateService.UtcNow.AddMinutes(
+      _config.RefreshTokenLifetimeMinutes + 1
+    );
 
     (await _refreshHandler.Refresh(refreshToken)).Should().BeNull();
   }
@@ -108,10 +128,14 @@ public class RefreshHandlerShould
     (await _refreshTokenService.RevokeOtherTokens(current)).Should().BeTrue();
 
     // the current device's token still works ...
-    (await _refreshHandler.Refresh(current)).Should().NotBeNull();
+    (await _refreshHandler.Refresh(current))
+      .Should()
+      .NotBeNull();
 
     // ... the other devices' tokens no longer do.
-    (await _refreshHandler.Refresh(other1)).Should().BeNull();
+    (await _refreshHandler.Refresh(other1))
+      .Should()
+      .BeNull();
     (await _refreshHandler.Refresh(other2)).Should().BeNull();
   }
 
@@ -119,6 +143,8 @@ public class RefreshHandlerShould
   public async Task RevokeOtherTokens_ReturnsFalse_ForInvalidToken()
   {
     (await _refreshTokenService.RevokeOtherTokens(null)).Should().BeFalse();
-    (await _refreshTokenService.RevokeOtherTokens("does-not-exist")).Should().BeFalse();
+    (await _refreshTokenService.RevokeOtherTokens("does-not-exist"))
+      .Should()
+      .BeFalse();
   }
 }

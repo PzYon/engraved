@@ -13,7 +13,9 @@ public class AuthRefreshController(
 ) : ControllerBase
 {
   [HttpPost("refresh")]
-  public async Task<ActionResult<AuthResult>> Refresh([FromBody] RefreshPayload payload)
+  public async Task<ActionResult<AuthResult>> Refresh(
+    [FromBody] RefreshPayload payload
+  )
   {
     AuthResult? result = await refreshHandler.Refresh(payload.RefreshToken);
     return result == null ? Unauthorized() : result;

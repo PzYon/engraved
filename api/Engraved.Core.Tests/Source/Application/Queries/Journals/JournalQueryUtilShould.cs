@@ -14,7 +14,8 @@ public class JournalQueryUtilShould
 {
   private string _meUserId = null!;
   private TestMongoRepository _testRepository = null!;
-  private TestUserRestrictedMongoRepository _userRestrictedMongoRepository = null!;
+  private TestUserRestrictedMongoRepository _userRestrictedMongoRepository =
+    null!;
   private string _youUserId = null!;
 
   [SetUp]
@@ -22,7 +23,9 @@ public class JournalQueryUtilShould
   {
     _testRepository = await Util.CreateMongoRepository();
 
-    UpsertResult meUpsertResult = await _testRepository.UpsertUser(new User { Name = "me" });
+    UpsertResult meUpsertResult = await _testRepository.UpsertUser(
+      new User { Name = "me" }
+    );
     _meUserId = meUpsertResult.EntityId;
 
     UpsertResult youUpsertResult = await _testRepository.UpsertUser(
@@ -30,12 +33,13 @@ public class JournalQueryUtilShould
       {
         Name = "you",
         DisplayName = "You",
-        ImageUrl = "https://you.test/image.png"
+        ImageUrl = "https://you.test/image.png",
       }
     );
     _youUserId = youUpsertResult.EntityId;
 
-    _userRestrictedMongoRepository = await Util.CreateUserRestrictedMongoRepository("me", _meUserId, true);
+    _userRestrictedMongoRepository =
+      await Util.CreateUserRestrictedMongoRepository("me", _meUserId, true);
   }
 
   [Test]
@@ -47,7 +51,10 @@ public class JournalQueryUtilShould
     );
 
     ensuredJournals.Length.Should().Be(1);
-    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Owner);
+    ensuredJournals[0]
+      .Permissions[_meUserId]
+      .UserRole.Should()
+      .Be(UserRole.Owner);
   }
 
   [Test]
@@ -63,13 +70,16 @@ public class JournalQueryUtilShould
           {
             _meUserId,
             new PermissionDefinition { Kind = PermissionKind.Read }
-          }
-        }
+          },
+        },
       }
     );
 
     ensuredJournals.Length.Should().Be(1);
-    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Reader);
+    ensuredJournals[0]
+      .Permissions[_meUserId]
+      .UserRole.Should()
+      .Be(UserRole.Reader);
   }
 
   [Test]
@@ -85,13 +95,16 @@ public class JournalQueryUtilShould
           {
             _meUserId,
             new PermissionDefinition { Kind = PermissionKind.Write }
-          }
-        }
+          },
+        },
       }
     );
 
     ensuredJournals.Length.Should().Be(1);
-    ensuredJournals[0].Permissions[_meUserId].UserRole.Should().Be(UserRole.Writer);
+    ensuredJournals[0]
+      .Permissions[_meUserId]
+      .UserRole.Should()
+      .Be(UserRole.Writer);
   }
 
   [Test]
@@ -102,14 +115,17 @@ public class JournalQueryUtilShould
       new TimerJournal { UserId = _youUserId }
     );
 
-    ensuredJournals[0].Permissions[_youUserId].User.Should().BeEquivalentTo(
-      new PermissionUser
-      {
-        Id = _youUserId,
-        Name = "you",
-        DisplayName = "You",
-        ImageUrl = "https://you.test/image.png"
-      }
-    );
+    ensuredJournals[0]
+      .Permissions[_youUserId]
+      .User.Should()
+      .BeEquivalentTo(
+        new PermissionUser
+        {
+          Id = _youUserId,
+          Name = "you",
+          DisplayName = "You",
+          ImageUrl = "https://you.test/image.png",
+        }
+      );
   }
 }

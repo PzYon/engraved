@@ -59,13 +59,17 @@ public class FileAcceptor(
     // check, so a shared journal's collaborators can still edit a scrap holding someone else's file.
     if (!fileIdFactory.BelongsToUser(file.Id, currentUser.Value.Id!))
     {
-      throw new NotAllowedOperationException("File does not exist or was not uploaded by you.");
+      throw new NotAllowedOperationException(
+        "File does not exist or was not uploaded by you."
+      );
     }
 
     var contentLength = await fileStore.GetContentLength(file.Id);
     if (contentLength == null)
     {
-      throw new NotAllowedOperationException("File does not exist or was not uploaded by you.");
+      throw new NotAllowedOperationException(
+        "File does not exist or was not uploaded by you."
+      );
     }
 
     if (contentLength > FileSizeLimits.MaxFileSizeBytes)
@@ -98,7 +102,7 @@ public class FileAcceptor(
 
       // Cosmetic, so client-supplied is fine: they only reserve layout space before the image loads.
       Width = file.Width,
-      Height = file.Height
+      Height = file.Height,
     };
   }
 }

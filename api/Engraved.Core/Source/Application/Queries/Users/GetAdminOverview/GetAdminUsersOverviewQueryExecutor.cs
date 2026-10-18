@@ -3,8 +3,9 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Queries.Users.GetAdminOverview;
 
-public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestrictedRepository)
-  : IQueryExecutor<AdminUserItem[], GetAdminUsersOverviewQuery>
+public class GetAdminUsersOverviewQueryExecutor(
+  IUnrestrictedRepository unrestrictedRepository
+) : IQueryExecutor<AdminUserItem[], GetAdminUsersOverviewQuery>
 {
   // admin data must always be current - a stale view could hide a just-deleted user's freed-up data
   // or omit someone who just signed up
@@ -24,9 +25,13 @@ public class GetAdminUsersOverviewQueryExecutor(IUnrestrictedRepository unrestri
           Id = user.Id!,
           Name = user.Name,
           DisplayName = user.DisplayName,
-          JournalsCount = await unrestrictedRepository.CountJournalsForUser(user.Id!),
-          EntriesCount = await unrestrictedRepository.CountEntriesForUser(user.Id!),
-          LastLoginDate = user.LastLoginDate
+          JournalsCount = await unrestrictedRepository.CountJournalsForUser(
+            user.Id!
+          ),
+          EntriesCount = await unrestrictedRepository.CountEntriesForUser(
+            user.Id!
+          ),
+          LastLoginDate = user.LastLoginDate,
         }
       );
     }

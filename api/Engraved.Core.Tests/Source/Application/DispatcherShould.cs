@@ -57,8 +57,12 @@ public class DispatcherShould
   {
     Dispatcher d = CreateDispatcher("xyz");
 
-    Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "123" });
-    Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(new FakeQuery { DummyValue = "456" });
+    Guid resultFirstExecution = await d.Query<Guid, FakeQuery>(
+      new FakeQuery { DummyValue = "123" }
+    );
+    Guid resultSecondExecution = await d.Query<Guid, FakeQuery>(
+      new FakeQuery { DummyValue = "456" }
+    );
 
     resultFirstExecution.Should().NotBe(resultSecondExecution);
   }
@@ -88,10 +92,14 @@ public class DispatcherShould
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
     Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
     await dispatcher1.Command(new FakeCommand());
-    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
+    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(
+      query
+    );
     resultFirstExecution.Should().NotBe(resultSecondExecution);
 
-    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
+    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(
+      query
+    );
     firstResultOtherUser.Should().Be(secondResultOtherUser);
   }
 
@@ -105,12 +113,18 @@ public class DispatcherShould
 
     Dispatcher dispatcher1 = CreateDispatcher("user_one");
     Guid resultFirstExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
-    await dispatcher1.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
+    await dispatcher1.Command(
+      new FakeCommand { AffectedUsers = ["user_zero", "user_one"] }
+    );
 
-    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(query);
+    Guid resultSecondExecution = await dispatcher1.Query<Guid, FakeQuery>(
+      query
+    );
     resultFirstExecution.Should().NotBe(resultSecondExecution);
 
-    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(query);
+    Guid secondResultOtherUser = await dispatcher0.Query<Guid, FakeQuery>(
+      query
+    );
     firstResultOtherUser.Should().NotBe(secondResultOtherUser);
   }
 
@@ -119,8 +133,14 @@ public class DispatcherShould
   {
     // we use the same queryCache instance to simulate multiple request from the
     // same user at the same time.
-    var currentUser = new Lazy<IUser>(() => new User { Id = "user_one", Name = "user_one" });
-    var queryCache = new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
+    var currentUser = new Lazy<IUser>(() =>
+      new User { Id = "user_one", Name = "user_one" }
+    );
+    var queryCache = new QueryCache(
+      NullLogger<QueryCache>.Instance,
+      _memoryCache,
+      currentUser
+    );
 
     var parallelTaskCount = 10;
     var actionPerTaskCount = 100;
@@ -130,24 +150,38 @@ public class DispatcherShould
     for (var taskIndex = 0; taskIndex < parallelTaskCount; taskIndex++)
     {
       tasks[taskIndex] = Task.Run(async () =>
+      {
+        for (
+          var actionIndex = 0;
+          actionIndex < actionPerTaskCount;
+          actionIndex++
+        )
         {
-          for (var actionIndex = 0; actionIndex < actionPerTaskCount; actionIndex++)
-          {
-            Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
-            await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
-            await dispatcher.Command(new FakeCommand { AffectedUsers = ["user_zero", "user_one"] });
-          }
+          Dispatcher dispatcher = CreateDispatcher("user_one", queryCache);
+          await dispatcher.Query<Guid, FakeQuery>(new FakeQuery());
+          await dispatcher.Command(
+            new FakeCommand { AffectedUsers = ["user_zero", "user_one"] }
+          );
         }
-      );
+      });
     }
 
     await Task.WhenAll(tasks);
   }
 
-  private Dispatcher CreateDispatcher(string userName, QueryCache? queryCache = null)
+  private Dispatcher CreateDispatcher(
+    string userName,
+    QueryCache? queryCache = null
+  )
   {
-    var currentUser = new Lazy<IUser>(() => new User { Id = userName, Name = userName });
-    queryCache ??= new QueryCache(NullLogger<QueryCache>.Instance, _memoryCache, currentUser);
+    var currentUser = new Lazy<IUser>(() =>
+      new User { Id = userName, Name = userName }
+    );
+    queryCache ??= new QueryCache(
+      NullLogger<QueryCache>.Instance,
+      _memoryCache,
+      currentUser
+    );
 
     return new Dispatcher(
       NullLogger<Dispatcher>.Instance,
@@ -167,7 +201,9 @@ public class FakeCommandExecutor : ICommandExecutor<FakeCommand>
 {
   public Task<CommandResult> Execute(FakeCommand command)
   {
-    return Task.FromResult(new CommandResult("123", command.AffectedUsers.ToArray()));
+    return Task.FromResult(
+      new CommandResult("123", command.AffectedUsers.ToArray())
+    );
   }
 }
 

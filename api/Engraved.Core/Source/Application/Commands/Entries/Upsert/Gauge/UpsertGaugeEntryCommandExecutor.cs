@@ -17,17 +17,25 @@ public class UpsertGaugeEntryCommandExecutor(
     GaugeJournal
   >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override Task PerformTypeSpecificValidation(UpsertGaugeEntryCommand command)
+  protected override Task PerformTypeSpecificValidation(
+    UpsertGaugeEntryCommand command
+  )
   {
     if (command.Value == null)
     {
-      throw CreateInvalidCommandException(command, $"\"{nameof(UpsertGaugeEntryCommand.Value)}\" must be specified");
+      throw CreateInvalidCommandException(
+        command,
+        $"\"{nameof(UpsertGaugeEntryCommand.Value)}\" must be specified"
+      );
     }
 
     return Task.CompletedTask;
   }
 
-  protected override void SetTypeSpecificValues(UpsertGaugeEntryCommand command, GaugeEntry entry)
+  protected override void SetTypeSpecificValues(
+    UpsertGaugeEntryCommand command,
+    GaugeEntry entry
+  )
   {
     entry.Value = command.Value!.Value;
   }

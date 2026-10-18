@@ -25,7 +25,10 @@ public static class JournalCommandUtil
 
     if (journal is not TJournal specificJournal)
     {
-      throw new InvalidCommandException(command, $"A journal with key \"{journalId}\" does not exist.");
+      throw new InvalidCommandException(
+        command,
+        $"A journal with key \"{journalId}\" does not exist."
+      );
     }
 
     return specificJournal;

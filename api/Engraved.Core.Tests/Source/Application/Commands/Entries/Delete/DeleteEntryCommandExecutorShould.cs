@@ -40,7 +40,13 @@ public class DeleteEntryCommandExecutorShould
       new CounterJournal
       {
         Id = journalId,
-        Permissions = new UserPermissions { { otherUserId, new PermissionDefinition { Kind = PermissionKind.Read } } }
+        Permissions = new UserPermissions
+        {
+          {
+            otherUserId,
+            new PermissionDefinition { Kind = PermissionKind.Read }
+          },
+        },
       }
     );
     await _repo.UpsertEntry(
@@ -48,20 +54,27 @@ public class DeleteEntryCommandExecutorShould
       {
         Id = entryId,
         ParentId = journalId,
-        DateTime = _dateService.UtcNow
+        DateTime = _dateService.UtcNow,
       }
     );
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = entryId }
-    );
+    CommandResult result = await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = entryId });
 
     // then
-    (await _repo.GetEntry(entryId)).Should().BeNull();
+    (await _repo.GetEntry(entryId))
+      .Should()
+      .BeNull();
 
     IJournal journal = (await _repo.GetJournal(journalId))!;
-    journal.EditedOn.Should().BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    journal
+      .EditedOn.Should()
+      .BeCloseTo(_dateService.UtcNow, TimeSpan.FromMilliseconds(100));
 
     result.EntityId.Should().Be(entryId);
     result.AffectedUserIds.Should().Contain(otherUserId);
@@ -84,15 +97,28 @@ public class DeleteEntryCommandExecutorShould
         Title = "with files",
         Files =
         [
-          new FileRef { Id = "file-one", FileName = "a.png", ContentType = "image/png" },
-          new FileRef { Id = "file-two", FileName = "b.pdf", ContentType = "application/pdf" }
-        ]
+          new FileRef
+          {
+            Id = "file-one",
+            FileName = "a.png",
+            ContentType = "image/png",
+          },
+          new FileRef
+          {
+            Id = "file-two",
+            FileName = "b.pdf",
+            ContentType = "application/pdf",
+          },
+        ],
       }
     );
 
-    await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = entryId }
-    );
+    await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = entryId });
 
     _fileStore.DeletedFileIds.Should().BeEquivalentTo("file-one", "file-two");
   }
@@ -103,9 +129,12 @@ public class DeleteEntryCommandExecutorShould
     const string missingEntryId = "60703c3b0000000000000004";
 
     // when
-    CommandResult result = await new DeleteEntryCommandExecutor(_repo, _repo, _fileStore, _dateService).Execute(
-      new DeleteEntryCommand { Id = missingEntryId }
-    );
+    CommandResult result = await new DeleteEntryCommandExecutor(
+      _repo,
+      _repo,
+      _fileStore,
+      _dateService
+    ).Execute(new DeleteEntryCommand { Id = missingEntryId });
 
     // then
     result.EntityId.Should().BeNull();

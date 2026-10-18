@@ -22,7 +22,10 @@ public class PermissionsEnsurer(IUserRepository repo)
         continue;
       }
 
-      permissionHolder.Permissions[userId] = new PermissionDefinition { Kind = kind };
+      permissionHolder.Permissions[userId] = new PermissionDefinition
+      {
+        Kind = kind,
+      };
     }
   }
 

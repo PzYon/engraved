@@ -18,7 +18,9 @@ public class FileStorageRegistrationShould
   [Test]
   public void Fall_BackToADevelopmentSigningKey_When_NoJwtSecretIsConfigured()
   {
-    IFileIdFactory factory = Resolve<IFileIdFactory>(useDevelopmentDefaults: true);
+    IFileIdFactory factory = Resolve<IFileIdFactory>(
+      useDevelopmentDefaults: true
+    );
 
     var fileId = factory.Create("some-user");
 
@@ -33,7 +35,10 @@ public class FileStorageRegistrationShould
   {
     Action register = () => Resolve<IFileIdFactory>(false, DevelopmentStorage);
 
-    register.Should().Throw<InvalidOperationException>().WithMessage("*JWT Secret*");
+    register
+      .Should()
+      .Throw<InvalidOperationException>()
+      .WithMessage("*JWT Secret*");
   }
 
   [Test]
@@ -59,7 +64,8 @@ public class FileStorageRegistrationShould
   [Test]
   public void Throw_When_TheConnectionStringCannotBeParsed()
   {
-    Action register = () => Register(true, ("FileStorage:ConnectionString", "name=value"));
+    Action register = () =>
+      Register(true, ("FileStorage:ConnectionString", "name=value"));
 
     register.Should().Throw<Exception>();
   }
@@ -70,12 +76,17 @@ public class FileStorageRegistrationShould
   [Test]
   public void Throw_When_TheConnectionStringIsAnEndpointUrl()
   {
-    Action register = () => Register(
-      true,
-      ("FileStorage:ConnectionString", "https://engravedfiles.blob.core.windows.net")
-    );
+    Action register = () =>
+      Register(
+        true,
+        (
+          "FileStorage:ConnectionString",
+          "https://engravedfiles.blob.core.windows.net"
+        )
+      );
 
-    register.Should()
+    register
+      .Should()
       .Throw<InvalidOperationException>()
       .WithMessage("*FileStorage__BlobEndpoint*");
   }
@@ -85,21 +96,30 @@ public class FileStorageRegistrationShould
   [Test]
   public void Throw_When_BothCredentialSettingsAreSet()
   {
-    Action register = () => Register(
-      true,
-      DevelopmentStorage,
-      ("FileStorage:BlobEndpoint", "https://engravedfiles.blob.core.windows.net")
-    );
+    Action register = () =>
+      Register(
+        true,
+        DevelopmentStorage,
+        (
+          "FileStorage:BlobEndpoint",
+          "https://engravedfiles.blob.core.windows.net"
+        )
+      );
 
-    register.Should().Throw<InvalidOperationException>().WithMessage("*only one of*");
+    register
+      .Should()
+      .Throw<InvalidOperationException>()
+      .WithMessage("*only one of*");
   }
 
   [Test]
   public void Throw_When_TheBlobEndpointIsNotAUrl()
   {
-    Action register = () => Register(true, ("FileStorage:BlobEndpoint", "engravedfiles"));
+    Action register = () =>
+      Register(true, ("FileStorage:BlobEndpoint", "engravedfiles"));
 
-    register.Should()
+    register
+      .Should()
       .Throw<InvalidOperationException>()
       .WithMessage("*FileStorage__BlobEndpoint is not an absolute URL*");
   }
@@ -107,10 +127,15 @@ public class FileStorageRegistrationShould
   private static (string Key, string Value) DevelopmentStorage =>
     ("FileStorage:ConnectionString", "UseDevelopmentStorage=true");
 
-  private static T Resolve<T>(bool useDevelopmentDefaults, params (string Key, string Value)[] settings)
+  private static T Resolve<T>(
+    bool useDevelopmentDefaults,
+    params (string Key, string Value)[] settings
+  )
     where T : notnull
   {
-    return Register(useDevelopmentDefaults, settings).BuildServiceProvider().GetRequiredService<T>();
+    return Register(useDevelopmentDefaults, settings)
+      .BuildServiceProvider()
+      .GetRequiredService<T>();
   }
 
   private static IServiceCollection Register(
@@ -118,18 +143,27 @@ public class FileStorageRegistrationShould
     params (string Key, string Value)[] settings
   )
   {
-    var values = new Dictionary<string, string?> { ["FileStorage:ContainerName"] = "files" };
+    var values = new Dictionary<string, string?>
+    {
+      ["FileStorage:ContainerName"] = "files",
+    };
 
     foreach ((var key, var value) in settings)
     {
       values[key] = value;
     }
 
-    IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(values).Build();
+    IConfiguration configuration = new ConfigurationBuilder()
+      .AddInMemoryCollection(values)
+      .Build();
 
     var services = new ServiceCollection();
 
-    FileStorageRegistration.RegisterFileStorage(services, configuration, useDevelopmentDefaults);
+    FileStorageRegistration.RegisterFileStorage(
+      services,
+      configuration,
+      useDevelopmentDefaults
+    );
 
     return services;
   }

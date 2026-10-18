@@ -17,5 +17,8 @@ public class UpsertCounterEntryCommandExecutor(
     CounterJournal
   >(journalRepository, entryRepository, dateService, fileAcceptor)
 {
-  protected override void SetTypeSpecificValues(UpsertCounterEntryCommand command, CounterEntry entry) { }
+  protected override void SetTypeSpecificValues(
+    UpsertCounterEntryCommand command,
+    CounterEntry entry
+  ) { }
 }

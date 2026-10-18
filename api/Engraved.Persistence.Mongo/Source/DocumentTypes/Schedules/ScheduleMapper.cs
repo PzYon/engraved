@@ -4,7 +4,9 @@ namespace Engraved.Persistence.Mongo.DocumentTypes.Schedules;
 
 public static class ScheduleMapper
 {
-  public static Dictionary<string, ScheduleSubDocument> MapSchedules(Dictionary<string, Schedule> schedules)
+  public static Dictionary<string, ScheduleSubDocument> MapSchedules(
+    Dictionary<string, Schedule> schedules
+  )
   {
     var result = new Dictionary<string, ScheduleSubDocument>();
 
@@ -13,12 +15,16 @@ public static class ScheduleMapper
       result[key] = new ScheduleSubDocument
       {
         NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new RecurrenceSubDocument { DateString = schedule.Recurrence.DateString }
-          : null,
+        Recurrence =
+          schedule.Recurrence != null
+            ? new RecurrenceSubDocument
+            {
+              DateString = schedule.Recurrence.DateString,
+            }
+            : null,
         NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
+        OnClickUrl = schedule.OnClickUrl,
       };
     }
 
@@ -36,12 +42,13 @@ public static class ScheduleMapper
       result[key] = new Schedule
       {
         NextOccurrence = schedule.NextOccurrence,
-        Recurrence = schedule.Recurrence != null
-          ? new Recurrence { DateString = schedule.Recurrence.DateString }
-          : null,
+        Recurrence =
+          schedule.Recurrence != null
+            ? new Recurrence { DateString = schedule.Recurrence.DateString }
+            : null,
         NotifiedOn = schedule.NotifiedOn,
         NotificationId = schedule.NotificationId,
-        OnClickUrl = schedule.OnClickUrl
+        OnClickUrl = schedule.OnClickUrl,
       };
     }
 

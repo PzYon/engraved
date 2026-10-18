@@ -9,30 +9,40 @@ public class EditJournalCommandExecutor(
   IJournalRepository journalRepository,
   IEntryRepository entryRepository,
   IDateService dateService
-)
-  : ICommandExecutor<EditJournalCommand>
+) : ICommandExecutor<EditJournalCommand>
 {
   public async Task<CommandResult> Execute(EditJournalCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(command, $"{nameof(EditJournalCommand.JournalId)} must be specified.");
+      throw new InvalidCommandException(
+        command,
+        $"{nameof(EditJournalCommand.JournalId)} must be specified."
+      );
     }
 
     if (string.IsNullOrEmpty(command.Name))
     {
-      throw new InvalidCommandException(command, $"{nameof(EditJournalCommand.Name)} must be specified.");
+      throw new InvalidCommandException(
+        command,
+        $"{nameof(EditJournalCommand.Name)} must be specified."
+      );
     }
 
     IJournal? journal = await journalRepository.GetJournal(command.JournalId);
 
     if (journal == null)
     {
-      throw new InvalidCommandException(command, $"Journal with key \"{command.JournalId}\" does not exist.");
+      throw new InvalidCommandException(
+        command,
+        $"Journal with key \"{command.JournalId}\" does not exist."
+      );
     }
 
     var normalizedAttributes = NormalizeKeys(command.Attributes);
-    var removedAttributeKeys = journal.Attributes.Keys.Except(normalizedAttributes.Keys).ToArray();
+    var removedAttributeKeys = journal
+      .Attributes.Keys.Except(normalizedAttributes.Keys)
+      .ToArray();
 
     await RemoveAttributesFromEntries(journal.Id!, removedAttributeKeys);
 
@@ -46,10 +56,16 @@ public class EditJournalCommandExecutor(
 
     UpsertResult result = await journalRepository.UpsertJournal(journal);
 
-    return new CommandResult(result.EntityId, journal.Permissions.GetUserIdsWithAccess());
+    return new CommandResult(
+      result.EntityId,
+      journal.Permissions.GetUserIdsWithAccess()
+    );
   }
 
-  private async Task RemoveAttributesFromEntries(string journalId, string[] removedAttributeKeys)
+  private async Task RemoveAttributesFromEntries(
+    string journalId,
+    string[] removedAttributeKeys
+  )
   {
     if (removedAttributeKeys.Length == 0)
     {
@@ -74,13 +90,17 @@ public class EditJournalCommandExecutor(
   }
 
   // todo: add tests for this stuff
-  private static Dictionary<string, JournalAttribute> NormalizeKeys(Dictionary<string, JournalAttribute> attributes)
+  private static Dictionary<string, JournalAttribute> NormalizeKeys(
+    Dictionary<string, JournalAttribute> attributes
+  )
   {
     var journalAttributes = KeyNormalizer.Normalize(attributes);
 
     foreach (var journalAttribute in journalAttributes)
     {
-      journalAttribute.Value.Values = KeyNormalizer.Normalize(journalAttribute.Value.Values);
+      journalAttribute.Value.Values = KeyNormalizer.Normalize(
+        journalAttribute.Value.Values
+      );
     }
 
     return journalAttributes;

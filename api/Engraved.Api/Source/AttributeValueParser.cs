@@ -11,7 +11,9 @@ public static class AttributeValueParser
       return dict;
     }
 
-    foreach (var s in attributeValues.Split(";", StringSplitOptions.RemoveEmptyEntries))
+    foreach (
+      var s in attributeValues.Split(";", StringSplitOptions.RemoveEmptyEntries)
+    )
     {
       var strings = s.Split(":");
       var attributeKey = strings[0];

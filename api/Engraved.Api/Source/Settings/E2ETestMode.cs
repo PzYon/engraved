@@ -16,7 +16,10 @@ public class E2ETestMode(bool isEnabled)
 
   // e2e mode swaps JWT for basic auth, which accepts any user name without a password. A stray
   // argument must therefore never be able to switch a production deployment into it.
-  public static bool IsRequested(IEnumerable<string> commandLineArgs, IHostEnvironment environment)
+  public static bool IsRequested(
+    IEnumerable<string> commandLineArgs,
+    IHostEnvironment environment
+  )
   {
     if (!commandLineArgs.Contains(CommandLineArgument))
     {
@@ -27,7 +30,7 @@ public class E2ETestMode(bool isEnabled)
     {
       throw new InvalidOperationException(
         $"The \"{CommandLineArgument}\" argument is not allowed in the {Environments.Production} environment. "
-        + "Start the API with a different environment (e.g. \"--environment E2ETests\") to run e2e tests."
+          + "Start the API with a different environment (e.g. \"--environment E2ETests\") to run e2e tests."
       );
     }
 

@@ -44,7 +44,10 @@ public class FileIdFactoryShould
   [Test]
   public void Reject_An_UnsignedId()
   {
-    _factory.BelongsToUser("8a1d3f9c4b2e4a7f9c0d1e2f", UserId).Should().BeFalse();
+    _factory
+      .BelongsToUser("8a1d3f9c4b2e4a7f9c0d1e2f", UserId)
+      .Should()
+      .BeFalse();
   }
 
   [TestCase("")]

@@ -13,10 +13,13 @@ namespace Engraved.Persistence.Mongo.Repositories;
 // entirely from journal permissions, so GetEntriesForJournal delegates the permission decision to
 // the (scoped) journal repository, while SearchEntries and GetEntry are unscoped primitives whose
 // callers enforce access themselves (see the comments on those methods).
-public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, MongoJournalRepository journalRepository)
-  : IEntryRepository
+public class MongoEntryRepository(
+  MongoDatabaseClient mongoDatabaseClient,
+  MongoJournalRepository journalRepository
+) : IEntryRepository
 {
-  private IMongoCollection<EntryDocument> EntriesCollection => mongoDatabaseClient.EntriesCollection;
+  private IMongoCollection<EntryDocument> EntriesCollection =>
+    mongoDatabaseClient.EntriesCollection;
 
   public async Task<IEntry[]> GetEntriesForJournal(
     string journalId,
@@ -37,7 +40,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     var filters = new List<FilterDefinition<EntryDocument>>
     {
-      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId)
+      Builders<EntryDocument>.Filter.Where(d => d.ParentId == journalId),
     };
 
     if (!string.IsNullOrEmpty(searchText))
@@ -53,35 +56,43 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     if (fromDate.HasValue)
     {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime >= fromDate.Value));
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(d => d.DateTime >= fromDate.Value)
+      );
     }
 
     if (toDate.HasValue)
     {
-      filters.Add(Builders<EntryDocument>.Filter.Where(d => d.DateTime < toDate.Value.AddDays(1)));
+      filters.Add(
+        Builders<EntryDocument>.Filter.Where(d =>
+          d.DateTime < toDate.Value.AddDays(1)
+        )
+      );
     }
 
     if (attributeValues != null)
     {
       filters.AddRange(
         attributeValues.Select(attributeValue =>
-          Builders<EntryDocument>.Filter.In($"JournalAttributeValues.{attributeValue.Key}", attributeValue.Value)
+          Builders<EntryDocument>.Filter.In(
+            $"JournalAttributeValues.{attributeValue.Key}",
+            attributeValue.Value
+          )
         )
       );
     }
 
-    SortDefinition<EntryDocument> sort = sortOrder == SortEntriesBy.EditedOn
-      ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
-      : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
+    SortDefinition<EntryDocument> sort =
+      sortOrder == SortEntriesBy.EditedOn
+        ? Builders<EntryDocument>.Sort.Descending(d => d.EditedOn)
+        : Builders<EntryDocument>.Sort.Descending(d => d.DateTime);
 
     var entries = await EntriesCollection
       .Find(Builders<EntryDocument>.Filter.And(filters))
       .Sort(sort)
       .ToListAsync();
 
-    return entries
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
+    return entries.Select(EntryDocumentMapper.FromDocument).ToArray();
   }
 
   // Unscoped primitive: this method does NOT enforce journal read-permission. It trusts the
@@ -115,29 +126,34 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
 
     if (journalIds is { Length: > 0 })
     {
-      filters.Add(Builders<EntryDocument>.Filter.In(d => d.ParentId, journalIds));
+      filters.Add(
+        Builders<EntryDocument>.Filter.In(d => d.ParentId, journalIds)
+      );
     }
 
     if (journalTypes is { Length: > 0 })
     {
       filters.Add(
         Builders<EntryDocument>.Filter.Or(
-          journalTypes.Select(t => Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t)))
+          journalTypes.Select(t =>
+            Builders<EntryDocument>.Filter.Where(GetIsEntryTypeExpression(t))
+          )
         )
       );
     }
 
     if (scheduleMode == ScheduleMode.AnySchedule)
     {
-      filters.Add(
-        Builders<EntryDocument>.Filter.Exists(d => d.Schedules)
-      );
+      filters.Add(Builders<EntryDocument>.Filter.Exists(d => d.Schedules));
     }
     else if (scheduleMode == ScheduleMode.CurrentUserOnly)
     {
       if (string.IsNullOrEmpty(currentUserId))
       {
-        throw new ArgumentException("Current user id is required", nameof(currentUserId));
+        throw new ArgumentException(
+          "Current user id is required",
+          nameof(currentUserId)
+        );
       }
 
       filters.Add(GetHasScheduleForCurrentUserFilter(currentUserId));
@@ -152,7 +168,9 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       scheduleMode,
       currentUserId,
       filters,
-      Builders<EntryDocument>.Sort.Descending(d => d.EditedOn).Descending(d => d.Id)
+      Builders<EntryDocument>
+        .Sort.Descending(d => d.EditedOn)
+        .Descending(d => d.Id)
     );
   }
 
@@ -161,18 +179,21 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
   {
     EntryDocument document = EntryDocumentMapper.ToDocument(entry);
 
-    ReplaceOneResult? replaceOneResult = await EntriesCollection.ReplaceOneAsync(
-      MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
-      document,
-      new ReplaceOptions { IsUpsert = true }
-    );
+    ReplaceOneResult? replaceOneResult =
+      await EntriesCollection.ReplaceOneAsync(
+        MongoUtil.GetDocumentByIdFilter<EntryDocument>(entry.Id),
+        document,
+        new ReplaceOptions { IsUpsert = true }
+      );
 
     return MongoUtil.CreateUpsertResult(entry.Id, replaceOneResult);
   }
 
   public async Task DeleteEntry(string entryId)
   {
-    await EntriesCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId));
+    await EntriesCollection.DeleteOneAsync(
+      MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId)
+    );
   }
 
   public async Task DeleteEntriesForJournal(string journalId)
@@ -198,9 +219,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       .Find(MongoUtil.GetDocumentByIdFilter<EntryDocument>(entryId))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : EntryDocumentMapper.FromDocument(document);
+    return document == null ? null : EntryDocumentMapper.FromDocument(document);
   }
 
   // Unscoped primitive, for the same reason as GetEntry above: the caller (GetFileUrlQueryExecutor)
@@ -209,20 +228,26 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
   {
     if (string.IsNullOrEmpty(fileId))
     {
-      throw new ArgumentNullException(nameof(fileId), "File id must be specified.");
+      throw new ArgumentNullException(
+        nameof(fileId),
+        "File id must be specified."
+      );
     }
 
     // Sorted by id so that a file id which somehow ends up on more than one entry always resolves to
     // the same one. FileAcceptor is what should keep that from happening; this makes the outcome
     // predictable rather than depending on which document the server happens to return first.
     EntryDocument? document = await EntriesCollection
-      .Find(Builders<EntryDocument>.Filter.ElemMatch(d => d.Files, f => f.Id == fileId))
+      .Find(
+        Builders<EntryDocument>.Filter.ElemMatch(
+          d => d.Files,
+          f => f.Id == fileId
+        )
+      )
       .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Id))
       .FirstOrDefaultAsync();
 
-    return document == null
-      ? null
-      : EntryDocumentMapper.FromDocument(document);
+    return document == null ? null : EntryDocumentMapper.FromDocument(document);
   }
 
   public async Task<string[]> GetFileIdsForJournal(string journalId)
@@ -259,9 +284,7 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       defaultSort
     );
 
-    return documents
-      .Select(EntryDocumentMapper.FromDocument)
-      .ToArray();
+    return documents.Select(EntryDocumentMapper.FromDocument).ToArray();
   }
 
   private async Task<List<EntryDocument>> LoadDocuments(
@@ -298,7 +321,11 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
           filters.Union([GetHasScheduleForCurrentUserFilter(currentUserId)])
         )
       )
-      .Sort(Builders<EntryDocument>.Sort.Ascending(d => d.Schedules[currentUserId].NextOccurrence))
+      .Sort(
+        Builders<EntryDocument>.Sort.Ascending(d =>
+          d.Schedules[currentUserId].NextOccurrence
+        )
+      )
       .Limit(limit)
       .ToListAsync();
 
@@ -308,7 +335,9 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
       await EntriesCollection
         .Find(
           Builders<EntryDocument>.Filter.And(
-            filters.Concat([Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds)])
+            filters.Concat([
+              Builders<EntryDocument>.Filter.Nin(d => d.Id, foundIds),
+            ])
           )
         )
         .Sort(defaultSort)
@@ -323,9 +352,14 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
   // attached to it. Two searches deliberately leave them out: the title-only search exists to be
   // narrow, and the match-any-word search collects candidates for "related items", which ranks them
   // on title and notes alone - an entry matched purely by a file name would score zero there.
-  private static FieldDefinition<EntryDocument>[] GetFreeTextFields(bool onlyConsiderTitle, bool includeFileNames)
+  private static FieldDefinition<EntryDocument>[] GetFreeTextFields(
+    bool onlyConsiderTitle,
+    bool includeFileNames
+  )
   {
-    FieldDefinition<EntryDocument> title = Field(d => ((ScrapsEntryDocument) d).Title!);
+    FieldDefinition<EntryDocument> title = Field(d =>
+      ((ScrapsEntryDocument)d).Title!
+    );
 
     if (onlyConsiderTitle)
     {
@@ -335,29 +369,43 @@ public class MongoEntryRepository(MongoDatabaseClient mongoDatabaseClient, Mongo
     FieldDefinition<EntryDocument> notes = Field(d => d.Notes!);
 
     return includeFileNames
-      ? [title, notes, new StringFieldDefinition<EntryDocument>("Files.FileName")]
+      ?
+      [
+        title,
+        notes,
+        new StringFieldDefinition<EntryDocument>("Files.FileName"),
+      ]
       : [title, notes];
   }
 
   // ExpressionFieldDefinition takes an untyped LambdaExpression, so an inlined lambda has no
   // inferable delegate type - this gives it one.
-  private static FieldDefinition<EntryDocument> Field(Expression<Func<EntryDocument, object>> expression)
+  private static FieldDefinition<EntryDocument> Field(
+    Expression<Func<EntryDocument, object>> expression
+  )
   {
     return new ExpressionFieldDefinition<EntryDocument>(expression);
   }
 
-  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(string currentUserId)
+  private static FilterDefinition<EntryDocument> GetHasScheduleForCurrentUserFilter(
+    string currentUserId
+  )
   {
     // "scheduled" means the user has a schedule with a pending occurrence. A schedule sub-document is
     // kept around after it has fired (with NextOccurrence set to null), so checking mere existence of
     // the sub-document would wrongly surface already-fired schedules as "scheduled".
     return Builders<EntryDocument>.Filter.And(
       Builders<EntryDocument>.Filter.Exists($"Schedules.{currentUserId}"),
-      Builders<EntryDocument>.Filter.Ne($"Schedules.{currentUserId}.NextOccurrence", BsonNull.Value)
+      Builders<EntryDocument>.Filter.Ne(
+        $"Schedules.{currentUserId}.NextOccurrence",
+        BsonNull.Value
+      )
     );
   }
 
-  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(JournalType journalType)
+  private static Expression<Func<EntryDocument, bool>> GetIsEntryTypeExpression(
+    JournalType journalType
+  )
   {
     switch (journalType)
     {

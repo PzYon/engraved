@@ -2,7 +2,8 @@
 
 public class NotificationJobResult
 {
-  public Dictionary<string, List<string>> NotifiedJournalIdsByUser { get; } = [];
+  public Dictionary<string, List<string>> NotifiedJournalIdsByUser { get; } =
+  [];
   public Dictionary<string, List<string>> NotifiedEntryIdsByUser { get; } = [];
 
   public void AddJournal(string userName, string journalId)

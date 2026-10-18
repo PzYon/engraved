@@ -11,8 +11,8 @@ using Engraved.Core.Application.Commands.Entries.Upsert.Scraps;
 using Engraved.Core.Application.Commands.Entries.Upsert.Timer;
 using Engraved.Core.Application.Queries.Entries.Get;
 using Engraved.Core.Application.Queries.Entries.GetActive;
-using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Application.Queries.Entries.GetAllJournal;
+using Engraved.Core.Application.Queries.Entries.Search;
 using Engraved.Core.Domain.Entries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,62 +40,79 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
       FromDate = fromDate,
       ToDate = toDate,
       AttributeValues = AttributeValueParser.Parse(attributeValues),
-      SearchText = searchText
+      SearchText = searchText,
     };
 
     return await dispatcher.Query<IEntry[], GetAllJournalEntriesQuery>(query);
   }
 
   [HttpGet]
-  public async Task<SearchEntriesQueryResult> GetAll(string? searchText, string? journalTypes)
+  public async Task<SearchEntriesQueryResult> GetAll(
+    string? searchText,
+    string? journalTypes
+  )
   {
     var query = new SearchEntriesQuery
     {
       SearchText = searchText,
-      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes)
+      JournalTypes = ControllerUtils.ParseJournalTypes(journalTypes),
     };
 
-    return await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(query);
+    return await dispatcher.Query<SearchEntriesQueryResult, SearchEntriesQuery>(
+      query
+    );
   }
 
   [HttpGet]
   [Route("{entryId}")]
   public async Task<IEntry?> GetById(string entryId)
   {
-    return await dispatcher.Query<IEntry, GetEntryQuery>(new GetEntryQuery { EntryId = entryId });
+    return await dispatcher.Query<IEntry, GetEntryQuery>(
+      new GetEntryQuery { EntryId = entryId }
+    );
   }
 
   [HttpGet]
   [Route("journal/{journalId}/active")]
   public async Task<IEntry?> GetActive(string journalId)
   {
-    return await dispatcher.Query<IEntry?, GetActiveEntryQuery>(new GetActiveEntryQuery { JournalId = journalId });
+    return await dispatcher.Query<IEntry?, GetActiveEntryQuery>(
+      new GetActiveEntryQuery { JournalId = journalId }
+    );
   }
 
   [HttpPost]
   [Route("counter")]
-  public async Task<CommandResult> UpsertCounter([FromBody] UpsertCounterEntryCommand command)
+  public async Task<CommandResult> UpsertCounter(
+    [FromBody] UpsertCounterEntryCommand command
+  )
   {
     return await dispatcher.Command(command);
   }
 
   [HttpPost]
   [Route("gauge")]
-  public async Task<CommandResult> UpsertGauge([FromBody] UpsertGaugeEntryCommand command)
+  public async Task<CommandResult> UpsertGauge(
+    [FromBody] UpsertGaugeEntryCommand command
+  )
   {
     return await dispatcher.Command(command);
   }
 
   [HttpPost]
   [Route("scraps")]
-  public async Task<CommandResult> UpsertScraps([FromBody] UpsertScrapsEntryCommand command)
+  public async Task<CommandResult> UpsertScraps(
+    [FromBody] UpsertScrapsEntryCommand command
+  )
   {
     return await UpsertScrapLike(command);
   }
 
   [HttpPost]
   [Route("logbook")]
-  public async Task<CommandResult> UpsertLogBook([FromBody] UpsertLogBookEntryCommand command)
+  public async Task<CommandResult> UpsertLogBook(
+    [FromBody] UpsertLogBookEntryCommand command
+  )
   {
     return await UpsertScrapLike(command);
   }
@@ -119,18 +136,26 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
 
   [HttpPost]
   [Route("timer")]
-  public async Task<CommandResult> StartTimer([FromBody] UpsertTimerEntryCommand command)
+  public async Task<CommandResult> StartTimer(
+    [FromBody] UpsertTimerEntryCommand command
+  )
   {
     return await dispatcher.Command(command);
   }
 
   [HttpPost]
   [Route("{entryId}/schedule")]
-  public async Task<CommandResult> AddSchedule(string entryId, [FromBody] AddScheduleToEntryCommand command)
+  public async Task<CommandResult> AddSchedule(
+    string entryId,
+    [FromBody] AddScheduleToEntryCommand command
+  )
   {
     if (entryId != command.EntryId)
     {
-      throw new InvalidCommandException(command, "EntryIds from URL and body do not match.");
+      throw new InvalidCommandException(
+        command,
+        "EntryIds from URL and body do not match."
+      );
     }
 
     return await dispatcher.Command(command);
@@ -145,12 +170,15 @@ public class EntriesController(Dispatcher dispatcher) : ControllerBase
 
   [HttpPut]
   [Route("{entryId}/move/{targetJournalId}")]
-  public async Task<CommandResult> MoveEntryToJournal(string entryId, string targetJournalId)
+  public async Task<CommandResult> MoveEntryToJournal(
+    string entryId,
+    string targetJournalId
+  )
   {
     var command = new MoveEntryCommand
     {
       EntryId = entryId,
-      TargetJournalId = targetJournalId
+      TargetJournalId = targetJournalId,
     };
 
     return await dispatcher.Command(command);

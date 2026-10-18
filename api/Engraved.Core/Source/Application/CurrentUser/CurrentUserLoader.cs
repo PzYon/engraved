@@ -16,16 +16,17 @@ public static class CurrentUserLoader
   )
   {
     return new Lazy<IUser>(() =>
+    {
+      IUser user = currentUserService.LoadUser().Result;
+      if (string.IsNullOrEmpty(user.Name))
       {
-        IUser user = currentUserService.LoadUser().Result;
-        if (string.IsNullOrEmpty(user.Name))
-        {
-          throw new NotAllowedOperationException("Current user is not available.");
-        }
-
-        IUser? dbUser = userRepository.GetUser(user.Id ?? user.Name).Result;
-        return dbUser ?? user;
+        throw new NotAllowedOperationException(
+          "Current user is not available."
+        );
       }
-    );
+
+      IUser? dbUser = userRepository.GetUser(user.Id ?? user.Name).Result;
+      return dbUser ?? user;
+    });
   }
 }

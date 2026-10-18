@@ -2,5 +2,9 @@
 
 public interface INotificationService
 {
-  Task<string?> SendNotification(ClientNotification notification, string entityId, bool doNotSend);
+  Task<string?> SendNotification(
+    ClientNotification notification,
+    string entityId,
+    bool doNotSend
+  );
 }

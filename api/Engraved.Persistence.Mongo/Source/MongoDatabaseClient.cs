@@ -31,26 +31,46 @@ public class MongoDatabaseClient
     BsonClassMap.RegisterClassMap<ScrapsJournalDocument>();
     BsonClassMap.RegisterClassMap<LogBookJournalDocument>();
 
-    BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.CSharpLegacy));
+    BsonSerializer.RegisterSerializer(
+      new GuidSerializer(GuidRepresentation.CSharpLegacy)
+    );
   }
 
-  public MongoDatabaseClient(IMongoRepositorySettings settings, string? dbNameOverride)
+  public MongoDatabaseClient(
+    IMongoRepositorySettings settings,
+    string? dbNameOverride
+  )
   {
     IMongoClient client = CreateMongoClient(settings);
 
-    var dbName = string.IsNullOrEmpty(dbNameOverride) ? settings.DatabaseName : dbNameOverride;
+    var dbName = string.IsNullOrEmpty(dbNameOverride)
+      ? settings.DatabaseName
+      : dbNameOverride;
 
     IMongoDatabase? db = client.GetDatabase(dbName);
 
-    JournalsCollection = db.GetCollection<JournalDocument>(settings.JournalsCollectionName);
-    EntriesCollection = db.GetCollection<EntryDocument>(settings.EntriesCollectionName);
-    UsersCollection = db.GetCollection<UserDocument>(settings.UsersCollectionName);
+    JournalsCollection = db.GetCollection<JournalDocument>(
+      settings.JournalsCollectionName
+    );
+    EntriesCollection = db.GetCollection<EntryDocument>(
+      settings.EntriesCollectionName
+    );
+    UsersCollection = db.GetCollection<UserDocument>(
+      settings.UsersCollectionName
+    );
   }
 
-  private static IMongoClient CreateMongoClient(IMongoRepositorySettings settings)
+  private static IMongoClient CreateMongoClient(
+    IMongoRepositorySettings settings
+  )
   {
-    MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(new MongoUrl(settings.MongoDbConnectionString));
-    clientSettings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
+    MongoClientSettings? clientSettings = MongoClientSettings.FromUrl(
+      new MongoUrl(settings.MongoDbConnectionString)
+    );
+    clientSettings.SslSettings = new SslSettings
+    {
+      EnabledSslProtocols = SslProtocols.Tls12,
+    };
 
     return new MongoClient(clientSettings);
   }

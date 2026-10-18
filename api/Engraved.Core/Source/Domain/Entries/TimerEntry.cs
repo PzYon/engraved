@@ -9,8 +9,10 @@ public class TimerEntry : BaseEntry
   public override double GetValue()
   {
     // consider doing something like this:
-    // return (EndDate ?? System.DateTime.UtcNow).Subtract(StartDate).Milliseconds;  
+    // return (EndDate ?? System.DateTime.UtcNow).Subtract(StartDate).Milliseconds;
 
-    throw new NotImplementedException($"{nameof(GetValue)} not yet implemented for {nameof(TimerEntry)}.");
+    throw new NotImplementedException(
+      $"{nameof(GetValue)} not yet implemented for {nameof(TimerEntry)}."
+    );
   }
 }

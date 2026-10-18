@@ -13,8 +13,7 @@ namespace Engraved.Api.Controllers;
 public class NotificationsController(
   ICurrentUserService currentUserService,
   INotificationService notificationService
-)
-  : ControllerBase
+) : ControllerBase
 {
   [HttpPost]
   [Route("send_test")]
@@ -31,7 +30,7 @@ public class NotificationsController(
       {
         UserId = uniqueUserId?.ToString(),
         Title = "Test message (Title)",
-        Message = "Sent from engraved OneSignal (Message)."
+        Message = "Sent from engraved OneSignal (Message).",
       },
       // short constant instead of a real entity id: a GUID here would push the
       // OneSignal collapse_id ("<entityId>::<userId>") over its 64-byte limit

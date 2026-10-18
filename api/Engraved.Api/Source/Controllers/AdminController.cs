@@ -38,12 +38,18 @@ public class AdminController(
   {
     EnsureIsAdmin();
 
-    return new DeleteUserConfirmationResult { ConfirmationToken = deleteUserConfirmationStore.IssueToken(userId) };
+    return new DeleteUserConfirmationResult
+    {
+      ConfirmationToken = deleteUserConfirmationStore.IssueToken(userId),
+    };
   }
 
   [HttpDelete]
   [Route("users/{userId}")]
-  public async Task<CommandResult> DeleteUser(string userId, [FromBody] DeleteUserRequest request)
+  public async Task<CommandResult> DeleteUser(
+    string userId,
+    [FromBody] DeleteUserRequest request
+  )
   {
     EnsureIsAdmin();
 
@@ -51,10 +57,18 @@ public class AdminController(
 
     if (userId != request.UserId)
     {
-      throw new InvalidCommandException(command, "UserIds from URL and body do not match.");
+      throw new InvalidCommandException(
+        command,
+        "UserIds from URL and body do not match."
+      );
     }
 
-    if (!deleteUserConfirmationStore.TryConsumeToken(userId, request.ConfirmationToken))
+    if (
+      !deleteUserConfirmationStore.TryConsumeToken(
+        userId,
+        request.ConfirmationToken
+      )
+    )
     {
       throw new NotAllowedOperationException("Delete was not confirmed.");
     }
@@ -66,7 +80,9 @@ public class AdminController(
   {
     if (!currentUser.Value.IsAdmin)
     {
-      throw new NotAllowedOperationException("You are not allowed to access admin features.");
+      throw new NotAllowedOperationException(
+        "You are not allowed to access admin features."
+      );
     }
   }
 }

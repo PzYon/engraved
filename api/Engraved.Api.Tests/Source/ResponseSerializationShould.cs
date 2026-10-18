@@ -31,7 +31,8 @@ namespace Engraved.Api.Tests;
 // BaseJournal.UserRole) actually reach the client and no type discriminator leaks in.
 public class ResponseSerializationShould
 {
-  private const string JwtSecret = "serialization-test-secret-long-enough-to-be-valid-0123";
+  private const string JwtSecret =
+    "serialization-test-secret-long-enough-to-be-valid-0123";
   private const string UserName = "serialization@test.ch";
   private HttpClient _client = null!;
 
@@ -41,29 +42,36 @@ public class ResponseSerializationShould
   [OneTimeSetUp]
   public async Task OneTimeSetUp()
   {
-    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+    _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(
+      builder =>
       {
         builder.UseEnvironment("Development");
-        builder.ConfigureAppConfiguration((_, config) =>
+        builder.ConfigureAppConfiguration(
+          (_, config) =>
           {
             config.AddInMemoryCollection(
               new Dictionary<string, string?>
               {
                 ["ConnectionStrings:engraved_db"] = Util.ConnectionString,
-                ["Authentication:JwtSecret"] = JwtSecret
+                ["Authentication:JwtSecret"] = JwtSecret,
               }
             );
           }
         );
 
-        builder.ConfigureServices(services => services.RemoveAll<IHostedService>());
+        builder.ConfigureServices(services =>
+          services.RemoveAll<IHostedService>()
+        );
       }
     );
 
     _journalId = await SeedJournalWithEntry();
 
     _client = _factory.CreateClient();
-    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CreateToken());
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+      "Bearer",
+      CreateToken()
+    );
   }
 
   [OneTimeTearDown]
@@ -76,12 +84,18 @@ public class ResponseSerializationShould
   [Test]
   public async Task Include_RuntimeTypeProperties_When_Returning_Entries()
   {
-    HttpResponseMessage response = await _client.GetAsync($"/api/entries/journal/{_journalId}");
+    HttpResponseMessage response = await _client.GetAsync(
+      $"/api/entries/journal/{_journalId}"
+    );
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
     var json = await response.Content.ReadAsStringAsync();
-    json.Should().Contain("\"value\":42.5", "GaugeEntry.Value is not on IEntry and must survive serialization");
+    json.Should()
+      .Contain(
+        "\"value\":42.5",
+        "GaugeEntry.Value is not on IEntry and must survive serialization"
+      );
     json.Should().NotContain("$type");
   }
 
@@ -93,7 +107,11 @@ public class ResponseSerializationShould
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
     var json = await response.Content.ReadAsStringAsync();
-    json.Should().Contain("\"userRole\":", "BaseJournal.UserRole is not on IJournal and must survive serialization");
+    json.Should()
+      .Contain(
+        "\"userRole\":",
+        "BaseJournal.UserRole is not on IJournal and must survive serialization"
+      );
     json.Should().Contain("\"type\":\"Gauge\"");
     json.Should().NotContain("$type");
   }
@@ -103,14 +121,16 @@ public class ResponseSerializationShould
     // seed through the app's own repository so the data lands in the database the app reads
     var repo = _factory.Services.GetRequiredService<IUnrestrictedRepository>();
 
-    UpsertResult userResult = await repo.UpsertUser(new User { Name = UserName });
+    UpsertResult userResult = await repo.UpsertUser(
+      new User { Name = UserName }
+    );
 
     UpsertResult journalResult = await repo.UpsertJournal(
       new GaugeJournal
       {
         Name = "Serialization Journal",
         UserId = userResult.EntityId,
-        EditedOn = DateTime.UtcNow
+        EditedOn = DateTime.UtcNow,
       }
     );
 
@@ -121,7 +141,7 @@ public class ResponseSerializationShould
         UserId = userResult.EntityId,
         Value = 42.5,
         DateTime = DateTime.UtcNow,
-        EditedOn = DateTime.UtcNow
+        EditedOn = DateTime.UtcNow,
       }
     );
 
@@ -133,12 +153,14 @@ public class ResponseSerializationShould
     var tokenHandler = new JwtSecurityTokenHandler();
     var tokenDescriptor = new SecurityTokenDescriptor
     {
-      Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, UserName)]),
+      Subject = new ClaimsIdentity([
+        new Claim(ClaimTypes.NameIdentifier, UserName),
+      ]),
       Expires = DateTime.UtcNow.AddMinutes(5),
       SigningCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSecret)),
         SecurityAlgorithms.HmacSha256Signature
-      )
+      ),
     };
 
     SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);

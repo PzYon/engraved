@@ -8,7 +8,8 @@ using Engraved.TestUtils;
 
 namespace Engraved.Core.Tests.Application;
 
-public class TestServiceProvider(TestUserRestrictedMongoRepository repository) : IServiceProvider
+public class TestServiceProvider(TestUserRestrictedMongoRepository repository)
+  : IServiceProvider
 {
   public object GetService(Type serviceType)
   {
@@ -24,14 +25,27 @@ public class TestServiceProvider(TestUserRestrictedMongoRepository repository) :
 
     if (serviceType == typeof(IQueryExecutor<IJournal[], GetAllJournalsQuery>))
     {
-      return new GetAllJournalsQueryExecutor(repository, repository, repository.CurrentUser);
+      return new GetAllJournalsQueryExecutor(
+        repository,
+        repository,
+        repository.CurrentUser
+      );
     }
 
-    if (serviceType == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>))
+    if (
+      serviceType
+      == typeof(IQueryExecutor<SearchEntriesQueryResult, SearchEntriesQuery>)
+    )
     {
-      return new SearchEntriesQueryExecutor(repository, repository, repository.CurrentUser);
+      return new SearchEntriesQueryExecutor(
+        repository,
+        repository,
+        repository.CurrentUser
+      );
     }
 
-    throw new Exception($"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}.");
+    throw new Exception(
+      $"Service of type {serviceType.FullName} is not available in {nameof(TestServiceProvider)}."
+    );
   }
 }

@@ -36,11 +36,15 @@ public class UpsertTimerEntryCommandExecutorShould
     {
       JournalId = JournalId,
       StartDate = startDate,
-      EndDate = endDate
+      EndDate = endDate,
     };
 
-    CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertTimerEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -48,7 +52,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(startDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(startDate, TimeSpan.FromMilliseconds(100));
     entry.EndDate.Should().BeCloseTo(endDate, TimeSpan.FromMilliseconds(100));
   }
 
@@ -57,8 +63,12 @@ public class UpsertTimerEntryCommandExecutorShould
   {
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
-    CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertTimerEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -66,7 +76,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
@@ -78,7 +90,7 @@ public class UpsertTimerEntryCommandExecutorShould
       {
         Id = entryId,
         ParentId = JournalId,
-        StartDate = _fakeDateService.UtcNow.AddMinutes(-10)
+        StartDate = _fakeDateService.UtcNow.AddMinutes(-10),
       }
     );
 
@@ -86,8 +98,12 @@ public class UpsertTimerEntryCommandExecutorShould
 
     var command = new UpsertTimerEntryCommand { JournalId = JournalId };
 
-    CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertTimerEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -95,7 +111,9 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.EndDate.Should().BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
+    entry
+      .EndDate.Should()
+      .BeCloseTo(_fakeDateService.UtcNow, TimeSpan.FromMilliseconds(100));
   }
 
   [Test]
@@ -109,7 +127,7 @@ public class UpsertTimerEntryCommandExecutorShould
         Id = entryId,
         ParentId = JournalId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-50),
-        EndDate = _fakeDateService.UtcNow.AddMinutes(-10)
+        EndDate = _fakeDateService.UtcNow.AddMinutes(-10),
       }
     );
 
@@ -123,11 +141,15 @@ public class UpsertTimerEntryCommandExecutorShould
       Id = entryId,
       JournalId = JournalId,
       StartDate = newStartDate,
-      EndDate = newEndDate
+      EndDate = newEndDate,
     };
 
-    CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertTimerEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -135,8 +157,12 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
-    entry.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .StartDate.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      .DateTime.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry.EndDate.Should().Be(newEndDate);
   }
 
@@ -151,7 +177,7 @@ public class UpsertTimerEntryCommandExecutorShould
         Id = entryId,
         ParentId = JournalId,
         StartDate = _fakeDateService.UtcNow.AddMinutes(-50),
-        EndDate = null
+        EndDate = null,
       }
     );
 
@@ -164,11 +190,15 @@ public class UpsertTimerEntryCommandExecutorShould
       Id = entryId,
       JournalId = JournalId,
       StartDate = newStartDate,
-      EndDate = null
+      EndDate = null,
     };
 
-    CommandResult result =
-      await new UpsertTimerEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertTimerEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
@@ -176,8 +206,12 @@ public class UpsertTimerEntryCommandExecutorShould
     var entry = await _testRepository.GetEntry(result.EntityId) as TimerEntry;
 
     entry.Should().NotBeNull();
-    entry?.StartDate.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
-    entry?.DateTime.Should().BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      ?.StartDate.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
+    entry
+      ?.DateTime.Should()
+      .BeCloseTo(newStartDate, TimeSpan.FromMilliseconds(100));
     entry?.EndDate.Should().Be(null);
   }
 }

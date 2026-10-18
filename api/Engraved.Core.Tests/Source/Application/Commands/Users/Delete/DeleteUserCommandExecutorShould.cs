@@ -26,29 +26,42 @@ public class DeleteUserCommandExecutorShould
   public async Task SetUp()
   {
     _repo = await Util.CreateMongoRepository();
-    _admin = new Lazy<IUser>(() => new User { Id = AdminId, Name = "admin@x.com" });
+    _admin = new Lazy<IUser>(() =>
+      new User { Id = AdminId, Name = "admin@x.com" }
+    );
   }
 
   [Test]
   public async Task DeleteUser_And_ItsJournalsAndEntries()
   {
     // given
-    await _repo.UpsertUser(new User { Id = TargetUserId, Name = "target@x.com" });
-    await _repo.UpsertJournal(new CounterJournal { Id = JournalId, UserId = TargetUserId });
-    await _repo.UpsertJournal(new CounterJournal { Id = OtherJournalId, UserId = TargetUserId });
+    await _repo.UpsertUser(
+      new User { Id = TargetUserId, Name = "target@x.com" }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = JournalId, UserId = TargetUserId }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = OtherJournalId, UserId = TargetUserId }
+    );
     await _repo.UpsertEntry(new CounterEntry { ParentId = JournalId });
     await _repo.UpsertEntry(new CounterEntry { ParentId = OtherJournalId });
 
     // when
-    CommandResult result = await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = TargetUserId }
-    );
+    CommandResult result = await new DeleteUserCommandExecutor(
+      _repo,
+      _admin
+    ).Execute(new DeleteUserCommand { UserId = TargetUserId });
 
     // then
-    (await _repo.GetUser(TargetUserId)).Should().BeNull();
+    (await _repo.GetUser(TargetUserId))
+      .Should()
+      .BeNull();
     (await _repo.GetJournal(JournalId)).Should().BeNull();
     (await _repo.GetJournal(OtherJournalId)).Should().BeNull();
-    (await _repo.SearchEntries(null, journalIds: [JournalId, OtherJournalId])).Should().BeEmpty();
+    (await _repo.SearchEntries(null, journalIds: [JournalId, OtherJournalId]))
+      .Should()
+      .BeEmpty();
 
     result.EntityId.Should().Be(TargetUserId);
     result.AffectedUserIds.Should().Contain(TargetUserId);
@@ -58,9 +71,15 @@ public class DeleteUserCommandExecutorShould
   public async Task NotDelete_JournalsOfOtherUsers()
   {
     // given
-    await _repo.UpsertUser(new User { Id = TargetUserId, Name = "target@x.com" });
-    await _repo.UpsertJournal(new CounterJournal { Id = JournalId, UserId = TargetUserId });
-    await _repo.UpsertJournal(new CounterJournal { Id = OtherJournalId, UserId = AdminId });
+    await _repo.UpsertUser(
+      new User { Id = TargetUserId, Name = "target@x.com" }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = JournalId, UserId = TargetUserId }
+    );
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = OtherJournalId, UserId = AdminId }
+    );
 
     // when
     await new DeleteUserCommandExecutor(_repo, _admin).Execute(
@@ -68,7 +87,9 @@ public class DeleteUserCommandExecutorShould
     );
 
     // then
-    (await _repo.GetJournal(JournalId)).Should().BeNull();
+    (await _repo.GetJournal(JournalId))
+      .Should()
+      .BeNull();
     (await _repo.GetJournal(OtherJournalId)).Should().NotBeNull();
   }
 
@@ -86,9 +107,10 @@ public class DeleteUserCommandExecutorShould
   public async Task ReturnEmptyResult_When_UserDoesNotExist()
   {
     // when
-    CommandResult result = await new DeleteUserCommandExecutor(_repo, _admin).Execute(
-      new DeleteUserCommand { UserId = "60703c3b0000000000000999" }
-    );
+    CommandResult result = await new DeleteUserCommandExecutor(
+      _repo,
+      _admin
+    ).Execute(new DeleteUserCommand { UserId = "60703c3b0000000000000999" });
 
     // then
     result.EntityId.Should().BeNull();

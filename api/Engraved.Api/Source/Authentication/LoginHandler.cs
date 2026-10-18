@@ -14,8 +14,7 @@ public class LoginHandler(
   UserLoader userLoader,
   JwtTokenFactory jwtTokenFactory,
   RefreshTokenService refreshTokenService
-)
-  : ILoginHandler
+) : ILoginHandler
 {
   public async Task<AuthResult> Login(string? idToken)
   {
@@ -26,7 +25,11 @@ public class LoginHandler(
 
     ParsedToken parsedToken = await tokenValidator.ParseAndValidate(idToken);
 
-    IUser user = await EnsureUser(parsedToken.UserName, parsedToken.UserDisplayName, parsedToken.ImageUrl);
+    IUser user = await EnsureUser(
+      parsedToken.UserName,
+      parsedToken.UserDisplayName,
+      parsedToken.ImageUrl
+    );
 
     userLoader.SetUser(user);
 
@@ -34,10 +37,13 @@ public class LoginHandler(
 
     return new AuthResult
     {
-      JwtToken = jwtTokenFactory.CreateAccessToken(parsedToken.UserName, expiresAt),
+      JwtToken = jwtTokenFactory.CreateAccessToken(
+        parsedToken.UserName,
+        expiresAt
+      ),
       ExpiresAt = expiresAt,
       RefreshToken = await refreshTokenService.Issue(user),
-      User = user
+      User = user,
     };
   }
 
@@ -57,14 +63,19 @@ public class LoginHandler(
     {
       User = user,
       JwtToken = userName,
-      ExpiresAt = jwtTokenFactory.GetAccessTokenExpiry()
+      ExpiresAt = jwtTokenFactory.GetAccessTokenExpiry(),
     };
   }
 
-  private async Task<IUser> EnsureUser(string userName, string? displayName, string? imageUrl)
+  private async Task<IUser> EnsureUser(
+    string userName,
+    string? displayName,
+    string? imageUrl
+  )
   {
-    IUser user = await unrestrictedRepository.GetUser(userName)
-                 ?? new User { Name = userName };
+    IUser user =
+      await unrestrictedRepository.GetUser(userName)
+      ?? new User { Name = userName };
 
     user.DisplayName = displayName;
     user.ImageUrl = imageUrl;
@@ -91,7 +102,7 @@ public class LoginHandler(
     {
       Name = "Quick Scraps",
       EditedOn = dateService.UtcNow,
-      UserId = user.Id
+      UserId = user.Id,
     };
 
     UpsertResult result = await unrestrictedRepository.UpsertJournal(journal);

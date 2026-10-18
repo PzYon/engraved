@@ -10,15 +10,20 @@ namespace Engraved.Persistence.Mongo.Repositories;
 // Plain user data access with no guards. Callers that must enforce ownership do so on top of this
 // (see UserRestrictedUserRepository); internal consumers like PermissionsEnsurer use it directly
 // because they legitimately operate on other users' records.
-public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUserRepository
+public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient)
+  : IUserRepository
 {
-  private IMongoCollection<UserDocument> UsersCollection => mongoDatabaseClient.UsersCollection;
+  private IMongoCollection<UserDocument> UsersCollection =>
+    mongoDatabaseClient.UsersCollection;
 
   public async Task<IUser?> GetUser(string? nameOrId)
   {
     if (string.IsNullOrEmpty(nameOrId))
     {
-      throw new ArgumentNullException(nameof(nameOrId), "Username or ID must be specified.");
+      throw new ArgumentNullException(
+        nameof(nameOrId),
+        "Username or ID must be specified."
+      );
     }
 
     var filterDefinition = ObjectId.TryParse(nameOrId, out ObjectId id)
@@ -83,7 +88,13 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
     }
 
     var users = await UsersCollection
-      .Find(Builders<UserDocument>.Filter.Or(userIds.Distinct().Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)))
+      .Find(
+        Builders<UserDocument>.Filter.Or(
+          userIds
+            .Distinct()
+            .Select(MongoUtil.GetDocumentByIdFilter<UserDocument>)
+        )
+      )
       .ToListAsync();
 
     return users.Select(u => UserDocumentMapper.FromDocument(u)!).ToArray();
@@ -100,6 +111,8 @@ public class MongoUserRepository(MongoDatabaseClient mongoDatabaseClient) : IUse
 
   public async Task DeleteUser(string userId)
   {
-    await UsersCollection.DeleteOneAsync(MongoUtil.GetDocumentByIdFilter<UserDocument>(userId));
+    await UsersCollection.DeleteOneAsync(
+      MongoUtil.GetDocumentByIdFilter<UserDocument>(userId)
+    );
   }
 }

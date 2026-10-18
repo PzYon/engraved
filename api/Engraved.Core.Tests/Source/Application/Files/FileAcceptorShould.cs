@@ -17,7 +17,15 @@ public class FileAcceptorShould
   private const string UserId = TestIds.UserId;
   private const string OtherUserId = TestIds.OtherUserId;
 
-  private static readonly DateTime Now = new(2026, 7, 30, 9, 0, 0, DateTimeKind.Utc);
+  private static readonly DateTime Now = new(
+    2026,
+    7,
+    30,
+    9,
+    0,
+    0,
+    DateTimeKind.Utc
+  );
 
   private FileAcceptor _acceptor = null!;
   private FileIdFactory _fileIdFactory = null!;
@@ -67,7 +75,7 @@ public class FileAcceptorShould
     {
       Id = _fileIdFactory.Create(UserId),
       FileName = "ghost.png",
-      ContentType = "image/png"
+      ContentType = "image/png",
     };
 
     Func<Task> act = async () => await _acceptor.Accept([file], []);
@@ -103,7 +111,7 @@ public class FileAcceptorShould
       FileName = "renamed.png",
       ContentType = "image/png",
       ContentLength = 99,
-      UploadedOn = Now
+      UploadedOn = Now,
     };
 
     FileRef[] result = await _acceptor.Accept([tampered], [stored]);
@@ -140,7 +148,10 @@ public class FileAcceptorShould
   [Test]
   public async Task Reject_A_FileThatIsBiggerThanTheLimit()
   {
-    FileRef file = CreateUploadedFile(UserId, FileSizeLimits.MaxFileSizeBytes + 1);
+    FileRef file = CreateUploadedFile(
+      UserId,
+      FileSizeLimits.MaxFileSizeBytes + 1
+    );
 
     Func<Task> act = async () => await _acceptor.Accept([file], []);
 
@@ -228,7 +239,7 @@ public class FileAcceptorShould
       Id = fileId,
       FileName = "holiday.png",
       ContentType = "image/png",
-      ContentLength = contentLength
+      ContentLength = contentLength,
     };
   }
 }

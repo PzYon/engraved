@@ -21,7 +21,7 @@ public static class Util
       // lifetime (12h) lets orphaned directories from crashed/killed runs pile up to many GB. Keep
       // them around only briefly; a clean run disposes the runner via StopRunner() (see the
       // assembly-level MongoRunnerTeardown), which deletes the directory immediately.
-      DataDirectoryLifetime = TimeSpan.FromMinutes(30)
+      DataDirectoryLifetime = TimeSpan.FromMinutes(30),
     }
   );
 
@@ -29,7 +29,8 @@ public static class Util
   // smoke test) can point the real application at this instance.
   public static string ConnectionString => Runner.ConnectionString;
 
-  private static IMongoRepositorySettings Settings => new TestMongoRepositorySettings(Runner.ConnectionString);
+  private static IMongoRepositorySettings Settings =>
+    new TestMongoRepositorySettings(Runner.ConnectionString);
   private static MongoDatabaseClient Client => new(Settings, null);
 
   /// <summary>

@@ -48,7 +48,8 @@ public class FileIdFactory(string signingKey) : IFileIdFactory
 
     var hash = HMACSHA256.HashData(Encoding.UTF8.GetBytes(signingKey), payload);
 
-    return Convert.ToBase64String(hash)
+    return Convert
+      .ToBase64String(hash)
       .Replace('+', '-')
       .Replace('/', '_')
       .TrimEnd('=')[..SignatureLength];

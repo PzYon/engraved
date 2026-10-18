@@ -12,7 +12,8 @@ public class DateService : IDateService
 
 public class FakeDateService(DateTime initialDate) : IDateService
 {
-  public FakeDateService() : this(DateTime.UtcNow) { }
+  public FakeDateService()
+    : this(DateTime.UtcNow) { }
 
   public DateTime UtcNow { get; set; } = initialDate;
 
@@ -41,7 +42,9 @@ public class SelfIncrementingDateService : IDateService
     get
     {
       DateTime next = _utcNow;
-      _utcNow = DateTime.UtcNow.AddHours(-Random.Shared.Next(0, _initialDayOffset * 24));
+      _utcNow = DateTime.UtcNow.AddHours(
+        -Random.Shared.Next(0, _initialDayOffset * 24)
+      );
       return next;
     }
   }

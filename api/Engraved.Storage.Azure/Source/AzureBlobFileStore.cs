@@ -27,7 +27,9 @@ public class AzureBlobFileStore(
       fileId,
       // Tag, because the upload marks itself pending (FileTags) and Put Blob only honours the
       // x-ms-tags header when the SAS permits writing tags.
-      BlobSasPermissions.Create | BlobSasPermissions.Write | BlobSasPermissions.Tag,
+      BlobSasPermissions.Create
+        | BlobSasPermissions.Write
+        | BlobSasPermissions.Tag,
       DateTimeOffset.UtcNow.Add(SasExpiry.UploadValidity),
       _ => { }
     );
@@ -35,7 +37,9 @@ public class AzureBlobFileStore(
 
   public async Task<Uri> CreateReadUrl(FileRef file)
   {
-    FileDisposition disposition = FileContentPolicy.GetDisposition(file.ContentType);
+    FileDisposition disposition = FileContentPolicy.GetDisposition(
+      file.ContentType
+    );
     var fileName = FileContentPolicy.SanitizeFileName(file.FileName);
 
     return await CreateSasUri(
@@ -48,9 +52,10 @@ public class AzureBlobFileStore(
         // is what makes the disposition decision stick: an SVG downloads instead of rendering as a
         // live document, no matter which headers were sent when it was put.
         builder.ContentType = file.ContentType;
-        builder.ContentDisposition = disposition == FileDisposition.Inline
-          ? $"inline; filename=\"{fileName}\""
-          : $"attachment; filename=\"{fileName}\"";
+        builder.ContentDisposition =
+          disposition == FileDisposition.Inline
+            ? $"inline; filename=\"{fileName}\""
+            : $"attachment; filename=\"{fileName}\"";
 
         // A file id always refers to the same bytes, so the response can be cached indefinitely. The
         // URL changes when the signature window rolls over, which simply makes the next request a
@@ -69,19 +74,28 @@ public class AzureBlobFileStore(
   // Tags has no merge semantics anyway. Any failure is left to propagate: see IFileStore.
   public async Task MarkCommitted(string fileId)
   {
-    await containerClient.GetBlobClient(fileId)
-      .SetTagsAsync(new Dictionary<string, string> { [FileTags.StateName] = FileTags.Committed });
+    await containerClient
+      .GetBlobClient(fileId)
+      .SetTagsAsync(
+        new Dictionary<string, string>
+        {
+          [FileTags.StateName] = FileTags.Committed,
+        }
+      );
   }
 
   public async Task<long?> GetContentLength(string fileId)
   {
     try
     {
-      Response<BlobProperties> properties = await containerClient.GetBlobClient(fileId).GetPropertiesAsync();
+      Response<BlobProperties> properties = await containerClient
+        .GetBlobClient(fileId)
+        .GetPropertiesAsync();
 
       return properties.Value.ContentLength;
     }
-    catch (RequestFailedException e) when (e.Status == (int) HttpStatusCode.NotFound)
+    catch (RequestFailedException e)
+      when (e.Status == (int)HttpStatusCode.NotFound)
     {
       return null;
     }
@@ -105,7 +119,7 @@ public class AzureBlobFileStore(
       // Deliberately no StartsOn: it would have to sit slightly in the past to tolerate clock skew,
       // which would put a per-request timestamp into the URL and defeat the stable-URL caching that
       // SasExpiry.GetReadExpiry exists for.
-      ExpiresOn = expiresOn
+      ExpiresOn = expiresOn,
     };
 
     builder.SetPermissions(permissions);
@@ -122,7 +136,9 @@ public class AzureBlobFileStore(
 
     UserDelegationKey key = await userDelegationKeyProvider.Get();
 
-    var query = builder.ToSasQueryParameters(key, containerClient.AccountName).ToString();
+    var query = builder
+      .ToSasQueryParameters(key, containerClient.AccountName)
+      .ToString();
 
     return new UriBuilder(blobClient.Uri) { Query = query }.Uri;
   }

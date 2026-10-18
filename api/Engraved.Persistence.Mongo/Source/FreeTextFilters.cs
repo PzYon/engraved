@@ -18,12 +18,15 @@ public static class FreeTextFilters
     string? searchText,
     bool matchAnyWord,
     params Expression<Func<T, object>>[] fieldNameExpressions
-  ) where T : IDocument
+  )
+    where T : IDocument
   {
     return Build(
       searchText,
       matchAnyWord,
-      fieldNameExpressions.Select(FieldDefinition<T> (e) => new ExpressionFieldDefinition<T>(e)).ToArray()
+      fieldNameExpressions
+        .Select(FieldDefinition<T> (e) => new ExpressionFieldDefinition<T>(e))
+        .ToArray()
     );
   }
 
@@ -34,34 +37,39 @@ public static class FreeTextFilters
     string? searchText,
     bool matchAnyWord,
     params FieldDefinition<T>[] fields
-  ) where T : IDocument
+  )
+    where T : IDocument
   {
     if (string.IsNullOrEmpty(searchText))
     {
       return [];
     }
 
-    List<FilterDefinition<T>> perWordFilters = searchText.Split(" ")
+    List<FilterDefinition<T>> perWordFilters = searchText
+      .Split(" ")
       .Select(segment =>
-        {
-          // Escape the user input so it is matched literally. Passing it to the
-          // regex engine unescaped allowed malformed patterns (exceptions) and
-          // catastrophic-backtracking patterns (ReDoS) to be injected via search.
-          var pattern = matchAnyWord
-            ? WholeWordRegex.BuildPattern(segment)
-            : Regex.Escape(segment);
+      {
+        // Escape the user input so it is matched literally. Passing it to the
+        // regex engine unescaped allowed malformed patterns (exceptions) and
+        // catastrophic-backtracking patterns (ReDoS) to be injected via search.
+        var pattern = matchAnyWord
+          ? WholeWordRegex.BuildPattern(segment)
+          : Regex.Escape(segment);
 
-          return Builders<T>.Filter.Or(
-            fields.Select(field => Builders<T>.Filter.Regex(
-                field,
-                new BsonRegularExpression(
-                  new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline)
+        return Builders<T>.Filter.Or(
+          fields.Select(field =>
+            Builders<T>.Filter.Regex(
+              field,
+              new BsonRegularExpression(
+                new Regex(
+                  pattern,
+                  RegexOptions.IgnoreCase | RegexOptions.Multiline
                 )
               )
             )
-          );
-        }
-      )
+          )
+        );
+      })
       .ToList();
 
     return matchAnyWord

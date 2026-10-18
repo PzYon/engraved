@@ -4,8 +4,10 @@ using Engraved.Core.Domain.Journals;
 
 namespace Engraved.Core.Application.Commands.Journals.Add;
 
-public class AddJournalCommandExecutor(IJournalRepository repository, IDateService dateService)
-  : ICommandExecutor<AddJournalCommand>
+public class AddJournalCommandExecutor(
+  IJournalRepository repository,
+  IDateService dateService
+) : ICommandExecutor<AddJournalCommand>
 {
   public async Task<CommandResult> Execute(AddJournalCommand command)
   {
@@ -17,7 +19,10 @@ public class AddJournalCommandExecutor(IJournalRepository repository, IDateServi
 
     if (string.IsNullOrEmpty(command.Name))
     {
-      throw new InvalidCommandException(command, $"\"{nameof(command.Name)}\" must be specified");
+      throw new InvalidCommandException(
+        command,
+        $"\"{nameof(command.Name)}\" must be specified"
+      );
     }
 
     IJournal journal = CreateJournal(command.Type);
@@ -38,7 +43,7 @@ public class AddJournalCommandExecutor(IJournalRepository repository, IDateServi
       JournalType.Timer => new TimerJournal(),
       JournalType.Scraps => new ScrapsJournal(),
       JournalType.LogBook => new LogBookJournal(),
-      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
     };
   }
 }

@@ -24,7 +24,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   {
     _repository = await Util.CreateMongoRepository();
 
-    UpsertResult upsertJournal = await _repository.UpsertJournal(new CounterJournal());
+    UpsertResult upsertJournal = await _repository.UpsertJournal(
+      new CounterJournal()
+    );
     _journalId = upsertJournal.EntityId;
   }
 
@@ -42,7 +44,11 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     var entryId = await AddEntry(DateTime.Now.AddDays(-3));
     await AddEntry(DateTime.Now.AddDays(3));
 
-    var entries = await _repository.GetEntriesForJournal(_journalId, null, DateTime.Now);
+    var entries = await _repository.GetEntriesForJournal(
+      _journalId,
+      null,
+      DateTime.Now
+    );
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -54,7 +60,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     await AddEntry(DateTime.Now.AddDays(-1));
     var entryId = await AddEntry(DateTime.Now.AddDays(1));
 
-    var entries = await _repository.GetEntriesForJournal(_journalId, DateTime.Now);
+    var entries = await _repository.GetEntriesForJournal(
+      _journalId,
+      DateTime.Now
+    );
 
     entries.Length.Should().Be(1);
     entries.First().Id.Should().Be(entryId);
@@ -118,7 +127,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Simple_AttributeValue_Positive()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "attr", ["xyz"] } };
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "attr", ["xyz"] },
+    };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -135,7 +147,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Simple_AttributeValue_Negative()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "attr", ["xyz"] } };
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "attr", ["xyz"] },
+    };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -155,7 +170,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     var attributeValues = new Dictionary<string, string[]>
     {
       { "color", ["blue"] },
-      { "size", ["XL"] }
+      { "size", ["XL"] },
     };
 
     await AddEntry(DateTime.Now, attributeValues);
@@ -173,7 +188,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Multiple_AttributeValues_InQuery_Negative()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "size", ["XL"] } };
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "size", ["XL"] },
+    };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -181,7 +199,11 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
       _journalId,
       null,
       null,
-      new Dictionary<string, string[]> { { "size", ["XL"] }, { "color", ["blue"] } }
+      new Dictionary<string, string[]>
+      {
+        { "size", ["XL"] },
+        { "color", ["blue"] },
+      }
     );
 
     entries.Should().BeEmpty();
@@ -190,7 +212,10 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_Multiple_AttributeValues_Or()
   {
-    var attributeValues = new Dictionary<string, string[]> { { "size", ["XL"] } };
+    var attributeValues = new Dictionary<string, string[]>
+    {
+      { "size", ["XL"] },
+    };
 
     await AddEntry(DateTime.Now, attributeValues);
 
@@ -207,7 +232,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Consider_AttachmentFileNames()
   {
-    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "My Scrap" }
+    );
 
     await _repository.UpsertEntry(
       new ScrapsEntry
@@ -222,9 +249,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
             Id = MongoUtil.GenerateNewIdAsString(),
             FileName = "budget-2026.xlsx",
             ContentType = "application/octet-stream",
-            ContentLength = 1234
-          }
-        ]
+            ContentLength = 1234,
+          },
+        ],
       }
     );
 
@@ -242,7 +269,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Sort_By_DateTime_Descending_When_No_SortOrder_Is_Specified()
   {
-    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "My Scrap" }
+    );
 
     var olderButRecentlyEditedId = await AddScrap(
       scrapsJournal.EntityId,
@@ -255,7 +284,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
       DateTime.Now.AddDays(-10)
     );
 
-    var entries = await _repository.GetEntriesForJournal(scrapsJournal.EntityId);
+    var entries = await _repository.GetEntriesForJournal(
+      scrapsJournal.EntityId
+    );
 
     entries.Length.Should().Be(2);
     entries[0].Id.Should().Be(newerButEditedLongAgoId);
@@ -265,7 +296,9 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
   [Test]
   public async Task Sort_By_EditedOn_Descending_When_SortOrder_ByEditedOn_Is_Specified()
   {
-    UpsertResult scrapsJournal = await _repository.UpsertJournal(new ScrapsJournal { Name = "My Scrap" });
+    UpsertResult scrapsJournal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "My Scrap" }
+    );
 
     var olderButRecentlyEditedId = await AddScrap(
       scrapsJournal.EntityId,
@@ -288,7 +321,11 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     entries[1].Id.Should().Be(newerButEditedLongAgoId);
   }
 
-  private async Task<string> AddScrap(string journalId, DateTime dateTime, DateTime editedOn)
+  private async Task<string> AddScrap(
+    string journalId,
+    DateTime dateTime,
+    DateTime editedOn
+  )
   {
     var entry = new ScrapsEntry
     {
@@ -296,7 +333,7 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
       ScrapType = ScrapType.Markdown,
       Title = "Scrap",
       DateTime = dateTime,
-      EditedOn = editedOn
+      EditedOn = editedOn,
     };
 
     UpsertResult result = await _repository.UpsertEntry(entry);
@@ -304,14 +341,18 @@ public class UnrestrictedMongoRepository_GetEntriesForJournal_Should
     return result.EntityId;
   }
 
-  private async Task<string> AddEntry(DateTime? date, Dictionary<string, string[]>? attributeValues = null)
+  private async Task<string> AddEntry(
+    DateTime? date,
+    Dictionary<string, string[]>? attributeValues = null
+  )
   {
     var entry = new CounterEntry
     {
       ParentId = _journalId,
       UserId = _userId,
       DateTime = date,
-      JournalAttributeValues = attributeValues ?? new Dictionary<string, string[]>()
+      JournalAttributeValues =
+        attributeValues ?? new Dictionary<string, string[]>(),
     };
 
     UpsertResult result = await _repository.UpsertEntry(entry);

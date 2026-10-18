@@ -29,10 +29,18 @@ public class GetFileUrlQueryExecutorShould
   {
     _seedRepo = await Util.CreateMongoRepository();
 
-    _userId = (await _seedRepo.UpsertUser(new User { Name = UserName })).EntityId;
-    _ownerUserId = (await _seedRepo.UpsertUser(new User { Name = OwnerUserName })).EntityId;
+    _userId = (
+      await _seedRepo.UpsertUser(new User { Name = UserName })
+    ).EntityId;
+    _ownerUserId = (
+      await _seedRepo.UpsertUser(new User { Name = OwnerUserName })
+    ).EntityId;
 
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserName, _userId, true);
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserName,
+      _userId,
+      true
+    );
     _fileStore = new FakeFileStore();
   }
 
@@ -101,7 +109,10 @@ public class GetFileUrlQueryExecutorShould
     );
   }
 
-  private async Task AddScrapWithFile(string ownerId, PermissionDefinition? permissionForCurrentUser = null)
+  private async Task AddScrapWithFile(
+    string ownerId,
+    PermissionDefinition? permissionForCurrentUser = null
+  )
   {
     var permissions = new UserPermissions();
 
@@ -111,11 +122,7 @@ public class GetFileUrlQueryExecutorShould
     }
 
     UpsertResult journal = await _seedRepo.UpsertJournal(
-      new ScrapsJournal
-      {
-        UserId = ownerId,
-        Permissions = permissions
-      }
+      new ScrapsJournal { UserId = ownerId, Permissions = permissions }
     );
 
     await _seedRepo.UpsertEntry(
@@ -131,9 +138,9 @@ public class GetFileUrlQueryExecutorShould
             Id = FileId,
             FileName = "diagram.svg",
             ContentType = "image/svg+xml",
-            ContentLength = 42
-          }
-        ]
+            ContentLength = 42,
+          },
+        ],
       }
     );
   }

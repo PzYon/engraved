@@ -12,12 +12,18 @@ public class DeleteUserConfirmationStore(IDateService dateService)
 {
   private static readonly TimeSpan TokenLifetime = TimeSpan.FromMinutes(5);
 
-  private readonly ConcurrentDictionary<Guid, PendingConfirmation> _pendingConfirmations = new();
+  private readonly ConcurrentDictionary<
+    Guid,
+    PendingConfirmation
+  > _pendingConfirmations = new();
 
   public Guid IssueToken(string userId)
   {
     var token = Guid.NewGuid();
-    _pendingConfirmations[token] = new PendingConfirmation(userId, dateService.UtcNow.Add(TokenLifetime));
+    _pendingConfirmations[token] = new PendingConfirmation(
+      userId,
+      dateService.UtcNow.Add(TokenLifetime)
+    );
     return token;
   }
 
@@ -25,12 +31,18 @@ public class DeleteUserConfirmationStore(IDateService dateService)
   // to be valid for the given user, so a token can never be presented twice.
   public bool TryConsumeToken(string userId, Guid token)
   {
-    if (!_pendingConfirmations.TryRemove(token, out PendingConfirmation? confirmation))
+    if (
+      !_pendingConfirmations.TryRemove(
+        token,
+        out PendingConfirmation? confirmation
+      )
+    )
     {
       return false;
     }
 
-    return confirmation.UserId == userId && confirmation.ExpiresAt > dateService.UtcNow;
+    return confirmation.UserId == userId
+      && confirmation.ExpiresAt > dateService.UtcNow;
   }
 
   private record PendingConfirmation(string UserId, DateTime ExpiresAt);

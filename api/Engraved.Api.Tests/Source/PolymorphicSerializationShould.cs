@@ -19,12 +19,14 @@ namespace Engraved.Api.Tests;
 // into the JSON. Uses the same resolver setup as the MVC pipeline in Program.cs.
 public class PolymorphicSerializationShould
 {
-  private static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
+  private static readonly JsonSerializerOptions Options = new(
+    JsonSerializerDefaults.Web
+  )
   {
     TypeInfoResolver = new DefaultJsonTypeInfoResolver
     {
-      Modifiers = { DomainPolymorphism.ConfigurePolymorphism }
-    }
+      Modifiers = { DomainPolymorphism.ConfigurePolymorphism },
+    },
   };
 
   [Test]
@@ -50,7 +52,11 @@ public class PolymorphicSerializationShould
   [Test]
   public void SerializeRuntimeTypeProperties_ForValueDeclaredAsIJournal()
   {
-    IJournal journal = new GaugeJournal { Name = "my journal", UserRole = UserRole.Owner };
+    IJournal journal = new GaugeJournal
+    {
+      Name = "my journal",
+      UserRole = UserRole.Owner,
+    };
 
     var json = JsonSerializer.Serialize(journal, Options);
 
@@ -66,7 +72,7 @@ public class PolymorphicSerializationShould
     var searchResult = new SearchResultEntity
     {
       EntityType = EntityType.Entry,
-      Entity = new ScrapsEntry { Title = "found scrap" }
+      Entity = new ScrapsEntry { Title = "found scrap" },
     };
 
     var json = JsonSerializer.Serialize(searchResult, Options);
@@ -81,19 +87,28 @@ public class PolymorphicSerializationShould
     var journalTypes = DomainPolymorphism.GetDerivedTypes(typeof(IJournal));
     var entityTypes = DomainPolymorphism.GetDerivedTypes(typeof(IEntity));
 
-    entryTypes.Should()
+    entryTypes
+      .Should()
       .Contain(
         new[]
         {
-          typeof(CounterEntry), typeof(GaugeEntry), typeof(TimerEntry), typeof(ScrapsEntry), typeof(LogBookEntry)
+          typeof(CounterEntry),
+          typeof(GaugeEntry),
+          typeof(TimerEntry),
+          typeof(ScrapsEntry),
+          typeof(LogBookEntry),
         }
       );
-    journalTypes.Should()
+    journalTypes
+      .Should()
       .Contain(
         new[]
         {
-          typeof(CounterJournal), typeof(GaugeJournal), typeof(TimerJournal), typeof(ScrapsJournal),
-          typeof(LogBookJournal)
+          typeof(CounterJournal),
+          typeof(GaugeJournal),
+          typeof(TimerJournal),
+          typeof(ScrapsJournal),
+          typeof(LogBookJournal),
         }
       );
     entityTypes.Should().Contain(entryTypes).And.Contain(journalTypes);

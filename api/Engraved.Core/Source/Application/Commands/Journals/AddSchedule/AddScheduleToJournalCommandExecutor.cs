@@ -5,14 +5,19 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Journals.AddSchedule;
 
-public class AddScheduleToJournalCommandExecutor(IJournalRepository journalRepository, Lazy<IUser> currentUser)
-  : ICommandExecutor<AddScheduleToJournalCommand>
+public class AddScheduleToJournalCommandExecutor(
+  IJournalRepository journalRepository,
+  Lazy<IUser> currentUser
+) : ICommandExecutor<AddScheduleToJournalCommand>
 {
   public async Task<CommandResult> Execute(AddScheduleToJournalCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(command, $"{nameof(AddScheduleToJournalCommand.JournalId)} is required");
+      throw new InvalidCommandException(
+        command,
+        $"{nameof(AddScheduleToJournalCommand.JournalId)} is required"
+      );
     }
 
     IJournal journal = (await journalRepository.GetJournal(command.JournalId))!;
@@ -23,7 +28,7 @@ public class AddScheduleToJournalCommandExecutor(IJournalRepository journalRepos
       {
         NextOccurrence = command.NextOccurrence,
         OnClickUrl = command.OnClickUrl,
-        Recurrence = command.Recurrence
+        Recurrence = command.Recurrence,
       };
     }
     else
@@ -33,7 +38,9 @@ public class AddScheduleToJournalCommandExecutor(IJournalRepository journalRepos
 
     await journalRepository.UpsertJournal(journal);
 
-    var userIdsWithAccess = journal.Permissions.GetUserIdsWithAccess().ToArray();
+    var userIdsWithAccess = journal
+      .Permissions.GetUserIdsWithAccess()
+      .ToArray();
 
     return new CommandResult(command.JournalId, userIdsWithAccess);
   }

@@ -31,7 +31,9 @@ public class UserLoaderShould
   [Test]
   public async Task ReturnUserFromRepository_OnFirstLoad()
   {
-    await _repository.UpsertUser(new User { Name = UserName, DisplayName = "Jane" });
+    await _repository.UpsertUser(
+      new User { Name = UserName, DisplayName = "Jane" }
+    );
 
     IUser user = await _userLoader.GetUser(UserName);
 
@@ -42,7 +44,9 @@ public class UserLoaderShould
   [Test]
   public async Task ServeCachedUser_WithoutHittingRepositoryAgain()
   {
-    await _repository.UpsertUser(new User { Name = UserName, DisplayName = "Jane" });
+    await _repository.UpsertUser(
+      new User { Name = UserName, DisplayName = "Jane" }
+    );
     await _userLoader.GetUser(UserName);
 
     // change the underlying record; the cached instance must still be served
@@ -58,10 +62,14 @@ public class UserLoaderShould
   [Test]
   public async Task ServeUpdatedUser_AfterSetUser()
   {
-    await _repository.UpsertUser(new User { Name = UserName, DisplayName = "Jane" });
+    await _repository.UpsertUser(
+      new User { Name = UserName, DisplayName = "Jane" }
+    );
     await _userLoader.GetUser(UserName);
 
-    _userLoader.SetUser(new User { Name = UserName, DisplayName = "Refreshed" });
+    _userLoader.SetUser(
+      new User { Name = UserName, DisplayName = "Refreshed" }
+    );
 
     IUser user = await _userLoader.GetUser(UserName);
 
@@ -71,16 +79,22 @@ public class UserLoaderShould
   [Test]
   public void Throw_When_UserDoesNotExist()
   {
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userLoader.GetUser("nobody@nowhere.ch"));
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+      await _userLoader.GetUser("nobody@nowhere.ch")
+    );
   }
 
   [Test]
   public async Task NotCacheMisses_So_LaterCreatedUserIsFound()
   {
     // a miss must not be cached: the user may be created moments later (e.g. during login)
-    Assert.ThrowsAsync<NotAllowedOperationException>(async () => await _userLoader.GetUser(UserName));
+    Assert.ThrowsAsync<NotAllowedOperationException>(async () =>
+      await _userLoader.GetUser(UserName)
+    );
 
-    await _repository.UpsertUser(new User { Name = UserName, DisplayName = "Jane" });
+    await _repository.UpsertUser(
+      new User { Name = UserName, DisplayName = "Jane" }
+    );
 
     IUser user = await _userLoader.GetUser(UserName);
 

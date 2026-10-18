@@ -11,9 +11,11 @@ namespace Engraved.TestUtils;
 public class EngravedTestContext
 {
   private EngravedTestContext() { }
+
   public string UserId { get; set; } = null!;
   public string UserName { get; set; } = null!;
-  public TestUserRestrictedMongoRepository UserRestrictedRepo { get; set; } = null!;
+  public TestUserRestrictedMongoRepository UserRestrictedRepo { get; set; } =
+    null!;
 
   public static async Task<EngravedTestContext> CreateForUser(
     TestMongoRepository mongoRepository,
@@ -23,38 +25,52 @@ public class EngravedTestContext
     var ctx = new EngravedTestContext
     {
       UserName = userName,
-      UserId = (await mongoRepository.UpsertUser(new User { Name = userName })).EntityId
+      UserId = (
+        await mongoRepository.UpsertUser(new User { Name = userName })
+      ).EntityId,
     };
 
-    ctx.UserRestrictedRepo = await Util.CreateUserRestrictedMongoRepository(userName, ctx.UserId, true);
+    ctx.UserRestrictedRepo = await Util.CreateUserRestrictedMongoRepository(
+      userName,
+      ctx.UserId,
+      true
+    );
 
     return ctx;
   }
 
-  public async Task<string> AddJournal(string name = "Test Journal", DateTime? nextOccurrence = null)
+  public async Task<string> AddJournal(
+    string name = "Test Journal",
+    DateTime? nextOccurrence = null
+  )
   {
-    var journal = new CounterJournal
-    {
-      Name = name,
-      UserId = UserId
-    };
+    var journal = new CounterJournal { Name = name, UserId = UserId };
 
     if (nextOccurrence != null)
     {
-      journal.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
+      journal.Schedules[UserName] = new Schedule
+      {
+        NextOccurrence = nextOccurrence,
+      };
     }
 
     UpsertResult result = await UserRestrictedRepo.UpsertJournal(journal);
     return result.EntityId;
   }
 
-  public async Task<string> AddEntry(string journalId, DateTime? nextOccurrence = null)
+  public async Task<string> AddEntry(
+    string journalId,
+    DateTime? nextOccurrence = null
+  )
   {
     var entry = new CounterEntry { ParentId = journalId };
 
     if (nextOccurrence != null)
     {
-      entry.Schedules[UserName] = new Schedule { NextOccurrence = nextOccurrence };
+      entry.Schedules[UserName] = new Schedule
+      {
+        NextOccurrence = nextOccurrence,
+      };
     }
 
     UpsertResult result = await UserRestrictedRepo.UpsertEntry(entry);

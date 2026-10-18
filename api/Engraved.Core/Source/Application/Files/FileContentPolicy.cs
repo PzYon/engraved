@@ -11,24 +11,31 @@ public static class FileContentPolicy
   // document that can carry <script>, and a navigation to it would run that script in the storage
   // account's origin. It still displays fine in scraps, because an <img> renders SVG script-free and
   // ignores the content disposition entirely - only clicking through turns into a download.
-  private static readonly HashSet<string> InlineContentTypes = new(StringComparer.OrdinalIgnoreCase)
+  private static readonly HashSet<string> InlineContentTypes = new(
+    StringComparer.OrdinalIgnoreCase
+  )
   {
     "image/png",
     "image/jpeg",
     "image/gif",
     "image/webp",
     "image/avif",
-    "application/pdf"
+    "application/pdf",
   };
 
   // Control characters would let a crafted file name inject additional header lines into the
   // Content-Disposition the store writes; quotes and backslashes would break out of the quoted
   // string. Neither is worth trying to encode - file names are cosmetic.
-  private static readonly Regex UnsafeFileNameCharacters = new(@"[\p{C}""\\]", RegexOptions.Compiled);
+  private static readonly Regex UnsafeFileNameCharacters = new(
+    @"[\p{C}""\\]",
+    RegexOptions.Compiled
+  );
 
   public static FileDisposition GetDisposition(string contentType)
   {
-    return InlineContentTypes.Contains(contentType) ? FileDisposition.Inline : FileDisposition.Attachment;
+    return InlineContentTypes.Contains(contentType)
+      ? FileDisposition.Inline
+      : FileDisposition.Attachment;
   }
 
   public static string SanitizeFileName(string fileName)

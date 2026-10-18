@@ -13,6 +13,8 @@ public class SystemInfoController(Dispatcher dispatcher) : Controller
   [HttpGet]
   public async Task<SystemInfo> Get()
   {
-    return await dispatcher.Query<SystemInfo, GetSystemInfoQuery>(new GetSystemInfoQuery());
+    return await dispatcher.Query<SystemInfo, GetSystemInfoQuery>(
+      new GetSystemInfoQuery()
+    );
   }
 }

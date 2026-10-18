@@ -40,7 +40,9 @@ public class UpsertEntryFileCleanupShould
       _fileStore,
       _fileIdFactory,
       _dateService,
-      new Lazy<IUser>(() => new User { Id = TestIds.UserId, Name = TestIds.UserId })
+      new Lazy<IUser>(() =>
+        new User { Id = TestIds.UserId, Name = TestIds.UserId }
+      )
     );
 
     await _repo.UpsertJournal(new ScrapsJournal { Id = JournalId });
@@ -55,7 +57,7 @@ public class UpsertEntryFileCleanupShould
 
     _fileStore.DeletedFileIds.Should().BeEquivalentTo(file.Id);
 
-    ScrapsEntry? entry = (ScrapsEntry?) await _repo.GetEntry(EntryId);
+    ScrapsEntry? entry = (ScrapsEntry?)await _repo.GetEntry(EntryId);
     entry!.Files.Should().BeEmpty();
   }
 
@@ -93,7 +95,7 @@ public class UpsertEntryFileCleanupShould
         Id = EntryId,
         ParentId = JournalId,
         Title = "with a file",
-        Files = [file]
+        Files = [file],
       }
     );
 
@@ -111,19 +113,24 @@ public class UpsertEntryFileCleanupShould
       Id = fileId,
       FileName = "holiday.png",
       ContentType = "image/png",
-      ContentLength = 1234
+      ContentLength = 1234,
     };
   }
 
   private async Task Save(FileRef[] files)
   {
-    await new UpsertScrapsEntryCommandExecutor(_repo, _repo, _dateService, _fileAcceptor).Execute(
+    await new UpsertScrapsEntryCommandExecutor(
+      _repo,
+      _repo,
+      _dateService,
+      _fileAcceptor
+    ).Execute(
       new UpsertScrapsEntryCommand
       {
         Id = EntryId,
         JournalId = JournalId,
         Title = "with a file",
-        Files = files
+        Files = files,
       }
     );
   }

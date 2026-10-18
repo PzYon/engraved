@@ -19,7 +19,10 @@ public class GetFileUrlQueryExecutor(
   {
     if (string.IsNullOrEmpty(query.FileId))
     {
-      throw new InvalidQueryException(query, $"{nameof(GetFileUrlQuery.FileId)} must be specified.");
+      throw new InvalidQueryException(
+        query,
+        $"{nameof(GetFileUrlQuery.FileId)} must be specified."
+      );
     }
 
     // Files have no permissions of their own: a file belongs to an entry, an entry belongs to a

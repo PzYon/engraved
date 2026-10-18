@@ -35,15 +35,22 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = "some notes",
-      DateTime = _fakeDateService.UtcNow
+      DateTime = _fakeDateService.UtcNow,
     };
 
-    CommandResult result =
-      await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    CommandResult result = await new UpsertLogBookEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     result.EntityId.Should().NotBeNull();
     (await _testRepository.CountAllEntries()).Should().Be(1);
-    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("some notes");
+    (await _testRepository.GetEntriesForJournal(JournalId))
+      .First()
+      .Notes.Should()
+      .Be("some notes");
   }
 
   [Test]
@@ -54,12 +61,19 @@ public class UpsertLogBookEntryCommandExecutorShould
       JournalId = JournalId,
       Notes = "some notes",
       Title = "some title",
-      DateTime = _fakeDateService.UtcNow
+      DateTime = _fakeDateService.UtcNow,
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
     ((LogBookEntry)entry).Title.Should().Be("some title");
   }
 
@@ -71,12 +85,19 @@ public class UpsertLogBookEntryCommandExecutorShould
       JournalId = JournalId,
       Notes = "some notes",
       Title = null,
-      DateTime = _fakeDateService.UtcNow
+      DateTime = _fakeDateService.UtcNow,
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
     ((LogBookEntry)entry).Title.Should().BeNull();
   }
 
@@ -87,13 +108,16 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = null,
-      DateTime = _fakeDateService.UtcNow
+      DateTime = _fakeDateService.UtcNow,
     };
 
-    Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
-        command
-      );
+    Func<Task> func = async () =>
+      await new UpsertLogBookEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        _fakeDateService,
+        TestFileAcceptor.Create()
+      ).Execute(command);
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -105,13 +129,16 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = "   ",
-      DateTime = _fakeDateService.UtcNow
+      DateTime = _fakeDateService.UtcNow,
     };
 
-    Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
-        command
-      );
+    Func<Task> func = async () =>
+      await new UpsertLogBookEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        _fakeDateService,
+        TestFileAcceptor.Create()
+      ).Execute(command);
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -123,13 +150,16 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = "some notes",
-      DateTime = null
+      DateTime = null,
     };
 
-    Func<Task> func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
-        command
-      );
+    Func<Task> func = async () =>
+      await new UpsertLogBookEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        _fakeDateService,
+        TestFileAcceptor.Create()
+      ).Execute(command);
 
     func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -141,13 +171,22 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = "some notes",
-      DateTime = new DateTime(2026, 4, 9, 13, 37, 42, DateTimeKind.Utc)
+      DateTime = new DateTime(2026, 4, 9, 13, 37, 42, DateTimeKind.Utc),
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
-    IEntry entry = (await _testRepository.GetEntriesForJournal(JournalId)).Single();
-    entry.DateTime.Should().Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
+    IEntry entry = (
+      await _testRepository.GetEntriesForJournal(JournalId)
+    ).Single();
+    entry
+      .DateTime.Should()
+      .Be(new DateTime(2026, 4, 9, 0, 0, 0, DateTimeKind.Utc));
     entry.DateTime!.Value.TimeOfDay.Should().Be(TimeSpan.Zero);
     entry.DateTime!.Value.Kind.Should().Be(DateTimeKind.Utc);
   }
@@ -163,7 +202,7 @@ public class UpsertLogBookEntryCommandExecutorShould
         Id = "60703c3b0000000000000001",
         ParentId = JournalId,
         Notes = "existing notes",
-        DateTime = existingDate
+        DateTime = existingDate,
       }
     );
 
@@ -171,13 +210,16 @@ public class UpsertLogBookEntryCommandExecutorShould
     {
       JournalId = JournalId,
       Notes = "new notes",
-      DateTime = existingDate.AddHours(2)
+      DateTime = existingDate.AddHours(2),
     };
 
-    var func = async ()
-      => await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(
-        command
-      );
+    var func = async () =>
+      await new UpsertLogBookEntryCommandExecutor(
+        _testRepository,
+        _testRepository,
+        _fakeDateService,
+        TestFileAcceptor.Create()
+      ).Execute(command);
 
     await func.Should().ThrowAsync<InvalidCommandException>();
   }
@@ -194,7 +236,7 @@ public class UpsertLogBookEntryCommandExecutorShould
         Id = entryId,
         ParentId = JournalId,
         Notes = "original notes",
-        DateTime = existingDate
+        DateTime = existingDate,
       }
     );
 
@@ -203,12 +245,20 @@ public class UpsertLogBookEntryCommandExecutorShould
       Id = entryId,
       JournalId = JournalId,
       Notes = "updated notes",
-      DateTime = existingDate
+      DateTime = existingDate,
     };
 
-    await new UpsertLogBookEntryCommandExecutor(_testRepository, _testRepository, _fakeDateService, TestFileAcceptor.Create()).Execute(command);
+    await new UpsertLogBookEntryCommandExecutor(
+      _testRepository,
+      _testRepository,
+      _fakeDateService,
+      TestFileAcceptor.Create()
+    ).Execute(command);
 
     (await _testRepository.CountAllEntries()).Should().Be(1);
-    (await _testRepository.GetEntriesForJournal(JournalId)).First().Notes.Should().Be("updated notes");
+    (await _testRepository.GetEntriesForJournal(JournalId))
+      .First()
+      .Notes.Should()
+      .Be("updated notes");
   }
 }

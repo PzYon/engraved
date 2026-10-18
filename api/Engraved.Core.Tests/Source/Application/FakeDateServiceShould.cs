@@ -20,7 +20,9 @@ public class FakeDateServiceShould
 
   private static void ExecuteTest(int incrementation)
   {
-    var service = new FakeDateService(DateTime.UtcNow.AddDays(-(incrementation + 1) * 20));
+    var service = new FakeDateService(
+      DateTime.UtcNow.AddDays(-(incrementation + 1) * 20)
+    );
 
     DateTime lastNow = service.UtcNow;
 

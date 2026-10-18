@@ -8,16 +8,15 @@ public static class FileRefMapper
   {
     return files
       .Select(f => new FileRefSubDocument
-        {
-          Id = f.Id,
-          FileName = f.FileName,
-          ContentType = f.ContentType,
-          ContentLength = f.ContentLength,
-          UploadedOn = f.UploadedOn,
-          Width = f.Width,
-          Height = f.Height
-        }
-      )
+      {
+        Id = f.Id,
+        FileName = f.FileName,
+        ContentType = f.ContentType,
+        ContentLength = f.ContentLength,
+        UploadedOn = f.UploadedOn,
+        Width = f.Width,
+        Height = f.Height,
+      })
       .ToArray();
   }
 
@@ -25,16 +24,15 @@ public static class FileRefMapper
   {
     return files
       .Select(f => new FileRef
-        {
-          Id = f.Id,
-          FileName = f.FileName,
-          ContentType = f.ContentType,
-          ContentLength = f.ContentLength,
-          UploadedOn = f.UploadedOn,
-          Width = f.Width,
-          Height = f.Height
-        }
-      )
+      {
+        Id = f.Id,
+        FileName = f.FileName,
+        ContentType = f.ContentType,
+        ContentLength = f.ContentLength,
+        UploadedOn = f.UploadedOn,
+        Width = f.Width,
+        Height = f.Height,
+      })
       .ToArray();
   }
 }

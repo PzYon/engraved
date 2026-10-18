@@ -27,7 +27,9 @@ public class TestDataController(
 ) : ControllerBase
 {
   [HttpPost("seed")]
-  public async Task<ActionResult<SeedResult>> Seed([FromBody] SeedTestDataDto dto)
+  public async Task<ActionResult<SeedResult>> Seed(
+    [FromBody] SeedTestDataDto dto
+  )
   {
     if (!testMode.IsEnabled)
     {
@@ -54,11 +56,21 @@ public class TestDataController(
 
       foreach (SeedEntryDto entryDto in journalDto.Entries)
       {
-        CommandResult createEntryResult = await CreateEntry(journalId, journalDto.Type, entryDto);
+        CommandResult createEntryResult = await CreateEntry(
+          journalId,
+          journalDto.Type,
+          entryDto
+        );
         entryIds.Add(createEntryResult.EntityId);
       }
 
-      seededJournals.Add(new SeededJournal { JournalId = journalId, EntryIds = entryIds.ToArray() });
+      seededJournals.Add(
+        new SeededJournal
+        {
+          JournalId = journalId,
+          EntryIds = entryIds.ToArray(),
+        }
+      );
     }
 
     if (dto.Tags.Length > 0)
@@ -66,7 +78,7 @@ public class TestDataController(
       await dispatcher.Command(
         new UpdateUserTagsCommand
         {
-          TagNames = dto.Tags.ToDictionary(tag => tag.Id, tag => tag.Label)
+          TagNames = dto.Tags.ToDictionary(tag => tag.Id, tag => tag.Label),
         }
       );
     }
@@ -76,11 +88,16 @@ public class TestDataController(
 
   private async Task ClearExistingJournals()
   {
-    IJournal[] journals = await dispatcher.Query<IJournal[], GetAllJournalsQuery>(new GetAllJournalsQuery());
+    IJournal[] journals = await dispatcher.Query<
+      IJournal[],
+      GetAllJournalsQuery
+    >(new GetAllJournalsQuery());
 
     foreach (IJournal journal in journals)
     {
-      await dispatcher.Command(new DeleteJournalCommand { JournalId = journal.Id! });
+      await dispatcher.Command(
+        new DeleteJournalCommand { JournalId = journal.Id! }
+      );
     }
   }
 
@@ -91,28 +108,46 @@ public class TestDataController(
       {
         Name = journalDto.Name,
         Description = journalDto.Description,
-        Type = journalDto.Type
+        Type = journalDto.Type,
       }
     );
   }
 
-  private async Task<CommandResult> CreateEntry(string journalId, JournalType type, SeedEntryDto entry)
+  private async Task<CommandResult> CreateEntry(
+    string journalId,
+    JournalType type,
+    SeedEntryDto entry
+  )
   {
     // Dispatch with the concrete command type so the right executor resolves.
     return type switch
     {
       JournalType.Gauge => await dispatcher.Command(
-        new UpsertGaugeEntryCommand { JournalId = journalId, Value = entry.Value, Notes = entry.Notes }
+        new UpsertGaugeEntryCommand
+        {
+          JournalId = journalId,
+          Value = entry.Value,
+          Notes = entry.Notes,
+        }
       ),
       JournalType.Counter => await dispatcher.Command(
-        new UpsertCounterEntryCommand { JournalId = journalId, Notes = entry.Notes }
+        new UpsertCounterEntryCommand
+        {
+          JournalId = journalId,
+          Notes = entry.Notes,
+        }
       ),
       JournalType.Scraps => await dispatcher.Command(
-        new UpsertScrapsEntryCommand { JournalId = journalId, Title = entry.Title ?? "", Notes = entry.Notes }
+        new UpsertScrapsEntryCommand
+        {
+          JournalId = journalId,
+          Title = entry.Title ?? "",
+          Notes = entry.Notes,
+        }
       ),
       _ => throw new InvalidOperationException(
         $"Seeding entries for journal type '{type}' is not supported yet."
-      )
+      ),
     };
   }
 }

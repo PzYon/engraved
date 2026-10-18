@@ -12,8 +12,10 @@ namespace Engraved.Core.Application.Queries.Search.Related;
 // are already visible on the page the user is coming from. Relatedness is based on
 // word overlap: candidates are fetched with a single match-any-word query and then
 // ranked in memory (no $text/Atlas Search available on the Cosmos DB Mongo API).
-public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepository, IEntryRepository entryRepository)
-  : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
+public class GetRelatedEntitiesQueryExecutor(
+  IJournalRepository journalRepository,
+  IEntryRepository entryRepository
+) : IQueryExecutor<SearchEntitiesResult, GetRelatedEntitiesQuery>
 {
   private const int MaxWords = 10;
   private const int MinWordLength = 3;
@@ -22,19 +24,84 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
   // only entries of these types have their own routes in the app, so only they
   // are valid navigation targets. journals of ALL types are considered.
-  private static readonly JournalType[] NavigableEntryTypes = [JournalType.Scraps, JournalType.LogBook];
+  private static readonly JournalType[] NavigableEntryTypes =
+  [
+    JournalType.Scraps,
+    JournalType.LogBook,
+  ];
 
   private static readonly HashSet<string> StopWords =
   [
     // english
-    "the", "and", "for", "with", "this", "that", "these", "those", "from", "are",
-    "was", "were", "has", "have", "had", "not", "you", "your", "all", "any",
-    "can", "will", "one", "how", "what", "when", "where", "why", "who", "which",
+    "the",
+    "and",
+    "for",
+    "with",
+    "this",
+    "that",
+    "these",
+    "those",
+    "from",
+    "are",
+    "was",
+    "were",
+    "has",
+    "have",
+    "had",
+    "not",
+    "you",
+    "your",
+    "all",
+    "any",
+    "can",
+    "will",
+    "one",
+    "how",
+    "what",
+    "when",
+    "where",
+    "why",
+    "who",
+    "which",
     // german
-    "und", "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen",
-    "einem", "einer", "ist", "sind", "war", "mit", "von", "für", "auf", "aus",
-    "bei", "nach", "über", "unter", "nicht", "auch", "wie", "was", "wann", "wer",
-    "oder", "aber", "als", "zum", "zur", "ich", "sie", "wir"
+    "und",
+    "der",
+    "die",
+    "das",
+    "den",
+    "dem",
+    "des",
+    "ein",
+    "eine",
+    "einen",
+    "einem",
+    "einer",
+    "ist",
+    "sind",
+    "war",
+    "mit",
+    "von",
+    "für",
+    "auf",
+    "aus",
+    "bei",
+    "nach",
+    "über",
+    "unter",
+    "nicht",
+    "auch",
+    "wie",
+    "was",
+    "wann",
+    "wer",
+    "oder",
+    "aber",
+    "als",
+    "zum",
+    "zur",
+    "ich",
+    "sie",
+    "wir",
   ];
 
   public bool DisableCache => false;
@@ -63,7 +130,13 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
     var searchText = string.Join(" ", words);
 
-    var allJournals = await journalRepository.GetAllJournals(null, null, null, null, 1000);
+    var allJournals = await journalRepository.GetAllJournals(
+      null,
+      null,
+      null,
+      null,
+      1000
+    );
 
     var otherJournalIds = allJournals
       .Select(j => j.Id!)
@@ -82,36 +155,43 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
 
     // passing otherJournalIds both scopes the (unscoped) entry search to journals the
     // user may read AND excludes the source item's own journal (see class comment).
-    var entryCandidatesTask = otherJournalIds.Length > 0
-      ? entryRepository.SearchEntries(
-        searchText,
-        null,
-        NavigableEntryTypes,
-        otherJournalIds,
-        CandidateLimit,
-        null,
-        false,
-        true
-      )
-      : Task.FromResult<IEntry[]>([]);
+    var entryCandidatesTask =
+      otherJournalIds.Length > 0
+        ? entryRepository.SearchEntries(
+          searchText,
+          null,
+          NavigableEntryTypes,
+          otherJournalIds,
+          CandidateLimit,
+          null,
+          false,
+          true
+        )
+        : Task.FromResult<IEntry[]>([]);
 
     await Task.WhenAll(journalCandidatesTask, entryCandidatesTask);
 
-    var rankedEntities = journalCandidatesTask.Result
-      .Where(j => j.Id != source.OwnJournalId)
+    var rankedEntities = journalCandidatesTask
+      .Result.Where(j => j.Id != source.OwnJournalId)
       .Select(j => new
+      {
+        Entity = new SearchResultEntity
         {
-          Entity = new SearchResultEntity { EntityType = EntityType.Journal, Entity = j },
-          Score = GetScore(words, j.Name, j.Description)
-        }
-      )
+          EntityType = EntityType.Journal,
+          Entity = j,
+        },
+        Score = GetScore(words, j.Name, j.Description),
+      })
       .Concat(
         entryCandidatesTask.Result.Select(e => new
+        {
+          Entity = new SearchResultEntity
           {
-            Entity = new SearchResultEntity { EntityType = EntityType.Entry, Entity = e },
-            Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes)
-          }
-        )
+            EntityType = EntityType.Entry,
+            Entity = e,
+          },
+          Score = GetScore(words, (e as ScrapsEntry)?.Title, e.Notes),
+        })
       )
       .OrderByDescending(x => x.Score)
       .ThenByDescending(x => x.Entity.Entity.EditedOn)
@@ -127,7 +207,9 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
     return new SearchEntitiesResult
     {
       Entities = rankedEntities,
-      Journals = allJournals.Where(j => parentJournalIds.Contains(j.Id)).ToArray()
+      Journals = allJournals
+        .Where(j => parentJournalIds.Contains(j.Id))
+        .ToArray(),
     };
   }
 
@@ -151,19 +233,25 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
       return SourceContext.Inaccessible;
     }
 
-    IJournal? parentJournal = await journalRepository.GetJournal(entry.ParentId);
+    IJournal? parentJournal = await journalRepository.GetJournal(
+      entry.ParentId
+    );
     if (parentJournal == null)
     {
       return SourceContext.Inaccessible;
     }
 
     var title = (entry as ScrapsEntry)?.Title;
-    return new SourceContext(string.IsNullOrWhiteSpace(title) ? entry.Notes : title, entry.ParentId);
+    return new SourceContext(
+      string.IsNullOrWhiteSpace(title) ? entry.Notes : title,
+      entry.ParentId
+    );
   }
 
   private static string[] GetRelevantWords(string? text)
   {
-    return Regex.Split((text ?? string.Empty).ToLowerInvariant(), @"[^\p{L}\p{N}]+")
+    return Regex
+      .Split((text ?? string.Empty).ToLowerInvariant(), @"[^\p{L}\p{N}]+")
       .Select(word => word.Trim())
       .Where(word => word.Length >= MinWordLength && !StopWords.Contains(word))
       .Distinct()
@@ -179,7 +267,12 @@ public class GetRelatedEntitiesQueryExecutor(IJournalRepository journalRepositor
     return words.Aggregate(
       0,
       (score, word) =>
-        score + (WholeWordRegex.IsMatch(title, word) ? 3 : WholeWordRegex.IsMatch(body, word) ? 1 : 0)
+        score
+        + (
+          WholeWordRegex.IsMatch(title, word) ? 3
+          : WholeWordRegex.IsMatch(body, word) ? 1
+          : 0
+        )
     );
   }
 

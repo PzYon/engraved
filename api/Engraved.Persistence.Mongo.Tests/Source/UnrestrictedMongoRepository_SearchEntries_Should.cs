@@ -34,7 +34,8 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
       {
         ParentId = result.EntityId,
         Value = 1,
-        Notes = "Lorem ipsum dolor", EditedOn = DateTime.Now.AddDays(-10)
+        Notes = "Lorem ipsum dolor",
+        EditedOn = DateTime.Now.AddDays(-10),
       }
     );
     await _repository.UpsertEntry(
@@ -43,7 +44,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = result.EntityId,
         Value = 2,
         Notes = "Alpha Beta Gamma",
-        EditedOn = DateTime.Now.AddDays(-20)
+        EditedOn = DateTime.Now.AddDays(-20),
       }
     );
     await _repository.UpsertEntry(
@@ -52,7 +53,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = result.EntityId,
         Value = 3,
         Notes = "Heiri Herbert Hans",
-        EditedOn = DateTime.Now.AddDays(-30)
+        EditedOn = DateTime.Now.AddDays(-30),
       }
     );
   }
@@ -60,7 +61,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries()
   {
-    var results = await _repository.SearchEntries("Beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "Beta",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -68,7 +75,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_IgnoringCase()
   {
-    var results = await _repository.SearchEntries("beta", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "beta",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -76,7 +89,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_MultipleWords()
   {
-    var results = await _repository.SearchEntries("beta gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "beta gam",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -84,7 +103,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   [Test]
   public async Task FindEntries_NonConsecutiveWords()
   {
-    var results = await _repository.SearchEntries("alpha gam", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "alpha gam",
+      null,
+      null,
+      [_journalId],
+      10
+    );
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(2);
   }
@@ -139,7 +164,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = _journalId,
         Value = 5,
         Notes = "Übung Klettern",
-        EditedOn = DateTime.Now.AddDays(-4)
+        EditedOn = DateTime.Now.AddDays(-4),
       }
     );
 
@@ -167,13 +192,19 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = _journalId,
         Value = 4,
         Notes = "price (USD)",
-        EditedOn = DateTime.Now.AddDays(-5)
+        EditedOn = DateTime.Now.AddDays(-5),
       }
     );
 
     // "(USD)" is a valid regex (a group); when matched literally it must only
     // find the entry that actually contains the parentheses.
-    var results = await _repository.SearchEntries("(USD)", null, null, [_journalId], 10);
+    var results = await _repository.SearchEntries(
+      "(USD)",
+      null,
+      null,
+      [_journalId],
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].GetValue().Should().Be(4);
@@ -184,7 +215,8 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // An unbalanced bracket is an invalid regex. Before escaping, this threw
     // while building the filter (and surfaced as a 500).
-    Assert.DoesNotThrowAsync(async () => await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
+    Assert.DoesNotThrowAsync(async () =>
+      await _repository.SearchEntries("(unclosed", null, null, [_journalId], 10)
     );
   }
 
@@ -195,13 +227,29 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     UpsertResult result = await _repository.UpsertJournal(journal);
 
     await _repository.UpsertEntry(
-      new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "Heiri",
+      }
     );
     await _repository.UpsertEntry(
-      new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Franz" }
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "Franz",
+      }
     );
 
-    var results = await _repository.SearchEntries("heiri", null, null, [result.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "heiri",
+      null,
+      null,
+      [result.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
     ((ScrapsEntry)results[0]).Title.Should().Be("Heiri");
@@ -212,7 +260,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     UpsertResult journal = await AddScrapWithAttachment("budget-2026.xlsx");
 
-    var results = await _repository.SearchEntries("budget", null, null, [journal.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "budget",
+      null,
+      null,
+      [journal.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
     results[0].Files[0].FileName.Should().Be("budget-2026.xlsx");
@@ -223,9 +277,18 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
   {
     // A dotted path into an array of sub-documents matches when ANY element matches, so the
     // second attachment must be found just as well as the first.
-    UpsertResult journal = await AddScrapWithAttachment("first.pdf", "second.pdf");
+    UpsertResult journal = await AddScrapWithAttachment(
+      "first.pdf",
+      "second.pdf"
+    );
 
-    var results = await _repository.SearchEntries("second", null, null, [journal.EntityId], 10);
+    var results = await _repository.SearchEntries(
+      "second",
+      null,
+      null,
+      [journal.EntityId],
+      10
+    );
 
     results.Length.Should().Be(1);
   }
@@ -291,7 +354,12 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     UpsertResult result = await _repository.UpsertJournal(journal);
 
     await _repository.UpsertEntry(
-      new ScrapsEntry { ParentId = result.EntityId, ScrapType = ScrapType.List, Title = "Heiri" }
+      new ScrapsEntry
+      {
+        ParentId = result.EntityId,
+        ScrapType = ScrapType.List,
+        Title = "Heiri",
+      }
     );
 
     var results = await _repository.SearchEntries(
@@ -334,11 +402,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     var currentUserId = ObjectId.GenerateNewId().ToString();
 
     UpsertResult result = await _repository.UpsertJournal(
-      new ScrapsJournal
-      {
-        Name = "My Scrap",
-        UserId = currentUserId
-      }
+      new ScrapsJournal { Name = "My Scrap", UserId = currentUserId }
     );
 
     await _repository.UpsertEntry(
@@ -348,7 +412,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithSchedule",
         EditedOn = DateTime.Now.AddDays(-2),
-        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } } }
+        Schedules =
+        {
+          {
+            currentUserId,
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) }
+          },
+        },
       }
     );
 
@@ -361,8 +431,11 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         EditedOn = DateTime.Now.AddDays(-2),
         Schedules =
         {
-          { ObjectId.GenerateNewId().ToString(), new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) } }
-        }
+          {
+            ObjectId.GenerateNewId().ToString(),
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(-222) }
+          },
+        },
       }
     );
 
@@ -376,7 +449,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "WithoutSchedule",
         UserId = currentUserId,
-        EditedOn = DateTime.Now.AddDays(-1000)
+        EditedOn = DateTime.Now.AddDays(-1000),
       }
     );
 
@@ -413,7 +486,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ScrapType = ScrapType.List,
         Title = "OldButScheduled",
         EditedOn = DateTime.Now.AddDays(-100),
-        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(1) } } }
+        Schedules =
+        {
+          {
+            currentUserId,
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(1) }
+          },
+        },
       }
     );
 
@@ -423,7 +502,7 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = journal.EntityId,
         ScrapType = ScrapType.List,
         Title = "RecentUnscheduled",
-        EditedOn = DateTime.Now.AddDays(-1)
+        EditedOn = DateTime.Now.AddDays(-1),
       }
     );
 
@@ -441,9 +520,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
     ((ScrapsEntry)results[1]).Title.Should().Be("OldButScheduled");
   }
 
-  private async Task<UpsertResult> AddScrapWithAttachment(params string[] fileNames)
+  private async Task<UpsertResult> AddScrapWithAttachment(
+    params string[] fileNames
+  )
   {
-    UpsertResult journal = await _repository.UpsertJournal(new ScrapsJournal { Name = "With Files" });
+    UpsertResult journal = await _repository.UpsertJournal(
+      new ScrapsJournal { Name = "With Files" }
+    );
 
     await _repository.UpsertEntry(
       new ScrapsEntry
@@ -453,14 +536,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         Title = "Nothing to match here",
         Files = fileNames
           .Select(fileName => new FileRef
-            {
-              Id = MongoUtil.GenerateNewIdAsString(),
-              FileName = fileName,
-              ContentType = "application/octet-stream",
-              ContentLength = 1234
-            }
-          )
-          .ToArray()
+          {
+            Id = MongoUtil.GenerateNewIdAsString(),
+            FileName = fileName,
+            ContentType = "application/octet-stream",
+            ContentLength = 1234,
+          })
+          .ToArray(),
       }
     );
 
@@ -484,7 +566,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = journal.EntityId,
         ScrapType = ScrapType.List,
         Title = "Pending",
-        Schedules = { { currentUserId, new Schedule { NextOccurrence = DateTime.Now.AddDays(1) } } }
+        Schedules =
+        {
+          {
+            currentUserId,
+            new Schedule { NextOccurrence = DateTime.Now.AddDays(1) }
+          },
+        },
       }
     );
 
@@ -494,7 +582,13 @@ public class UnrestrictedMongoRepository_SearchEntries_Should
         ParentId = journal.EntityId,
         ScrapType = ScrapType.List,
         Title = "AlreadyFired",
-        Schedules = { { currentUserId, new Schedule { NextOccurrence = null } } }
+        Schedules =
+        {
+          {
+            currentUserId,
+            new Schedule { NextOccurrence = null }
+          },
+        },
       }
     );
 

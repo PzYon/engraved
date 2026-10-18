@@ -21,14 +21,12 @@ public class SearchEntriesQueryExecutorShould
   [SetUp]
   public async Task SetUp()
   {
-    _repo = await Util.CreateUserRestrictedMongoRepository(UserId, UserId, false);
-    await _repo.UpsertUser(
-      new User
-      {
-        Id = UserId,
-        Name = UserId
-      }
+    _repo = await Util.CreateUserRestrictedMongoRepository(
+      UserId,
+      UserId,
+      false
     );
+    await _repo.UpsertUser(new User { Id = UserId, Name = UserId });
 
     _dateService = new FakeDateService(DateTime.UtcNow.AddDays(-10));
   }
@@ -40,33 +38,27 @@ public class SearchEntriesQueryExecutorShould
     const string journal2Id = "60703c3b0000000000000012";
     const string journal3Id = "60703c3b0000000000000013";
 
-    await _repo.UpsertJournal(new CounterJournal { Id = journal1Id, UserId = UserId });
+    await _repo.UpsertJournal(
+      new CounterJournal { Id = journal1Id, UserId = UserId }
+    );
     await _repo.UpsertEntry(
-      new CounterEntry
-      {
-        ParentId = journal1Id,
-        DateTime = _dateService.UtcNow
-      }
+      new CounterEntry { ParentId = journal1Id, DateTime = _dateService.UtcNow }
     );
     _dateService.SetNext(2);
 
-    await _repo.UpsertJournal(new GaugeJournal { Id = journal2Id, UserId = UserId });
+    await _repo.UpsertJournal(
+      new GaugeJournal { Id = journal2Id, UserId = UserId }
+    );
     await _repo.UpsertEntry(
-      new GaugeEntry
-      {
-        ParentId = journal2Id,
-        DateTime = _dateService.UtcNow
-      }
+      new GaugeEntry { ParentId = journal2Id, DateTime = _dateService.UtcNow }
     );
     _dateService.SetNext(1);
 
-    await _repo.UpsertJournal(new TimerJournal { Id = journal3Id, UserId = UserId });
+    await _repo.UpsertJournal(
+      new TimerJournal { Id = journal3Id, UserId = UserId }
+    );
     await _repo.UpsertEntry(
-      new TimerEntry
-      {
-        ParentId = journal3Id,
-        DateTime = _dateService.UtcNow
-      }
+      new TimerEntry { ParentId = journal3Id, DateTime = _dateService.UtcNow }
     );
 
     TestUserRestrictedMongoRepository queryExecutorRepo =
@@ -77,7 +69,9 @@ public class SearchEntriesQueryExecutorShould
       queryExecutorRepo,
       queryExecutorRepo.CurrentUser
     );
-    SearchEntriesQueryResult result = await queryExecutor.Execute(new SearchEntriesQuery { Limit = 2 });
+    SearchEntriesQueryResult result = await queryExecutor.Execute(
+      new SearchEntriesQuery { Limit = 2 }
+    );
 
     result.Journals.Length.Should().Be(2);
     result.Entries.Any(m => m.ParentId == journal1Id).Should().BeFalse();

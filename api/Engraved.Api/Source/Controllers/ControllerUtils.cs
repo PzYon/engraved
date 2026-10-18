@@ -15,8 +15,6 @@ public static class ControllerUtils
   {
     return string.IsNullOrEmpty(parameterString)
       ? []
-      : parameterString.Split(",")
-        .Select(t => t.Trim())
-        .ToArray();
+      : parameterString.Split(",").Select(t => t.Trim()).ToArray();
   }
 }

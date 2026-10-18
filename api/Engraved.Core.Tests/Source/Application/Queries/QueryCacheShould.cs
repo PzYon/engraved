@@ -30,15 +30,29 @@ public class QueryCacheShould
       new Lazy<IUser>(() => new User { Id = "user_two", Name = "user_two" })
     );
 
-    userOneCache.Set(query, "cached-value-user-one", userOneCache.GetGenerationId());
-    userTwoCache.Set(query, "cached-value-user-two", userTwoCache.GetGenerationId());
+    userOneCache.Set(
+      query,
+      "cached-value-user-one",
+      userOneCache.GetGenerationId()
+    );
+    userTwoCache.Set(
+      query,
+      "cached-value-user-two",
+      userTwoCache.GetGenerationId()
+    );
 
     userOneCache.ClearCurrentUser();
 
-    userOneCache.TryGetValue(query, out string? userOneResult).Should().BeFalse();
+    userOneCache
+      .TryGetValue(query, out string? userOneResult)
+      .Should()
+      .BeFalse();
     userOneResult.Should().BeNull();
 
-    userTwoCache.TryGetValue(query, out string? userTwoResult).Should().BeTrue();
+    userTwoCache
+      .TryGetValue(query, out string? userTwoResult)
+      .Should()
+      .BeTrue();
     userTwoResult.Should().Be("cached-value-user-two");
   }
 

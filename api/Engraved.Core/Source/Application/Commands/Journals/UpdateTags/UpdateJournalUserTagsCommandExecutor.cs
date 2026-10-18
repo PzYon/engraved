@@ -3,14 +3,19 @@ using Engraved.Core.Domain.Users;
 
 namespace Engraved.Core.Application.Commands.Journals.UpdateTags;
 
-public class UpdateJournalUserTagsCommandExecutor(IUserRepository userRepository, Lazy<IUser> currentUser)
-  : ICommandExecutor<UpdateJournalUserTagsCommand>
+public class UpdateJournalUserTagsCommandExecutor(
+  IUserRepository userRepository,
+  Lazy<IUser> currentUser
+) : ICommandExecutor<UpdateJournalUserTagsCommand>
 {
   public async Task<CommandResult> Execute(UpdateJournalUserTagsCommand command)
   {
     if (string.IsNullOrEmpty(command.JournalId))
     {
-      throw new InvalidCommandException(command, $"\"{nameof(command.JournalId)}\" must be specified");
+      throw new InvalidCommandException(
+        command,
+        $"\"{nameof(command.JournalId)}\" must be specified"
+      );
     }
 
     IUser user = currentUser.Value;

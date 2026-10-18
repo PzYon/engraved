@@ -24,15 +24,33 @@ public class NotificationJob(
 
     try
     {
-      logger.LogInformation("Starting {NotificationJobName} [Dry Run: {IsDryRun}]", nameof(NotificationJob), isDryRun);
+      logger.LogInformation(
+        "Starting {NotificationJobName} [Dry Run: {IsDryRun}]",
+        nameof(NotificationJob),
+        isDryRun
+      );
 
       var watch = Stopwatch.StartNew();
 
-      var entries = await unrestrictedRepository.SearchEntries(null, ScheduleMode.AnySchedule);
-      await ProcessEntities(entries.OfType<IEntity>().ToArray(), isDryRun, result);
+      var entries = await unrestrictedRepository.SearchEntries(
+        null,
+        ScheduleMode.AnySchedule
+      );
+      await ProcessEntities(
+        entries.OfType<IEntity>().ToArray(),
+        isDryRun,
+        result
+      );
 
-      var journals = await unrestrictedRepository.GetAllJournals(null, ScheduleMode.AnySchedule);
-      await ProcessEntities(journals.OfType<IEntity>().ToArray(), isDryRun, result);
+      var journals = await unrestrictedRepository.GetAllJournals(
+        null,
+        ScheduleMode.AnySchedule
+      );
+      await ProcessEntities(
+        journals.OfType<IEntity>().ToArray(),
+        isDryRun,
+        result
+      );
 
       logger.LogInformation(
         "Ending {JobName} after {ElapsedMs}ms",
@@ -42,19 +60,30 @@ public class NotificationJob(
     }
     catch (Exception ex)
     {
-      logger.LogError(ex, "Error while processing job: {ExMessage}", ex.Message);
+      logger.LogError(
+        ex,
+        "Error while processing job: {ExMessage}",
+        ex.Message
+      );
     }
 
     return result;
   }
 
-  private async Task ProcessEntities(IEntity[] entities, bool isDryRun, NotificationJobResult result)
+  private async Task ProcessEntities(
+    IEntity[] entities,
+    bool isDryRun,
+    NotificationJobResult result
+  )
   {
     foreach (IEntity entity in entities)
     {
-      foreach ((var userId, Schedule? schedule) in entity.Schedules.Where(s
-                 => s.Value.NotifiedOn == null && s.Value.NextOccurrence < dateService.UtcNow
-               ))
+      foreach (
+        (var userId, Schedule? schedule) in entity.Schedules.Where(s =>
+          s.Value.NotifiedOn == null
+          && s.Value.NextOccurrence < dateService.UtcNow
+        )
+      )
       {
         try
         {
@@ -69,7 +98,9 @@ public class NotificationJob(
           IUser? user = await unrestrictedRepository.GetUser(userId);
           if (user == null)
           {
-            throw new InvalidOperationException($"User \"{userId}\" can not be loaded");
+            throw new InvalidOperationException(
+              $"User \"{userId}\" can not be loaded"
+            );
           }
 
           if (!isDryRun)
@@ -81,7 +112,7 @@ public class NotificationJob(
                 Title = GetNotificationTitle(entity),
                 Message = await GetNotificationMessage(entity),
                 OnClickUrl = schedule.OnClickUrl,
-                Buttons = []
+                Buttons = [],
               },
               entity.Id!,
               false
@@ -113,7 +144,11 @@ public class NotificationJob(
         }
         catch (Exception ex)
         {
-          logger.LogError(ex, "Failed to process entry with ID {Id}", entity.Id);
+          logger.LogError(
+            ex,
+            "Failed to process entry with ID {Id}",
+            entity.Id
+          );
         }
       }
     }
@@ -125,7 +160,7 @@ public class NotificationJob(
     {
       IJournal journal => journal.Name,
       ScrapsEntry scrapsEntry => scrapsEntry.Title,
-      _ => string.Empty
+      _ => string.Empty,
     };
   }
 
@@ -133,7 +168,9 @@ public class NotificationJob(
   {
     if (entity is ScrapsEntry scrapsEntry)
     {
-      IJournal? journal = await unrestrictedRepository.GetJournal(scrapsEntry.ParentId);
+      IJournal? journal = await unrestrictedRepository.GetJournal(
+        scrapsEntry.ParentId
+      );
 
       if (journal != null)
       {

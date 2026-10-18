@@ -2,7 +2,8 @@
 
 namespace Engraved.Api.Settings;
 
-public class MongoRepositorySettings(string connectionString) : IMongoRepositorySettings
+public class MongoRepositorySettings(string connectionString)
+  : IMongoRepositorySettings
 {
   public string MongoDbConnectionString { get; } = connectionString;
 

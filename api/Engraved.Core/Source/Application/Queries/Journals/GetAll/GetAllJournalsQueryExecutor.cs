@@ -9,8 +9,7 @@ public class GetAllJournalsQueryExecutor(
   IJournalRepository journalRepository,
   IUserRepository userRepository,
   Lazy<IUser> currentUser
-)
-  : IQueryExecutor<IJournal[], GetAllJournalsQuery>
+) : IQueryExecutor<IJournal[], GetAllJournalsQuery>
 {
   public bool DisableCache => false;
 
@@ -25,12 +24,16 @@ public class GetAllJournalsQueryExecutor(
       currentUser.Value.Id
     );
 
-    return await JournalQueryUtil.EnsurePermissionUsers(userRepository, allJournals);
+    return await JournalQueryUtil.EnsurePermissionUsers(
+      userRepository,
+      allJournals
+    );
   }
 
   private string[] GetJournalIds(GetAllJournalsQuery query)
   {
-    var isFavoritesQuery = query.FavoritesOnly.HasValue && query.FavoritesOnly.Value;
+    var isFavoritesQuery =
+      query.FavoritesOnly.HasValue && query.FavoritesOnly.Value;
     var queryFilterIds = query.JournalIds ?? [];
 
     if (!isFavoritesQuery)
@@ -38,8 +41,10 @@ public class GetAllJournalsQueryExecutor(
       return queryFilterIds;
     }
 
-    return currentUser.Value.FavoriteJournalIds
-      .Where(i => !queryFilterIds.Any() || queryFilterIds.Contains(i))
+    return currentUser
+      .Value.FavoriteJournalIds.Where(i =>
+        !queryFilterIds.Any() || queryFilterIds.Contains(i)
+      )
       .ToArray();
   }
 }

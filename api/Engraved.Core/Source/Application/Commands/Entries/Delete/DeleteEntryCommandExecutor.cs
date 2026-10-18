@@ -10,8 +10,7 @@ public class DeleteEntryCommandExecutor(
   IJournalRepository journalRepository,
   IFileStore fileStore,
   IDateService dateService
-)
-  : ICommandExecutor<DeleteEntryCommand>
+) : ICommandExecutor<DeleteEntryCommand>
 {
   public async Task<CommandResult> Execute(DeleteEntryCommand command)
   {
@@ -33,7 +32,10 @@ public class DeleteEntryCommandExecutor(
 
     await journalRepository.UpsertJournal(journal);
 
-    return new CommandResult(command.Id, journal.Permissions.GetUserIdsWithAccess());
+    return new CommandResult(
+      command.Id,
+      journal.Permissions.GetUserIdsWithAccess()
+    );
   }
 
   private async Task DeleteFiles(IEnumerable<string> fileIds)
