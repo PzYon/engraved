@@ -1,5 +1,5 @@
 import { IJournal } from "../../../serverApi/IJournal";
-import { useJournalsQuery } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
+import { useJournalsQueryWithState } from "../../../serverApi/reactQuery/queries/useJournalsQuery";
 import { StorageWrapper } from "../../../util/StorageWrapper";
 
 const storage = new StorageWrapper(window.localStorage);
@@ -22,15 +22,25 @@ export const addRecentlyViewedJournal = (id: string) => {
   storage.setValue(storageKey, journalIds);
 };
 
-export const useRecentlyViewedJournals = (): IJournal[] => {
+export const useRecentlyViewedJournals = (): {
+  journals: IJournal[];
+  isLoading: boolean;
+} => {
   const journalIds = getJournalIdsFromStorage();
 
-  const journals =
-    useJournalsQuery(undefined, undefined, false, journalIds) ?? [];
+  const { journals, isLoading } = useJournalsQueryWithState(
+    undefined,
+    undefined,
+    false,
+    journalIds,
+  );
 
-  return journalIds
-    .map((id) => journals.find((j) => j.id === id))
-    .filter((j) => !!j) as IJournal[];
+  return {
+    journals: journalIds
+      .map((id) => journals.find((j) => j.id === id))
+      .filter((j) => !!j) as IJournal[],
+    isLoading,
+  };
 };
 
 function getJournalIdsFromStorage() {

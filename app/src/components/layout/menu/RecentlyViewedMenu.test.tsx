@@ -14,10 +14,13 @@ vi.mock("@tanstack/react-router", () => ({
     route.journalId ? { journalId: route.journalId } : false,
 }));
 
-const recentlyViewed = vi.hoisted(() => ({ journals: [] as IJournal[] }));
+const recentlyViewed = vi.hoisted(() => ({
+  journals: [] as IJournal[],
+  isLoading: false,
+}));
 
 vi.mock("./useRecentlyViewedJournals", () => ({
-  useRecentlyViewedJournals: () => recentlyViewed.journals,
+  useRecentlyViewedJournals: () => recentlyViewed,
 }));
 
 vi.mock("../../overview/journals/JournalIcon", () => ({
@@ -37,6 +40,7 @@ const journal = (id: string, name: string) => ({ id, name }) as IJournal;
 describe("RecentlyViewedMenu", () => {
   beforeEach(() => {
     recentlyViewed.journals = [];
+    recentlyViewed.isLoading = false;
     route.journalId = undefined;
   });
 
@@ -68,6 +72,15 @@ describe("RecentlyViewedMenu", () => {
     const links = screen.getAllByRole("link");
     expect(links.map((l) => l.textContent)).toEqual(["Older", "Newest"]);
     expect(links[1].getAttribute("href")).toBe("/journals/details/b");
+  });
+
+  it("shows a spinner instead of the hint while loading", () => {
+    recentlyViewed.isLoading = true;
+
+    render(<RecentlyViewedMenu close={vi.fn()} />);
+
+    expect(screen.getByRole("progressbar")).toBeDefined();
+    expect(screen.queryByText("No journals viewed yet.")).toBeNull();
   });
 
   it("shows a hint when no journals were viewed yet", () => {

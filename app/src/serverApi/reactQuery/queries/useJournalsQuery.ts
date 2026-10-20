@@ -11,10 +11,29 @@ export const useJournalsQuery = (
   favoritesOnly?: boolean,
   journalIds?: string[],
   enabled = true,
-): IJournal[] => {
+): IJournal[] =>
+  useJournalsQueryWithState(
+    searchText,
+    journalTypes,
+    favoritesOnly,
+    journalIds,
+    enabled,
+  ).journals;
+
+export const useJournalsQueryWithState = (
+  searchText?: string,
+  journalTypes?: JournalType[],
+  favoritesOnly?: boolean,
+  journalIds?: string[],
+  enabled = true,
+): { journals: IJournal[]; isLoading: boolean } => {
   const queryClient = useQueryClient();
 
-  const { data: journals, isSuccess } = useQuery<IJournal[]>({
+  const {
+    data: journals,
+    isSuccess,
+    isLoading,
+  } = useQuery<IJournal[]>({
     enabled: enabled,
 
     queryKey: queryKeysFactory.journals(
@@ -46,5 +65,5 @@ export const useJournalsQuery = (
     }
   }, [isSuccess, journals, queryClient]);
 
-  return journals ?? [];
+  return { journals: journals ?? [], isLoading };
 };
