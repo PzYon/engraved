@@ -55,15 +55,6 @@ describe("RecentlyViewedMenu", () => {
     ]);
   });
 
-  it("shows a hint when only the current journal was viewed", () => {
-    recentlyViewed.journals = [journal("b", "Current")];
-    route.journalId = "b";
-
-    render(<RecentlyViewedMenu close={vi.fn()} />);
-
-    expect(screen.getByText("No other journals viewed yet.")).toBeDefined();
-  });
-
   it("lists the most recently viewed journal last, linking to their details", () => {
     recentlyViewed.journals = [journal("b", "Newest"), journal("a", "Older")];
 
@@ -74,19 +65,21 @@ describe("RecentlyViewedMenu", () => {
     expect(links[1].getAttribute("href")).toBe("/journals/details/b");
   });
 
-  it("shows a spinner instead of the hint while loading", () => {
+  it("shows a spinner while loading", () => {
     recentlyViewed.isLoading = true;
+    recentlyViewed.journals = [journal("a", "Older")];
 
     render(<RecentlyViewedMenu close={vi.fn()} />);
 
     expect(screen.getByRole("progressbar")).toBeDefined();
-    expect(screen.queryByText("No journals viewed yet.")).toBeNull();
+    expect(screen.queryByRole("link")).toBeNull();
   });
 
-  it("shows a hint when no journals were viewed yet", () => {
+  it("shows nothing when no journals were viewed yet", () => {
     render(<RecentlyViewedMenu close={vi.fn()} />);
 
-    expect(screen.getByText("No journals viewed yet.")).toBeDefined();
+    expect(screen.queryByRole("listitem")).toBeNull();
+    expect(screen.queryByRole("progressbar")).toBeNull();
   });
 
   it("closes when a journal is clicked", () => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularProgress, List, ListItem, ListItemText } from "@mui/material";
+import { CircularProgress, List, ListItem } from "@mui/material";
 import { JournalAppMenuItem, MenuHost } from "./AppMenu";
 import { useRecentlyViewedJournals } from "./useRecentlyViewedJournals";
 import { useMatchRoute } from "@tanstack/react-router";
@@ -26,7 +26,7 @@ export const RecentlyViewedMenu: React.FC<{ close: () => void }> = ({
           <ListItem sx={{ justifyContent: "center" }}>
             <CircularProgress size="20px" aria-label="Loading" />
           </ListItem>
-        ) : viewedJournals.length ? (
+        ) : (
           // the most recent journal goes last, as that is closest to the launcher
           viewedJournals
             .toReversed()
@@ -37,16 +37,6 @@ export const RecentlyViewedMenu: React.FC<{ close: () => void }> = ({
                 close={close}
               />
             ))
-        ) : (
-          <ListItem sx={{ px: 2 }}>
-            <ListItemText
-              secondary={
-                currentJournalId
-                  ? "No other journals viewed yet."
-                  : "No journals viewed yet."
-              }
-            />
-          </ListItem>
         )}
       </List>
     </MenuHost>
