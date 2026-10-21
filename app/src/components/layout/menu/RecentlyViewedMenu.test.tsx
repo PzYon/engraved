@@ -14,10 +14,13 @@ vi.mock("@tanstack/react-router", () => ({
     route.journalId ? { journalId: route.journalId } : false,
 }));
 
-const recentlyViewed = vi.hoisted(() => ({ journals: [] as IJournal[] }));
+const recentlyViewed = vi.hoisted(() => ({
+  journals: [] as IJournal[],
+  isLoading: false,
+}));
 
 vi.mock("./useRecentlyViewedJournals", () => ({
-  useRecentlyViewedJournals: () => recentlyViewed.journals,
+  useRecentlyViewedJournals: () => recentlyViewed,
 }));
 
 vi.mock("../../overview/journals/JournalIcon", () => ({
@@ -37,6 +40,7 @@ const journal = (id: string, name: string) => ({ id, name }) as IJournal;
 describe("RecentlyViewedMenu", () => {
   beforeEach(() => {
     recentlyViewed.journals = [];
+    recentlyViewed.isLoading = false;
     route.journalId = undefined;
   });
 
@@ -51,15 +55,6 @@ describe("RecentlyViewedMenu", () => {
     ]);
   });
 
-  it("shows a hint when only the current journal was viewed", () => {
-    recentlyViewed.journals = [journal("b", "Current")];
-    route.journalId = "b";
-
-    render(<RecentlyViewedMenu close={vi.fn()} />);
-
-    expect(screen.getByText("No other journals viewed yet.")).toBeDefined();
-  });
-
   it("lists the most recently viewed journal last, linking to their details", () => {
     recentlyViewed.journals = [journal("b", "Newest"), journal("a", "Older")];
 
@@ -70,10 +65,21 @@ describe("RecentlyViewedMenu", () => {
     expect(links[1].getAttribute("href")).toBe("/journals/details/b");
   });
 
-  it("shows a hint when no journals were viewed yet", () => {
+  it("shows a spinner while loading", () => {
+    recentlyViewed.isLoading = true;
+    recentlyViewed.journals = [journal("a", "Older")];
+
     render(<RecentlyViewedMenu close={vi.fn()} />);
 
-    expect(screen.getByText("No journals viewed yet.")).toBeDefined();
+    expect(screen.getByRole("progressbar")).toBeDefined();
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("shows nothing when no journals were viewed yet", () => {
+    render(<RecentlyViewedMenu close={vi.fn()} />);
+
+    expect(screen.queryByRole("listitem")).toBeNull();
+    expect(screen.queryByRole("progressbar")).toBeNull();
   });
 
   it("closes when a journal is clicked", () => {

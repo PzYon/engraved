@@ -12,7 +12,7 @@ vi.mock("../../../serverApi/reactQuery/queries/useJournalsQuery", () => ({
 }));
 
 vi.mock("./useRecentlyViewedJournals", () => ({
-  useRecentlyViewedJournals: () => [],
+  useRecentlyViewedJournals: () => ({ journals: [], isLoading: false }),
 }));
 
 const pressKey = (key: string) =>

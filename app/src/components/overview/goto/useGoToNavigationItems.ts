@@ -9,7 +9,7 @@ import { keepPreviousData } from "@tanstack/react-query";
 export const useGoToNavigationItems = (
   searchText?: string,
 ): { journalsForEntries: IJournal[]; items: IEntity[]; isLoading: boolean } => {
-  const viewedJournals = useRecentlyViewedJournals();
+  const { journals: viewedJournals } = useRecentlyViewedJournals();
 
   const { data: result, isFetching } = useSearchEntitiesQuery(
     searchText,
