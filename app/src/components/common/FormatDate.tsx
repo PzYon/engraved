@@ -36,15 +36,19 @@ const FormatDateInternal: React.FC<{
   // refreshed when the window regains focus.
   const isRecent = differenceInHours(new Date(), getAsDate(value)) <= 2;
 
-  useNow(isRecent);
+  // `now` has to be passed on (instead of formatting relative to the current
+  // time implicitly): the React Compiler memoizes the labels by their inputs,
+  // so without it they would never change after the first render.
+  const now = useNow(isRecent);
 
   const title = formatDate(
     value,
     dateFormat === DateFormat.relativeToNow || !dateFormat
       ? DateFormat.full
       : DateFormat.relativeToNow,
+    now,
   );
-  const label = formatDate(value, dateFormat);
+  const label = formatDate(value, dateFormat, now);
 
   return (
     <Tooltip title={title}>
