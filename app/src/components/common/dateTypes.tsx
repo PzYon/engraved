@@ -1,4 +1,4 @@
-import { format, formatDistanceToNow, isToday } from "date-fns";
+import { format, formatDistance, isSameDay } from "date-fns";
 
 export enum DateFormat {
   relativeToNow,
@@ -25,6 +25,7 @@ export function getAsDate(value: string | number | Date): Date {
 export const formatDate = (
   value: string | number | Date,
   dateFormat?: DateFormat,
+  now: Date | number = Date.now(),
 ): string => {
   const date = getAsDate(value);
 
@@ -42,15 +43,15 @@ export const formatDate = (
     case DateFormat.timeOnly:
       return format(date, "HH:mm:ss");
     case DateFormat.relativeToNowDayPlus:
-      return isToday(date)
+      return isSameDay(date, now)
         ? "today"
-        : formatDistanceToNow(date, {
+        : formatDistance(date, now, {
             addSuffix: true,
             includeSeconds: true,
           });
     case DateFormat.relativeToNow:
     default:
-      return formatDistanceToNow(date, {
+      return formatDistance(date, now, {
         addSuffix: true,
         includeSeconds: true,
       });
