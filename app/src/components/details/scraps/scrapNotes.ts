@@ -3,15 +3,27 @@ import { IScrapListItem } from "./list/IScrapListItem";
 
 const emptyListNotes = JSON.stringify([]);
 
-// While editing, a list always keeps at least one (possibly blank) line so the
-// user has something to type into. When that lone line is still empty on save,
-// the list is effectively empty and is persisted as such rather than storing a
-// meaningless blank item.
+const emptyMarkdownListItem = /^\s*([-*+]|\d+[.)])?\s*$/;
+
+// Notes are persisted without meaningless content: a list whose lone line (which
+// edit mode always keeps so the user has something to type into) is still blank
+// becomes an empty list, and markdown holding nothing but empty list items (e.g.
+// an untouched log book template) becomes empty instead of rendering a blank bullet.
 export function getNotesToPersist(
   scrapType: ScrapType,
   notes: string | undefined,
 ) {
-  if (scrapType !== ScrapType.List || !notes) {
+  if (!notes) {
+    return notes;
+  }
+
+  if (scrapType === ScrapType.Markdown) {
+    return notes.split("\n").every((line) => emptyMarkdownListItem.test(line))
+      ? ""
+      : notes;
+  }
+
+  if (scrapType !== ScrapType.List) {
     return notes;
   }
 

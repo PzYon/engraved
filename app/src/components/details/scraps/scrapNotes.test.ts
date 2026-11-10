@@ -33,9 +33,19 @@ describe("getNotesToPersist", () => {
     expect(getNotesToPersist(ScrapType.List, "[]")).toBe("[]");
   });
 
-  it("should not touch markdown notes", () => {
-    expect(getNotesToPersist(ScrapType.Markdown, "  ")).toBe("  ");
-  });
+  it.each(["-", "- ", "*", "+", "1.", "-\n-", "  -\n\n  - ", "  "])(
+    "should empty markdown notes holding only empty list items (%j)",
+    (notes) => {
+      expect(getNotesToPersist(ScrapType.Markdown, notes)).toBe("");
+    },
+  );
+
+  it.each(["- milk", "-\n- milk", "## Food\n-", "---", "hello"])(
+    "should keep markdown notes that have content (%j)",
+    (notes) => {
+      expect(getNotesToPersist(ScrapType.Markdown, notes)).toBe(notes);
+    },
+  );
 
   it("should not touch undefined notes", () => {
     expect(getNotesToPersist(ScrapType.List, undefined)).toBe(undefined);
@@ -66,6 +76,17 @@ describe("getComparableNotes", () => {
 });
 
 describe("hasSomethingToSave", () => {
+  it("should not save a new markdown scrap holding only an empty bullet", () => {
+    expect(
+      hasSomethingToSave(
+        ScrapType.Markdown,
+        getNotesToPersist(ScrapType.Markdown, "-"),
+        "",
+        true,
+      ),
+    ).toBe(false);
+  });
+
   it("should not save a new list holding only a blank item", () => {
     expect(
       hasSomethingToSave(ScrapType.List, asNotes(item("")), "", true),
