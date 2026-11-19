@@ -12,7 +12,9 @@
       "enabled": true,
       "automerge": true,
       "automergeType": "branch",
-      "platformAutomerge": true
+      "platformAutomerge": true,
+      "dependencyDashboardApproval": false,
+      "description": "dependencyDashboardApproval is not redundant: an inherited setting turns approval on, and without this override minor and patch updates wait on the Dependency Dashboard instead of automerging."
     },
     {
       "matchDatasources": ["npm"],
