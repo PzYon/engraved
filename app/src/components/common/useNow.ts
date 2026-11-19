@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { focusManager } from "@tanstack/react-query";
+import { getDayKey } from "../../util/utils";
 
 const autoUpdateIntervalSeconds = 30;
 
@@ -81,4 +82,15 @@ export const useNow = (autoUpdate = true): number => {
     autoUpdate ? subscribeWithAutoUpdate : subscribeOnFocusOnly,
     getSnapshot,
   );
+};
+
+// Read from the clock rather than from `now`, which is only as recent as the
+// last tick: a page opened in the morning would otherwise start on yesterday.
+const getTodaySnapshot = () => getDayKey(new Date());
+
+// The current day (as a day key), refreshed by the same ticker: as the snapshot
+// only changes with the day, a consumer re-renders once at midnight (or when
+// the window regains focus on a later day), and not on every tick.
+export const useToday = (): string => {
+  return useSyncExternalStore(subscribeWithAutoUpdate, getTodaySnapshot);
 };
