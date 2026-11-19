@@ -18,6 +18,7 @@ import { JournalViewChart } from "./JournalViewChart";
 import { useAppContext } from "../../AppContext";
 import { JournalSubRoutes } from "../overview/journals/JournalSubRoutes";
 import { isEntryFilterApplied } from "./filters/isEntryFilterApplied";
+import { useToday } from "../common/useNow";
 
 export const JournalViewPage: React.FC = () => {
   const deviceWidth = useDeviceWidth();
@@ -69,10 +70,14 @@ export const JournalViewPage: React.FC = () => {
 
   const dateFilterHash = JSON.stringify(dateFilter);
 
+  // The conditions are relative to the day they are created on, so a page left
+  // open overnight would otherwise keep hiding everything added from then on.
+  const today = useToday();
+
   useEffect(() => {
     setDateConditions(createDateConditions(dateFilter, new Date()));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setDateConditions, dateFilterHash]);
+  }, [setDateConditions, dateFilterHash, today]);
 
   const titleActions = getTitleActions();
 
