@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.29.13",
-    "@rolldown/plugin-babel": "0.2.4",
+    "@rolldown/plugin-babel": "0.3.1",
     "@testing-library/react": "16.3.3",
     "@types/google-one-tap": "1.2.7",
     "@types/node": "24.19.2",
