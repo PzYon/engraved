@@ -42,7 +42,7 @@
     "eslint": "10.14.0",
     "eslint-plugin-playwright": "2.12.2",
     "eslint-plugin-react-hooks": "7.1.1",
-    "eslint-plugin-react-refresh": "0.5.7",
+    "eslint-plugin-react-refresh": "0.5.8",
     "fallow": "3.42.0",
     "globals": "17.14.0",
     "husky": "9.1.7",
