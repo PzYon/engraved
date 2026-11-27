@@ -46,7 +46,7 @@
     "fallow": "3.42.0",
     "globals": "17.14.0",
     "husky": "9.1.7",
-    "lint-staged": "17.6.0",
+    "lint-staged": "17.6.1",
     "prettier": "3.9.10",
     "typescript": "6.0.3"
   }
